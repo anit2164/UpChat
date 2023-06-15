@@ -1,0 +1,19 @@
+.container{
+    display: flex;
+    padding: 8px 16px;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    background: #F7F7F7;
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+}
+
+.label{
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 28px;
+    color: #232323;
+}

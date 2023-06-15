@@ -1,4 +1,3 @@
 # UpChat
 
-Uplers Chat
-Micro-frontend App built on React
+Uplers Micro-frontend Chat built on React

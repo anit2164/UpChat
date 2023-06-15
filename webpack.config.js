@@ -10,7 +10,10 @@ module.exports = (_, argv) => ({
 	resolve: {
 		extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
 		alias: {
-			Components: path.resolve(__dirname, 'src/components/'),
+			'@': path.resolve(__dirname, 'src/'), // Configure the alias and specify the path to your source code
+			'@Layout': path.resolve(__dirname, 'src/layout'),
+			'@Components': path.resolve(__dirname, 'src/components'),
+			'@SVG': path.resolve(__dirname, 'src/assets/svg'),
 		},
 	},
 
@@ -38,6 +41,14 @@ module.exports = (_, argv) => ({
 				use: {
 					loader: 'babel-loader',
 				},
+			},
+			// {
+			// 	test: /\.(gif|svg|jpg|png)$/,
+			// 	loader: 'file-loader',
+			// },
+			{
+				test: /\.svg$/,
+				use: ['@svgr/webpack', 'file-loader'],
 			},
 		],
 	},

@@ -1,14 +1,11 @@
-import React from "react";
-import ReactDOM from "react-dom";
-
-import "./index.css";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import Layout from '@Layout/layout';
 
 const App = () => (
-  <div className="container">
-    <div>Name: upchat</div>
-    <div>Framework: react</div>
-    <div>Language: JavaScript</div>
-    <div>CSS: Empty CSS</div>
-  </div>
+	<div className="container">
+		<Layout />
+	</div>
 );
-ReactDOM.render(<App />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById('app'));
