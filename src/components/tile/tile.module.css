@@ -85,6 +85,8 @@
 .timeStamp {
     color: #676767;
     margin-right: 8px;
+    font-size: 10px;
+    font-weight: 400;
 }
 
 .unreadNum {
