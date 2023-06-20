@@ -2,7 +2,9 @@ import { ReactComponent as ArrowDownSVG } from '@SVG/arrowDown.svg';
 import HeaderStyle from './header.module.css';
 const Header = ({ setToggle }) => {
 	return (
-		<div className={HeaderStyle.container}>
+		<div
+			className={HeaderStyle.container}
+			onClick={() => setToggle(false)}>
 			<div className={HeaderStyle.containerBody}>
 				<img
 					src="https://www.w3schools.com/howto/img_avatar.png"
@@ -14,7 +16,7 @@ const Header = ({ setToggle }) => {
 				/>
 				<div className={HeaderStyle.title}>Bhuvan Desai</div>
 			</div>
-			<div onClick={() => setToggle(false)}>
+			<div>
 				<ArrowDownSVG />
 			</div>
 		</div>

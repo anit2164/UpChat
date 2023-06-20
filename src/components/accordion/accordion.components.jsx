@@ -4,7 +4,7 @@ import { ReactComponent as ArrowDownSVG } from '@SVG/arrowDown.svg';
 import Tile from '@Components/tile/tile.components';
 
 const Accordion = ({ icon, label, isCollapsible, accordionList }) => {
-	const [showBody, setShowBody] = useState(false);
+	const [showBody, setShowBody] = useState(true);
 
 	const toggleAccordion = () => {
 		setShowBody(!showBody);
@@ -22,7 +22,7 @@ const Accordion = ({ icon, label, isCollapsible, accordionList }) => {
 					<ArrowDownSVG />
 				</div>
 			</div>
-			{showBody && [1, 2, 3, 4, 5, 6]?.map((item) => <Tile />)}
+			{showBody && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]?.map((item) => <Tile />)}
 		</Fragment>
 	);
 };
