@@ -8,6 +8,7 @@ import Tile from "../tile/tile.components";
 const UpTabs = () => {
   const [title, setTitle] = useState("Add New Hiring Requests");
   const [search, setSearch] = useState("");
+
   return (
     <>
       <div>
@@ -34,7 +35,9 @@ const UpTabs = () => {
                 icon={<BriefcaseSVG />}
                 label={"All Channels"}
                 isCollapsible={true}
+                search={search}
               />
+              {/* {search && <Tile search={search} />} */}
             </div>
           </TabPanel>
           <TabPanel>

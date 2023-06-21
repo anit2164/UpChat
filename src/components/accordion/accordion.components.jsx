@@ -3,7 +3,7 @@ import AccordionStyle from "./accordion.module.css";
 import { ReactComponent as ArrowDownSVG } from "@SVG/arrowDown.svg";
 import Tile from "@Components/tile/tile.components";
 
-const Accordion = ({ icon, label, isCollapsible, accordionList }) => {
+const Accordion = ({ icon, label, isCollapsible, search }) => {
   const [showBody, setShowBody] = useState(true);
 
   const toggleAccordion = () => {
@@ -23,7 +23,7 @@ const Accordion = ({ icon, label, isCollapsible, accordionList }) => {
           <ArrowDownSVG />
         </div>
       </div>
-      {showBody && <Tile />}
+      {showBody && <Tile search={search} />}
     </Fragment>
   );
 };

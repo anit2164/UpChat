@@ -41,7 +41,9 @@ const Tile = ({ search }) => {
   ];
 
   useEffect(() => {
-    dispatch(allChannelListingHandler());
+    if (!search) {
+      dispatch(allChannelListingHandler());
+    }
   }, []);
 
   useEffect(() => {
