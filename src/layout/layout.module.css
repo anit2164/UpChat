@@ -1,6 +1,6 @@
 .main{
     position: absolute;
-    bottom: 0;
+    bottom: 10px;
     right: 10px;
     width: 470px;
     border: 0.8px solid #CECCCC;
@@ -22,6 +22,52 @@
 /* */
 
 /* Channel Window - 19/06/2023 */
+.chatInitialThumb {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 5px;
+}
+.blueThumb {
+    background-color: #BEE2FF;
+    color: #3678B1;
+}
+
+.darkRedThumb {
+    background-color: #FCEAE6;
+    color: #CC4D4D;
+}
+
+.greenThumb {
+    background-color: rgba(69, 255, 83, 0.2);
+    color: #006C1A;
+}
+
+.yellowThumb {
+    background-color: #F7F4BF;
+    color: #8B851A;
+}
+
+.orangeThumb {
+    background-color: #FFD1B2;
+    color: #EF6000;
+}
+
+.skyBlueThumb {
+    background-color: #BFF6FF;
+    color: #0095AD;
+}
+.avatar {
+    width: 40px;
+    max-width: 40px;
+    border-radius: 50%;
+}
 .timeStamp {
     color: #676767;
     margin-right: 8px;
@@ -31,7 +77,7 @@
 
 .channelWindow{
     width: 469px;
-    height: 662px;
+    height: 654px;
     border: 1px solid #CECCCC;
     border-radius: 8px;
     color: #232323;
@@ -61,9 +107,49 @@
     margin-right: 16px;
 }
 
+.dotMenuMain {
+    padding: 11px 5px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.dotMenuMain:hover {
+    background-color: rgba(217, 217, 217, 0.43);
+}
+
+.dotMenu {
+    background-color: #232323;
+    width: 3px;
+    height: 3px;
+    position: relative;
+    display: block;
+    border-radius: 30px;
+}
+
+.dotMenu::before,
+.dotMenu::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    background-color: #232323;
+    width: 3px;
+    height: 3px;
+    border-radius: 30px;
+}
+
+.dotMenu::before {
+    top: -5px;
+}
+
+.dotMenu::after {
+    top: 5px;
+}
+
 .channelHeaderRight .dotMenuhz{
     transform: rotate(90deg);
-    padding-top: 0;
 }
 
 .chatWindowClose{
@@ -113,14 +199,14 @@
 .channelWindowInner{
     display: flex;
     align-items: end;
-    min-height: 525px;
+    min-height: 515px;
     background: #fff;
 }
 .channelWindowMessages{
     display: flex;
     flex-direction: column;
 
-    max-height: 525px;
+    max-height: 515px;
     padding: 0 24px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -175,8 +261,15 @@
     margin-bottom: 8px;
     align-items: center;
 }
+.channelMessageInner .profileAvtar{
+    /* width: 30px;
+    max-width: 30px; */
+    border-radius: 50%;
+    margin-right: 8px;
+}
 .channelMessageInner .profileName{
     font-size: 14px;
+    font-weight: 500;
 }
 .profileDesignation{
     margin-left: 8px;
@@ -205,6 +298,7 @@
 .channelMessageBox{
     position: relative;
     padding: 8px;
+    padding-bottom: 15px;
     border-radius: 8px;
 
     font-size: 12px;
@@ -225,11 +319,9 @@
 .channelMessageBox p{
     margin: 0 0 15px;
 }
-.channelMessageBox p:last-child{
-    margin-bottom: 0;
-}
 
 .channelWindowFooter{
+    background: #fff;
     border-top: 1px solid #CECCCC;
     display: flex;
 }
@@ -242,7 +334,9 @@
 }
 .channelAddMedia{
     padding: 8px;
-    margin-right: 16px;
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
 }
 .mediaPlus{
     width: 20px;
@@ -295,14 +389,159 @@
 .searchInChatWrapper{
     position: sticky;
     top: 0;
-    z-index: 9999;
+    z-index: 999;
     margin: 0 -24px 10px;
     padding: 9px 15px;
     border-radius: 8px 8px 0px 0px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(3px);
 }
 .searchInChatInner{
-    border: 1px solid #929090;
+    position: relative;
     display: flex;
+    align-items: center;
+    border: 1px solid #929090;
+    border-radius: 8px;
+    padding-right: 12px;
+}
+.searchIcon{
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.searchInChatInner input[type=text]{
+    flex: 1;
+    border: none;
+    background: none;
+    font-size: 12px;
+    padding: 10px 5px 10px 33px;
+}
+
+.searchInChatInner .closeIcon{
+    width: 14px;
+    height: 14px;
+
+    position: relative;
+    margin-left: 0;
+    margin-right: 12px;
+    padding: 2px;
+    cursor: pointer;
+}
+.searchInChatInner .closeIcon:before,
+.searchInChatInner .closeIcon:after{
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 9px;
+
+    width: 11px;
+    border-top: 1px solid #232323;
+}
+.searchInChatInner .closeIcon:before{
+    transform: rotate(45deg);
+}
+.searchInChatInner .closeIcon:after{
+    transform: rotate(-45deg);
+}
+
+.numberOfSearch{
+    display: flex;
+    align-items: center;
+
+    border-left: 1px solid #CECCCC;
+    padding-left: 15px;
+    font-size: 11px;
+}
+.numberOfSearch svg{
+    display: block;
+}
+.numberOfSearch .arrowIcon{
+    margin-right: 8px;
+}
+.numberOfSearch .arrowIconRight{
+    margin-left: 8px;
+    transform: rotate(180deg);
+}
+
+/* Chat Reaction */
+.chatReaction{
+    position: absolute;
+    right: 8px;
+    bottom: -15px;
+}
+.chatReactionInner{
+    display: flex;
+    align-items: center;
+}
+.chatReactionCircle{
+    height: 32px;
+    display: flex;
+    align-items: center;
+}
+.chatReactionCircle span{
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 30px;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.chatReaction .chatReactionActive{
+    background: #FFDA31;
+}
+.chatReactionPopup{
+    height: 22px;
+    background: #FFF9E0;
+    box-shadow: 0px 2px 8px rgba(35, 35, 35, 0.25);
+    border-radius: 30px;
+    margin-right: 5px;
+    padding: 5px;
+
+    display: flex;
+    align-items: center;
+}
+.chatReactionPopup span{
+    margin-right: 8px;
+}
+.chatReactionPopup svg{
+    display: block;
+}
+.chatReactionPopup .addNewEmoji{
+    background: #F2F2F2;
+    width: 24px;
+    height: 24px;
+    border-radius: 30px;
+    margin-right: 0;
+    cursor: pointer;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.chatReactionPopup .addNewEmoji::before,
+.chatReactionPopup .addNewEmoji::after{
+    content: "";
+    position: absolute;
+
+    border-top: 1.5px solid #929090;
+    width: 12px;
+}
+.chatReactionPopup .addNewEmoji::after{
+    transform: rotate(90deg);
+}
+
+/* Attached Media with Message */
+.attachedMedia{
+    display: flex;
+    gap: 8px;
+}
+.attachedMedia img{
+    max-width: 56px;
+    max-height: 56px;
+    border-radius: 4px;
 }
