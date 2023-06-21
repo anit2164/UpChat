@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 const Tile = ({ search }) => {
   const [allChannel, setAllChannel] = useState([]);
   const [tempArr, setTempArr] = useState([]);
-  console.log(allChannel, "allChannelallChannel");
   const dispatch = useDispatch();
 
   const token =
@@ -15,8 +14,6 @@ const Tile = ({ search }) => {
   const tempToken = localStorage.setItem("token", token);
 
   const response = useSelector((state) => state?.allChannelListing);
-  console.log(response, "responsennewe");
-
   const items = [
     {
       label: "PIN Channel",
@@ -54,9 +51,13 @@ const Tile = ({ search }) => {
   useEffect(() => {
     if (search) {
       let filteredData = tempArr.filter((item) => {
-        return item?.companyInitial
+        return item?.companyWithRole.split("|")[0]
           .toLowerCase()
-          .includes(search.toLowerCase());
+          .includes(search.toLowerCase()) ||  item?.companyWithRole.split("|")[1]
+          .toLowerCase()
+          .includes(search.toLowerCase()) || item?.hrWithStatus.split("|")[0]
+          .toLowerCase()
+          .includes(search.toLowerCase())
       });
       setAllChannel(filteredData);
     } else {
