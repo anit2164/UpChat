@@ -8,11 +8,6 @@ import { ReactComponent as LeaveSVG } from "@SVG/leave.svg";
 import { ReactComponent as SnoozeSVG } from "@SVG/snooze.svg";
 
 const PinChatDetails = ({ search, data }) => {
-  //   const token =
-  //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMTMwMiIsIkxvZ2luVXNlcklkIjoiMTciLCJMb2dpblVzZXJUeXBlSWQiOiIyIiwibmJmIjoxNjg3MzI1MTA3LCJleHAiOjE2ODczNjExMDcsImlhdCI6MTY4NzMyNTEwN30.9Ge1Y5QGQrf7g40GvI9FsgJ7QWIQrU0MTSHwBbFXZzo";
-
-  //   const tempToken = localStorage.setItem("token", token);
-
   const items = [
     {
       label: "PIN Channel",
@@ -49,7 +44,6 @@ const PinChatDetails = ({ search, data }) => {
     <>
       <div className={PinChatDetailsStyle.chatWrapper}>
         {filterData?.map((item) => {
-          console.log(item?.isPinned, "pindata");
           return (
             <div
               className={`${PinChatDetailsStyle.chatItem} ${PinChatDetailsStyle.unreadMsg}`}
@@ -89,6 +83,9 @@ const PinChatDetails = ({ search, data }) => {
             </div>
           );
         })}
+        {filterData?.length === 0 && (
+          <span className={PinChatDetailsStyle.noDataFound}>No data found</span>
+        )}
       </div>
     </>
   );

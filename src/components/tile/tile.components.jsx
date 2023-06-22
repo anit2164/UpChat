@@ -9,10 +9,10 @@ import { ReactComponent as LeaveSVG } from "@SVG/leave.svg";
 import { ReactComponent as SnoozeSVG } from "@SVG/snooze.svg";
 
 const Tile = ({ search, data }) => {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMTMwMiIsIkxvZ2luVXNlcklkIjoiMTciLCJMb2dpblVzZXJUeXBlSWQiOiIyIiwibmJmIjoxNjg3MzI1MTA3LCJleHAiOjE2ODczNjExMDcsImlhdCI6MTY4NzMyNTEwN30.9Ge1Y5QGQrf7g40GvI9FsgJ7QWIQrU0MTSHwBbFXZzo";
+  // const token =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMTMwMiIsIkxvZ2luVXNlcklkIjoiMTciLCJMb2dpblVzZXJUeXBlSWQiOiIyIiwibmJmIjoxNjg3MzI1MTA3LCJleHAiOjE2ODczNjExMDcsImlhdCI6MTY4NzMyNTEwN30.9Ge1Y5QGQrf7g40GvI9FsgJ7QWIQrU0MTSHwBbFXZzo";
 
-  const tempToken = localStorage.setItem("token", token);
+  // const tempToken = localStorage.setItem("token", token);
 
   const items = [
     {
@@ -45,8 +45,6 @@ const Tile = ({ search, data }) => {
   const filterData = data?.filter((item) => {
     return item?.isPinned === false;
   });
-
-  console.log(filterData, "filterData");
 
   return (
     <>
@@ -89,6 +87,9 @@ const Tile = ({ search, data }) => {
             </div>
           );
         })}
+        {filterData?.length === 0 && (
+          <span className={TileStyle.noDataFound}>No data found</span>
+        )}
       </div>
     </>
   );
