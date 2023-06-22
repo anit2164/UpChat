@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
 import { Dropdown, Space } from "antd";
-import TileStyle from "./tile.module.css";
-import { useDispatch, useSelector } from "react-redux";
+import PinChatDetailsStyle from "./pinChatsDetails.module.css";
 import { ReactComponent as BriefcaseSVG } from "@SVG/briefcase.svg";
 import { ReactComponent as PinSVG } from "@SVG/pin.svg";
 import { ReactComponent as ChannelLibrarySVG } from "@SVG/channelLibrary.svg";
 import { ReactComponent as LeaveSVG } from "@SVG/leave.svg";
 import { ReactComponent as SnoozeSVG } from "@SVG/snooze.svg";
 
-const Tile = ({ search, data }) => {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMTMwMiIsIkxvZ2luVXNlcklkIjoiMTciLCJMb2dpblVzZXJUeXBlSWQiOiIyIiwibmJmIjoxNjg3MzI1MTA3LCJleHAiOjE2ODczNjExMDcsImlhdCI6MTY4NzMyNTEwN30.9Ge1Y5QGQrf7g40GvI9FsgJ7QWIQrU0MTSHwBbFXZzo";
+const PinChatDetails = ({ search, data }) => {
+  //   const token =
+  //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMTMwMiIsIkxvZ2luVXNlcklkIjoiMTciLCJMb2dpblVzZXJUeXBlSWQiOiIyIiwibmJmIjoxNjg3MzI1MTA3LCJleHAiOjE2ODczNjExMDcsImlhdCI6MTY4NzMyNTEwN30.9Ge1Y5QGQrf7g40GvI9FsgJ7QWIQrU0MTSHwBbFXZzo";
 
-  const tempToken = localStorage.setItem("token", token);
+  //   const tempToken = localStorage.setItem("token", token);
 
   const items = [
     {
@@ -43,37 +42,38 @@ const Tile = ({ search, data }) => {
   ];
 
   const filterData = data?.filter((item) => {
-    return item?.isPinned === false;
+    return item?.isPinned === true;
   });
-
-  console.log(filterData, "filterData");
 
   return (
     <>
-      <div className={TileStyle.chatWrapper}>
+      <div className={PinChatDetailsStyle.chatWrapper}>
         {filterData?.map((item) => {
+          console.log(item?.isPinned, "pindata");
           return (
-            <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}>
-              <div className={TileStyle.dFlex}>
+            <div
+              className={`${PinChatDetailsStyle.chatItem} ${PinChatDetailsStyle.unreadMsg}`}
+            >
+              <div className={PinChatDetailsStyle.dFlex}>
                 <div
-                  className={` ${TileStyle.chatInitialThumb} ${TileStyle.blueThumb} `}
+                  className={` ${PinChatDetailsStyle.chatInitialThumb} ${PinChatDetailsStyle.blueThumb} `}
                 >
                   {item?.companyInitial}
                 </div>
-                <div className={TileStyle.chatGroupDetails}>
-                  <div className={TileStyle.channelName}>
+                <div className={PinChatDetailsStyle.chatGroupDetails}>
+                  <div className={PinChatDetailsStyle.channelName}>
                     {item?.companyName} | {item?.role}
                   </div>
-                  <span className={TileStyle.hrStatus}>
+                  <span className={PinChatDetailsStyle.hrStatus}>
                     {item?.hrNumber} | {item?.hrStatus}
                   </span>
                 </div>
               </div>
-              <div className={TileStyle.dFlexTime}>
-                <div className={TileStyle.timeStamp}>12:30 PM</div>
-                <div className={TileStyle.unreadNum}>5</div>
+              <div className={PinChatDetailsStyle.dFlexTime}>
+                <div className={PinChatDetailsStyle.timeStamp}>12:30 PM</div>
+                <div className={PinChatDetailsStyle.unreadNum}>5</div>
                 <Dropdown
-                  className={TileStyle.dotMenuMain}
+                  className={PinChatDetailsStyle.dotMenuMain}
                   menu={{
                     items,
                   }}
@@ -81,7 +81,7 @@ const Tile = ({ search, data }) => {
                 >
                   <a onClick={(e) => e.preventDefault()}>
                     <Space>
-                      <span className={TileStyle.dotMenu}></span>
+                      <span className={PinChatDetailsStyle.dotMenu}></span>
                     </Space>
                   </a>
                 </Dropdown>
@@ -94,4 +94,4 @@ const Tile = ({ search, data }) => {
   );
 };
 
-export default Tile;
+export default PinChatDetails;

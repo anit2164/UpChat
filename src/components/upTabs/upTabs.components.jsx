@@ -4,7 +4,8 @@ import Accordion from "@Components/accordion/accordion.components";
 import { ReactComponent as BriefcaseSVG } from "@SVG/briefcase.svg";
 import { ReactComponent as SearchSVG } from "@SVG/search.svg";
 import UpTabsStyle from "./upTabs.module.css";
-import Tile from "../tile/tile.components";
+import PinAccordian from "../pinAccordian/pinAccordian";
+
 const UpTabs = ({ data }) => {
   const [title, setTitle] = useState("Add New Hiring Requests");
   const [search, setSearch] = useState("");
@@ -30,15 +31,20 @@ const UpTabs = ({ data }) => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
+
             <div className={UpTabsStyle.chatListWrapper}>
+              <PinAccordian
+                icon={<BriefcaseSVG />}
+                label={"Pinned Groups"}
+                isCollapsible={true}
+                search={search}
+              />
               <Accordion
                 icon={<BriefcaseSVG />}
                 label={"All Channels"}
                 isCollapsible={true}
                 search={search}
               />
-
-              {/* {search && <Tile search={search} />} */}
             </div>
           </TabPanel>
           <TabPanel>
@@ -46,7 +52,6 @@ const UpTabs = ({ data }) => {
           </TabPanel>
         </Tabs>
       </div>
-      {/* <div>{search && <Tile search={search} />}</div> */}
     </>
   );
 };
