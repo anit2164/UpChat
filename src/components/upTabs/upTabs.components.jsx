@@ -5,7 +5,7 @@ import { ReactComponent as BriefcaseSVG } from "@SVG/briefcase.svg";
 import { ReactComponent as SearchSVG } from "@SVG/search.svg";
 import UpTabsStyle from "./upTabs.module.css";
 import Tile from "../tile/tile.components";
-const UpTabs = () => {
+const UpTabs = ({ data }) => {
   const [title, setTitle] = useState("Add New Hiring Requests");
   const [search, setSearch] = useState("");
 
@@ -37,6 +37,7 @@ const UpTabs = () => {
                 isCollapsible={true}
                 search={search}
               />
+
               {/* {search && <Tile search={search} />} */}
             </div>
           </TabPanel>
