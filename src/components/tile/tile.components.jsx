@@ -3,10 +3,35 @@ import { Dropdown, Space } from "antd";
 import TileStyle from "./tile.module.css";
 import { allChannelListingHandler } from "../../redux_toolkit/slices/allChannelListing";
 import { useDispatch, useSelector } from "react-redux";
+import { ReactComponent as BriefcaseSVG } from "@SVG/briefcase.svg";
+import { ReactComponent as PinSVG } from "@SVG/pin.svg";
+import { ReactComponent as ChannelLibrarySVG } from "@SVG/channelLibrary.svg";
+import { ReactComponent as LeaveSVG } from "@SVG/leave.svg";
+import { ReactComponent as SnoozeSVG } from "@SVG/snooze.svg";
+
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+
+const firebaseConfig = {
+  // Your Firebase project configuration
+  apiKey: "AIzaSyBmwJCSVWPC1nuipS6BRbu3BhZE7cjQws0",
+authDomain: "upchat-af56d.firebaseapp.com",
+projectId: "upchat-af56d",
+storageBucket: "upchat-af56d.appspot.com",
+messagingSenderId: "940458219195",
+appId: "1:940458219195:web:0c1f481a516befa8fa3b9e",
+measurementId: "G-98CSFQLREY"
+};
+
+
+firebase.initializeApp(firebaseConfig);
+
+
 const Tile = ({ search }) => {
   const [allChannel, setAllChannel] = useState([]);
   const [tempArr, setTempArr] = useState([]);
   const dispatch = useDispatch();
+  const [data, setData] = useState([]);
 
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMTMwMiIsIkxvZ2luVXNlcklkIjoiMTciLCJMb2dpblVzZXJUeXBlSWQiOiIyIiwibmJmIjoxNjg3MzI1MTA3LCJleHAiOjE2ODczNjExMDcsImlhdCI6MTY4NzMyNTEwN30.9Ge1Y5QGQrf7g40GvI9FsgJ7QWIQrU0MTSHwBbFXZzo";
@@ -18,31 +43,61 @@ const Tile = ({ search }) => {
     {
       label: "PIN Channel",
       key: "0",
+      icon: <PinSVG/>
     },
     {
       label: "View HR Detail Page",
       key: "1",
+      icon: <BriefcaseSVG/>
     },
     {
       label: "Channel Library",
       key: "2",
+      icon: <ChannelLibrarySVG/>
     },
     {
       label: "Snooze",
       key: "3",
+      icon:<SnoozeSVG/>
     },
     {
       label: "Leave",
       key: "4",
+      icon:<LeaveSVG/>
     },
   ];
 
-  useEffect(() => {
-    if (!search) {
-      dispatch(allChannelListingHandler());
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!search) {
+  //     dispatch(allChannelListingHandler());
+  //   }
+  // }, []);
 
+  useEffect(() => {
+    
+    // Retrieve data
+    const fetchData = async () => {
+      try {
+        const firestore = firebase.firestore();
+        const collectionRef = firestore.collection('users');
+        const snapshot = await collectionRef.get();
+        
+        const dataArray = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        
+        setData(dataArray);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  
+  console.log(data,"datadatadatadata");
+  
   useEffect(() => {
     setAllChannel(response?.data?.details);
     setTempArr(response?.data?.details);
