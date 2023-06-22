@@ -194,6 +194,7 @@
 }
 .channelStatusInfo{
     margin-left: 8px;
+    cursor: pointer;
 }
 
 .channelWindowInner{
@@ -298,7 +299,7 @@
 .channelMessageBox{
     position: relative;
     padding: 8px;
-    padding-bottom: 15px;
+    /* padding-bottom: 15px; */
     border-radius: 8px;
 
     font-size: 12px;
@@ -544,4 +545,60 @@
     max-width: 56px;
     max-height: 56px;
     border-radius: 4px;
+}
+
+/* Message Reaction */
+.messageReactionWrapper{
+    display: flex;
+}
+.messageReaction{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 18px;
+    padding: 0 4px;
+    background: #FFFCFC;
+    color: #232323;
+    font-size: 11px;
+    line-height: 16px;
+}
+.messageReaction svg{
+    display: block;
+    margin-right: 4px;
+    max-width: 12px;
+    max-height: 12px;
+}
+.messageReaction path{
+    max-width: 12px;
+    max-height: 12px;
+}
+
+/* System Generated Message */
+.systemGeneratedMain{
+    display: flex;
+    justify-content: center;
+}
+.systemGenerated{
+    background: #FFDA30;
+    border-radius: 8px;
+    text-align: center;
+    padding: 8px 10px;
+
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 16px;
+    color: #000000;
+    display: inline-flex;
+}
+
+/* Chat - Members Menu */
+.membersMenuMain{
+    position: relative;
+    min-width: 321px;
+}
+.membersMenuMain .chatWindowClose{
+    position: absolute;
+    right: 0;
+    top: 0;
 }

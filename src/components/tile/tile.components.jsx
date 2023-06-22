@@ -1,26 +1,40 @@
 import { Dropdown, Space } from 'antd';
 import TileStyle from './tile.module.css';
+import { ReactComponent as PinSVG } from '@SVG/pin.svg';
+import { ReactComponent as FiSliderSVG } from '@SVG/fiSliders.svg';
+import { ReactComponent as FiBookOpenSVG } from '@SVG/fiBookOpen.svg';
+import { ReactComponent as FiVolumeMuteSVG } from '@SVG/fiVolumeMute.svg';
+import { ReactComponent as FiLogoutSVG } from '@SVG/fiLogout.svg';
+
 const Tile = () => {
 	const items = [
 		{
 			label: 'PIN Channel',
 			key: '0',
+			icon: <PinSVG />,
 		},
 		{
 			label: 'View HR Detail Page',
 			key: '1',
+			icon: <FiSliderSVG />,
 		},
 		{
 			label: 'Channel Library',
 			key: '2',
+			icon: <FiBookOpenSVG />,
 		},
 		{
 			label: 'Snooze',
 			key: '3',
+			icon: <FiVolumeMuteSVG />,
+		},
+		{
+			type: 'divider',
 		},
 		{
 			label: 'Leave',
 			key: '4',
+			icon: <FiLogoutSVG />,
 		},
 	];
 

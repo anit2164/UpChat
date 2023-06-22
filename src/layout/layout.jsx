@@ -21,58 +21,50 @@ import { ReactComponent as SmileIcon3 } from '@SVG/smileIcon-3.svg';
 import { ReactComponent as SmileIcon4 } from '@SVG/smileIcon-4.svg';
 import { ReactComponent as SmileIcon5 } from '@SVG/smileIcon-5.svg';
 import { ReactComponent as SmileIcon6 } from '@SVG/smileIcon-6.svg';
+import { ReactComponent as PinSVG } from '@SVG/pin.svg';
+import { ReactComponent as BookmarkIconDark } from '@SVG/bookmarkIconDark.svg';
+import { ReactComponent as FiBookOpenSVG } from '@SVG/fiBookOpen.svg';
+import { ReactComponent as FiFilmSVG } from '@SVG/fiFilm.svg';
+import { ReactComponent as FiVolumeMuteSVG } from '@SVG/fiVolumeMute.svg';
+
+import { ReactComponent as FiReplySVG } from '@SVG/fiReply.svg';
+import { ReactComponent as FiCopySVG } from '@SVG/fiCopy.svg';
+import { ReactComponent as FiBookmarkOutlinedSVG } from '@SVG/fiBookmarkOutlined.svg';
+import { ReactComponent as EmojiThumbsUpLightSkinSVG } from '@SVG/emojiThumbsUpLightSkin.svg';
+
+import { ReactComponent as FiUsersSVG } from '@SVG/fiUsers.svg';
 
 const Layout = () => {
 	const [toggle, setToggle] = useState(false);
-
-	const items = [
-		{
-			label: 'PIN Channel',
-			key: '0',
-			icon: <UserOutlined />,
-		},
-		
-		{
-			label: 'View HR Detail Page',
-			key: '1',
-		},
-		{
-			label: 'Channel Library',
-			key: '2',
-		},
-		{
-			label: 'Snooze',
-			key: '3',
-		},
-		{
-			type: 'divider',
-		},
-		{
-			label: 'Leave',
-			key: '4',
-		}
-	];
 
 	const channelMainDropdown = [
 		{
 			label: 'Search in chat',
 			key: '0',
+			icon: <SearchIcon />,
 		},
 		{
 			label: 'Bookmarks',
 			key: '1',
+			icon: <BookmarkIconDark />,
 		},
 		{
 			label: 'Channel Library',
 			key: '2',
+			icon: <FiBookOpenSVG />,
 		},
 		{
 			label: 'View HR Detail Page',
 			key: '3',
+			icon: <FiFilmSVG />,
+		},
+		{
+			type: 'divider',
 		},
 		{
 			label: 'Snooze Channel',
 			key: '4',
+			icon: <FiVolumeMuteSVG />,
 		},
 	];
 
@@ -80,14 +72,51 @@ const Layout = () => {
 		{
 			label: 'Reply',
 			key: '0',
+			icon: <FiReplySVG />,
 		},
 		{
 			label: 'Copy',
 			key: '1',
+			icon: <FiCopySVG />,
 		},
 		{
 			label: 'Bookmark',
 			key: '2',
+			icon: <FiBookmarkOutlinedSVG />,
+		},
+	];
+
+	const membersDropdown = [
+		{
+			key: '0',
+			label: (
+				<div className={LayoutStyle.membersMenuMain}>
+					6 Members
+					<span  className={LayoutStyle.chatWindowClose}></span>
+				</div>
+			),
+			icon: <FiUsersSVG />,
+		},
+		{
+			type: 'divider',
+		},
+		{
+			key: '1',
+			label: (
+				<div className={LayoutStyle.membersArea}>
+					<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="30" height="30" />
+					<div className={LayoutStyle.profileName}>Prachi Porwal</div>
+					<span className={` ${LayoutStyle.profileDesignation} ${LayoutStyle.sales} `}>Sales Consultant</span>
+				</div>
+			),
+		},
+		{
+			type: 'divider',
+		},
+		{
+			key: '2',
+			label: 'Bookmark',
+			icon: <FiBookmarkOutlinedSVG />,
 		},
 	];
 
@@ -131,7 +160,13 @@ const Layout = () => {
 				<div className={LayoutStyle.channelStatusLeft}>HR Status: In Process</div>
 				<div className={LayoutStyle.channelStatusRight}>
 					<span>6 members</span>
-					<span className={LayoutStyle.channelStatusInfo}><InfoIcon /></span>
+					<Dropdown className={LayoutStyle.channelStatusInfo} placement="bottomRight" menu={{
+						items: membersDropdown,
+						}}
+						trigger={['click']}
+						>
+						<InfoIcon />
+					</Dropdown>
 				</div>
 			</div>
 			<div className={LayoutStyle.channelWindowInner}>
@@ -210,6 +245,14 @@ const Layout = () => {
 						</div>
 						<div className={` ${LayoutStyle.channelMessageBox} ${LayoutStyle.channelMessageLeft} `}>
 							<p>Hi <b>all</b> I would like to update that considering the provided HR details, how many more interviews can we schedule by tommorow.</p>
+							<div className={LayoutStyle.messageReactionWrapper}>
+								<span className={LayoutStyle.messageReaction}>
+									<EmojiThumbsUpLightSkinSVG />2
+								</span>
+								<span className={LayoutStyle.messageReaction}>
+									<EmojiThumbsUpLightSkinSVG />10
+								</span>
+							</div>
 							<div className={LayoutStyle.chatReaction}>
 								<div className={LayoutStyle.chatReactionInner}>
 									<div className={LayoutStyle.chatReactionCircle}>
@@ -221,6 +264,16 @@ const Layout = () => {
 							</div>
 						</div>
 					</div>
+
+					{/* System Generated Message Starts */}
+					<div className={` ${LayoutStyle.channelMessageMain} ${LayoutStyle.systemGeneratedMain} `}>
+						<div className={LayoutStyle.systemGenerated}>
+						Open HR Accepted | Action By: Harleen Kaur <br />
+						05-06-2023 | 12:24 PM
+						</div>
+					</div>
+					{/* System Generated Message Ends */}
+
 					<div className={LayoutStyle.channelMessageMain}>
 						<div className={LayoutStyle.channelMessageInner}>
 							<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="30" height="30" />
