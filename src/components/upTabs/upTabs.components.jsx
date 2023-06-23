@@ -112,9 +112,6 @@ const UpTabs = () => {
 
             <div className={UpTabsStyle.chatListWrapper}>
               <SnoozeGroupDetails
-                // icon={<PinnedGroupsSVG />}
-                // label={"Pinned Groups"}
-                // isCollapsible={true}
                 search={search}
                 data={data}
               />

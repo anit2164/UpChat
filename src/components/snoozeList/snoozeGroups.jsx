@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Dropdown, Space } from "antd";
-// import SnoozeGroupsStyle from "./pinChatsDetails.module.css";
 import SnoozeGroupsStyle from "./snoozeGroups.module.css";
 import { ReactComponent as BriefcaseSVG } from "@SVG/briefcase.svg";
 import { ReactComponent as PinSVG } from "@SVG/pin.svg";
@@ -8,7 +7,7 @@ import { ReactComponent as ChannelLibrarySVG } from "@SVG/channelLibrary.svg";
 import { ReactComponent as LeaveSVG } from "@SVG/leave.svg";
 import { ReactComponent as SnoozeSVG } from "@SVG/snooze.svg";
 
-const SnoozeGroupDetails = ({ search, data }) => {
+const SnoozeGroupDetails = ({ data }) => {
   const items = [
     {
       label: "PIN Channel",
@@ -38,7 +37,7 @@ const SnoozeGroupDetails = ({ search, data }) => {
   ];
 
   const filterData = data?.filter((item) => {
-    return item?.isPinned === true;
+    return item?.isSnoozed === true;
   });
 
   return (
