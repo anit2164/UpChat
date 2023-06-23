@@ -9,7 +9,14 @@ import PinChatDetails from "../pinChats/pinChatsDetails";
 
 firebase.initializeApp(firebaseConfig);
 
-const PinAccordian = ({ icon, label, isCollapsible, search, data }) => {
+const PinAccordian = ({
+  icon,
+  label,
+  isCollapsible,
+  search,
+  data,
+  LastPinnedGroups,
+}) => {
   const [showBody, setShowBody] = useState(true);
 
   const toggleAccordion = () => {
@@ -30,7 +37,13 @@ const PinAccordian = ({ icon, label, isCollapsible, search, data }) => {
           <ArrowDownSVG />
         </div>
       </div>
-      {showBody && <PinChatDetails search={search} data={data} />}
+      {showBody && (
+        <PinChatDetails
+          search={search}
+          data={data}
+          LastPinnedGroups={LastPinnedGroups}
+        />
+      )}
     </Fragment>
   );
 };

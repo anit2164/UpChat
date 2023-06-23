@@ -8,7 +8,14 @@ import "firebase/compat/firestore";
 
 firebase.initializeApp(firebaseConfig);
 
-const Accordion = ({ icon, label, isCollapsible, search, data }) => {
+const Accordion = ({
+  icon,
+  label,
+  isCollapsible,
+  search,
+  data,
+  LastPinnedGroups,
+}) => {
   const [showBody, setShowBody] = useState(true);
 
   const toggleAccordion = () => {
@@ -29,7 +36,9 @@ const Accordion = ({ icon, label, isCollapsible, search, data }) => {
           <ArrowDownSVG />
         </div>
       </div>
-      {showBody && <Tile search={search} data={data} />}
+      {showBody && (
+        <Tile search={search} data={data} LastPinnedGroups={LastPinnedGroups} />
+      )}
     </Fragment>
   );
 };

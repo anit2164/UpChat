@@ -19,6 +19,11 @@ const UpTabs = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [tempArr, setTempArr] = useState([]);
+  const [updatePinnedChannel, setPinnedChannel] = useState(false);
+
+  const LastPinnedGroups = () => {
+    setPinnedChannel(true);
+  };
 
   useEffect(() => {
     // Retrive Data
@@ -35,13 +40,14 @@ const UpTabs = () => {
 
         setData(dataArray);
         setTempArr(dataArray);
+        setPinnedChannel(false);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [updatePinnedChannel]);
 
   useEffect(() => {
     if (search) {
@@ -87,6 +93,7 @@ const UpTabs = () => {
                 isCollapsible={true}
                 search={search}
                 data={data}
+                LastPinnedGroups={LastPinnedGroups}
               />
               <Accordion
                 icon={<BriefcaseSVG />}
@@ -94,6 +101,7 @@ const UpTabs = () => {
                 isCollapsible={true}
                 search={search}
                 data={data}
+                LastPinnedGroups={LastPinnedGroups}
               />
             </div>
           </TabPanel>
@@ -111,10 +119,7 @@ const UpTabs = () => {
             </div>
 
             <div className={UpTabsStyle.chatListWrapper}>
-              <SnoozeGroupDetails
-                search={search}
-                data={data}
-              />
+              <SnoozeGroupDetails search={search} data={data} />
             </div>
           </TabPanel>
         </Tabs>

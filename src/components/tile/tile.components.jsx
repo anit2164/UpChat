@@ -1,43 +1,75 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Dropdown, Space } from "antd";
 import TileStyle from "./tile.module.css";
-import { useDispatch, useSelector } from "react-redux";
 import { ReactComponent as BriefcaseSVG } from "@SVG/briefcase.svg";
 import { ReactComponent as PinSVG } from "@SVG/pin.svg";
 import { ReactComponent as ChannelLibrarySVG } from "@SVG/channelLibrary.svg";
 import { ReactComponent as LeaveSVG } from "@SVG/leave.svg";
 import { ReactComponent as SnoozeSVG } from "@SVG/snooze.svg";
+import firebaseConfig from "../../firebase";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import { ChannelMenu } from "@/constants/application";
 
-const Tile = ({ search, data }) => {
-  // const token =
-  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMTMwMiIsIkxvZ2luVXNlcklkIjoiMTciLCJMb2dpblVzZXJUeXBlSWQiOiIyIiwibmJmIjoxNjg3MzI1MTA3LCJleHAiOjE2ODczNjExMDcsImlhdCI6MTY4NzMyNTEwN30.9Ge1Y5QGQrf7g40GvI9FsgJ7QWIQrU0MTSHwBbFXZzo";
+firebase.initializeApp(firebaseConfig);
 
-  // const tempToken = localStorage.setItem("token", token);
+const Tile = ({ search, data, LastPinnedGroups }) => {
+  const [dataNew, setDataNew] = useState([]);
+  const [tempArr, setTempArr] = useState([]);
+
+  let tempObj;
+
+  const channelDropdown = useCallback(async (value, item) => {
+    tempObj = item;
+    tempObj.isPinned = true;
+    if (value?.key === "PIN Channel") {
+      try {
+        const firestore = firebase.firestore();
+        const collectionRef = firestore.collection("channels");
+        const snapshot = collectionRef.doc(tempObj.id);
+
+        await snapshot.set(tempObj);
+
+        const dataArray = snapshot?.docs?.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setDataNew(dataArray);
+        setTempArr(dataArray);
+        LastPinnedGroups();
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (value?.key === "Snooze") {
+      console.log("Snooze");
+    }
+  }, []);
 
   const items = [
     {
-      label: "PIN Channel",
-      key: "0",
+      label: ChannelMenu.PIN_CHANNEL,
+      key: ChannelMenu.PIN_CHANNEL,
       icon: <PinSVG />,
     },
     {
-      label: "View HR Detail Page",
-      key: "1",
+      label: ChannelMenu.VIEW_HR_DETAILS,
+      key: ChannelMenu.VIEW_HR_DETAILS,
       icon: <BriefcaseSVG />,
     },
     {
-      label: "Channel Library",
-      key: "2",
+      label: ChannelMenu.CHANNEL_LIBRARY,
+      key: ChannelMenu.CHANNEL_LIBRARY,
       icon: <ChannelLibrarySVG />,
     },
     {
-      label: "Snooze",
-      key: "3",
+      label: ChannelMenu.SNOOZE,
+      key: ChannelMenu.SNOOZE,
       icon: <SnoozeSVG />,
     },
     {
-      label: "Leave",
-      key: "4",
+      label: ChannelMenu.LEAVE,
+      key: ChannelMenu.LEAVE,
       icon: <LeaveSVG />,
     },
   ];
@@ -73,7 +105,10 @@ const Tile = ({ search, data }) => {
                 <Dropdown
                   className={TileStyle.dotMenuMain}
                   menu={{
-                    items,
+                    items: items,
+                    onClick: (value) => {
+                      channelDropdown(value, item);
+                    },
                   }}
                   trigger={["click"]}
                 >
