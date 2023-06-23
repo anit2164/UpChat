@@ -5,7 +5,8 @@ import { ReactComponent as BriefcaseSVG } from "@SVG/briefcase.svg";
 import { ReactComponent as PinSVG } from "@SVG/pin.svg";
 import { ReactComponent as ChannelLibrarySVG } from "@SVG/channelLibrary.svg";
 import { ReactComponent as LeaveSVG } from "@SVG/leave.svg";
-import { ReactComponent as SnoozeSVG } from "@SVG/snooze.svg";
+// import { ReactComponent as SnoozeSVG } from "@SVG/snooze.svg";
+import { ReactComponent as ViewHRDetailsSVG } from "@SVG/viewHrDetails.svg";
 import { ChannelMenu } from "@/constants/application";
 import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
@@ -13,9 +14,10 @@ import "firebase/compat/firestore";
 
 firebase.initializeApp(firebaseConfig);
 
-const PinChatDetails = ({ search, data, LastPinnedGroups }) => {
+const PinChatDetails = ({ data, LastPinnedGroups }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
+
   const items = [
     {
       label: ChannelMenu.UNPIN_CHANNEL,
@@ -25,18 +27,18 @@ const PinChatDetails = ({ search, data, LastPinnedGroups }) => {
     {
       label: ChannelMenu.VIEW_HR_DETAILS,
       key: ChannelMenu.VIEW_HR_DETAILS,
-      icon: <BriefcaseSVG />,
+      icon: <ViewHRDetailsSVG />,
     },
     {
       label: ChannelMenu.CHANNEL_LIBRARY,
       key: ChannelMenu.CHANNEL_LIBRARY,
       icon: <ChannelLibrarySVG />,
     },
-    {
-      label: ChannelMenu.SNOOZE,
-      key: ChannelMenu.SNOOZE,
-      icon: <SnoozeSVG />,
-    },
+    // {
+    //   label: ChannelMenu.SNOOZE,
+    //   key: ChannelMenu.SNOOZE,
+    //   icon: <SnoozeSVG />,
+    // },
     {
       label: ChannelMenu.LEAVE,
       key: ChannelMenu.LEAVE,

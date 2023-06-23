@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Dropdown, Space } from "antd";
 import TileStyle from "./tile.module.css";
-import { ReactComponent as BriefcaseSVG } from "@SVG/briefcase.svg";
 import { ReactComponent as PinSVG } from "@SVG/pin.svg";
 import { ReactComponent as ChannelLibrarySVG } from "@SVG/channelLibrary.svg";
 import { ReactComponent as LeaveSVG } from "@SVG/leave.svg";
@@ -10,6 +9,7 @@ import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { ChannelMenu } from "@/constants/application";
+import { ReactComponent as ViewHRDetailsSVG } from "@SVG/viewHrDetails.svg";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -55,7 +55,7 @@ const Tile = ({ search, data, LastPinnedGroups }) => {
     {
       label: ChannelMenu.VIEW_HR_DETAILS,
       key: ChannelMenu.VIEW_HR_DETAILS,
-      icon: <BriefcaseSVG />,
+      icon: <ViewHRDetailsSVG />,
     },
     {
       label: ChannelMenu.CHANNEL_LIBRARY,

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Dropdown, Space } from "antd";
 import SnoozeGroupsStyle from "./snoozeGroups.module.css";
-import { ReactComponent as BriefcaseSVG } from "@SVG/briefcase.svg";
+// import { ReactComponent as BriefcaseSVG } from "@SVG/briefcase.svg";
+import { ReactComponent as ViewHRDetailsSVG } from "@SVG/viewHrDetails.svg";
+
 import { ReactComponent as PinSVG } from "@SVG/pin.svg";
 import { ReactComponent as ChannelLibrarySVG } from "@SVG/channelLibrary.svg";
 import { ReactComponent as LeaveSVG } from "@SVG/leave.svg";
@@ -17,7 +19,7 @@ const SnoozeGroupDetails = ({ data }) => {
     {
       label: "View HR Detail Page",
       key: "1",
-      icon: <BriefcaseSVG />,
+      icon: <ViewHRDetailsSVG />,
     },
     {
       label: "Channel Library",
