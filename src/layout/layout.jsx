@@ -33,6 +33,8 @@ import { ReactComponent as FiBookmarkOutlinedSVG } from '@SVG/fiBookmarkOutlined
 import { ReactComponent as EmojiThumbsUpLightSkinSVG } from '@SVG/emojiThumbsUpLightSkin.svg';
 
 import { ReactComponent as FiUsersSVG } from '@SVG/fiUsers.svg';
+import { ReactComponent as FiUserPlusSVG } from '@SVG/fiUserPlus.svg';
+import { ReactComponent as FiShareSVG } from '@SVG/fiShare.svg';
 
 const Layout = () => {
 	const [toggle, setToggle] = useState(false);
@@ -104,9 +106,49 @@ const Layout = () => {
 			key: '1',
 			label: (
 				<div className={LayoutStyle.membersArea}>
-					<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="30" height="30" />
-					<div className={LayoutStyle.profileName}>Prachi Porwal</div>
-					<span className={` ${LayoutStyle.profileDesignation} ${LayoutStyle.sales} `}>Sales Consultant</span>
+					<div className={LayoutStyle.membersAreaLeft}>
+						<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="24" height="24" />
+						<div className={LayoutStyle.profileName}>Prachi Porwal</div>
+						<span className={` ${LayoutStyle.profileDesignation} ${LayoutStyle.sales} `}>Sales Consultant</span>
+					</div>
+					<span className={LayoutStyle.removeLink}>Remove</span>
+				</div>
+			),
+		},
+		{
+			key: '2',
+			label: (
+				<div className={LayoutStyle.membersArea}>
+					<div className={LayoutStyle.membersAreaLeft}>
+						<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="24" height="24" />
+						<div className={LayoutStyle.profileName}>Majid Ali</div>
+						<span className={` ${LayoutStyle.profileDesignation} ${LayoutStyle.deliveryTeam} `}>Delivery Team</span>
+					</div>
+					<span className={LayoutStyle.removeLink}>Remove</span>
+				</div>
+			),
+		},
+		{
+			key: '3',
+			label: (
+				<div className={LayoutStyle.membersArea}>
+					<div className={LayoutStyle.membersAreaLeft}>
+						<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="24" height="24" />
+						<div className={LayoutStyle.profileName}>Darshan Modi</div>
+						<span className={` ${LayoutStyle.profileDesignation} ${LayoutStyle.coeteam} `}>COE Team</span>
+					</div>
+				</div>
+			),
+		},
+		{
+			key: '4',
+			label: (
+				<div className={LayoutStyle.membersArea}>
+					<div className={LayoutStyle.membersAreaLeft}>
+						<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="24" height="24" />
+						<div className={LayoutStyle.profileName}>Bhuvan Desai</div>
+					</div>
+					<span className={LayoutStyle.removeLink}>Leave Chat</span>
 				</div>
 			),
 		},
@@ -114,9 +156,15 @@ const Layout = () => {
 			type: 'divider',
 		},
 		{
-			key: '2',
-			label: 'Bookmark',
-			icon: <FiBookmarkOutlinedSVG />,
+			label: (
+				<div className={LayoutStyle.membersArea}>
+					<div className={LayoutStyle.membersAreaLeft}>
+						<FiUserPlusSVG />
+						<div className={LayoutStyle.addMembers}>Add Members</div>
+					</div>
+					<span><FiShareSVG /></span>
+				</div>
+			),
 		},
 	];
 
@@ -170,19 +218,20 @@ const Layout = () => {
 				</div>
 			</div>
 			<div className={LayoutStyle.channelWindowInner}>
-				<div className={LayoutStyle.channelWindowMessages}>
-					<div className={LayoutStyle.searchInChatWrapper}>
-						<div className={LayoutStyle.searchInChatInner}>
-							<SearchIcon className={LayoutStyle.searchIcon} />
-							<input type="text" placeholder="Search in chat" />
-							<span className={LayoutStyle.closeIcon}></span>
-							<span className={LayoutStyle.numberOfSearch}>
-								<span className={LayoutStyle.arrowIcon}><ArrowIcon /></span>
-								3/17
-								<span className={LayoutStyle.arrowIconRight}><ArrowIcon /></span>
-							</span>
-						</div>
+				<div className={LayoutStyle.searchInChatWrapper}>
+					<div className={LayoutStyle.searchInChatInner}>
+						<SearchIcon className={LayoutStyle.searchIcon} />
+						<input type="text" placeholder="Search in chat" />
+						<span className={LayoutStyle.closeIcon}></span>
+						<span className={LayoutStyle.numberOfSearch}>
+							<span className={LayoutStyle.arrowIcon}><ArrowIcon /></span>
+							3/17
+							<span className={LayoutStyle.arrowIconRight}><ArrowIcon /></span>
+						</span>
 					</div>
+				</div>
+				<div className={LayoutStyle.channelWindowMessages}>
+					
 
 					<div className={LayoutStyle.channelMessageMain}>
 						<div className={LayoutStyle.channelMessageInner}>
@@ -256,7 +305,7 @@ const Layout = () => {
 							<div className={LayoutStyle.chatReaction}>
 								<div className={LayoutStyle.chatReactionInner}>
 									<div className={LayoutStyle.chatReactionCircle}>
-										<span>
+										<span className={LayoutStyle.chatReactionSmile}>
 											<SmileIcon />
 										</span>
 									</div>
