@@ -10,6 +10,7 @@ import PinAccordian from "../pinAccordian/pinAccordian";
 import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
+import SnoozeGroupDetails from "../snoozeList/snoozeGroups";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -97,7 +98,27 @@ const UpTabs = () => {
             </div>
           </TabPanel>
           <TabPanel>
-            <h2>Any content 2</h2>
+            <div className={UpTabsStyle.searchWrapper}>
+              <span>
+                <SearchSVG />
+              </span>
+              <input
+                type="search"
+                name="search"
+                placeholder="Search"
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            <div className={UpTabsStyle.chatListWrapper}>
+              <SnoozeGroupDetails
+                // icon={<PinnedGroupsSVG />}
+                // label={"Pinned Groups"}
+                // isCollapsible={true}
+                search={search}
+                data={data}
+              />
+            </div>
           </TabPanel>
         </Tabs>
       </div>
