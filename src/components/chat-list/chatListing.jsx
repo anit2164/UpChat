@@ -28,7 +28,8 @@ import { ReactComponent as FiUsersSVG } from "@SVG/fiUsers.svg";
 import { ReactComponent as FiUserPlusSVG } from "@SVG/fiUserPlus.svg";
 import { ReactComponent as FiShareSVG } from "@SVG/fiShare.svg";
 
-const ChatListing = ({ showChatList, pinnedChatsDetails }) => {
+const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats }) => {
+  console.log(listingChats, "listingChats");
   const [toggle, setToggle] = useState(false);
 
   const channelMainDropdown = [
@@ -278,86 +279,107 @@ const ChatListing = ({ showChatList, pinnedChatsDetails }) => {
                 </span>
               </div>
             </div>
+
             <div className={ChatListingStyles.channelWindowMessages}>
-              <div className={ChatListingStyles.channelMessageMain}>
-                <div className={ChatListingStyles.channelMessageInner}>
-                  <img
-                    className={ChatListingStyles.profileAvtar}
-                    src="https://i.pravatar.cc/40"
-                    width="30"
-                    height="30"
-                  />
-                  <div className={ChatListingStyles.profileName}>
-                    Prachi Porwal
-                  </div>
-                  <span
-                    className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
-                  >
-                    Sales Consultant
-                  </span>
-                  <span className={ChatListingStyles.timeStamp}>5:48PM</span>
-                  <Dropdown
-                    className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
-                    placement="bottomRight"
-                    menu={{
-                      items: chatDropdown,
-                    }}
-                    trigger={["click"]}
-                  >
-                    <a onClick={(e) => e.preventDefault()}>
-                      <Space>
-                        <span className={ChatListingStyles.dotMenu}></span>
-                      </Space>
-                    </a>
-                  </Dropdown>
-                </div>
-                <div
-                  className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageLeft} `}
-                >
-                  <p>
-                    Lorem ipsum is a placeholder text commonly used to
-                    demonstrate the visual form of a document or a typeface
-                    without relying on meaningful content. Lorem ipsum is a
-                    placeholder text commonly used to demonstrate the visual
-                    form of a document or a typeface without relying on
-                    meaningful content.
-                  </p>
-                  <div className={ChatListingStyles.chatReaction}>
-                    <div className={ChatListingStyles.chatReactionInner}>
-                      <div className={ChatListingStyles.chatReactionPopup}>
-                        <span>
-                          <SmileIcon1 />
+              {listingChats?.map((item) => {
+                return (
+                  <>
+                    <div className={ChatListingStyles.channelMessageMain}>
+                      <div className={ChatListingStyles.channelMessageInner}>
+                        <img
+                          className={ChatListingStyles.profileAvtar}
+                          src="https://i.pravatar.cc/40"
+                          width="30"
+                          height="30"
+                        />
+                        <div className={ChatListingStyles.profileName}>
+                          {/* Prachi Porwal */}
+                          {item?.senderID}
+                        </div>
+                        <span
+                          className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
+                        >
+                          Sales Consultant
                         </span>
-                        <span>
-                          <SmileIcon2 />
+                        <span className={ChatListingStyles.timeStamp}>
+                          5:48PM
                         </span>
-                        <span>
-                          <SmileIcon3 />
-                        </span>
-                        <span>
-                          <SmileIcon4 />
-                        </span>
-                        <span>
-                          <SmileIcon5 />
-                        </span>
-                        <span>
-                          <SmileIcon6 />
-                        </span>
-                        <span className={ChatListingStyles.addNewEmoji}></span>
+                        <Dropdown
+                          className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
+                          placement="bottomRight"
+                          menu={{
+                            items: chatDropdown,
+                          }}
+                          trigger={["click"]}
+                        >
+                          <a onClick={(e) => e.preventDefault()}>
+                            <Space>
+                              <span
+                                className={ChatListingStyles.dotMenu}
+                              ></span>
+                            </Space>
+                          </a>
+                        </Dropdown>
                       </div>
-                      <div className={ChatListingStyles.chatReactionCircle}>
-                        <span className={ChatListingStyles.chatReactionActive}>
-                          <SmileIcon />
-                        </span>
+                      <div
+                        className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageLeft} `}
+                      >
+                        <p>
+                          {item?.text}
+                          {/* Lorem ipsum is a placeholder text commonly used to
+                          demonstrate the visual form of a document or a
+                          typeface without relying on meaningful content. Lorem
+                          ipsum is a placeholder text commonly used to
+                          demonstrate the visual form of a document or a
+                          typeface without relying on meaningful content. */}
+                        </p>
+                        <div className={ChatListingStyles.chatReaction}>
+                          <div className={ChatListingStyles.chatReactionInner}>
+                            <div
+                              className={ChatListingStyles.chatReactionPopup}
+                            >
+                              <span>
+                                <SmileIcon1 />
+                              </span>
+                              <span>
+                                <SmileIcon2 />
+                              </span>
+                              <span>
+                                <SmileIcon3 />
+                              </span>
+                              <span>
+                                <SmileIcon4 />
+                              </span>
+                              <span>
+                                <SmileIcon5 />
+                              </span>
+                              <span>
+                                <SmileIcon6 />
+                              </span>
+                              <span
+                                className={ChatListingStyles.addNewEmoji}
+                              ></span>
+                            </div>
+                            <div
+                              className={ChatListingStyles.chatReactionCircle}
+                            >
+                              <span
+                                className={ChatListingStyles.chatReactionActive}
+                              >
+                                <SmileIcon />
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div className={ChatListingStyles.divider}>
-                <span>TODAY</span>
-              </div>
-              <div className={ChatListingStyles.channelMessageMain}>
+                    {/* <div className={ChatListingStyles.divider}>
+                      <span>TODAY</span>
+                    </div> */}
+                  </>
+                );
+              })}
+              {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
                     className={ChatListingStyles.profileAvtar}
@@ -416,20 +438,20 @@ const ChatListing = ({ showChatList, pinnedChatsDetails }) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* System Generated Message Starts */}
-              <div
+              {/* <div
                 className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} `}
               >
                 <div className={ChatListingStyles.systemGenerated}>
                   Open HR Accepted | Action By: Harleen Kaur <br />
                   05-06-2023 | 12:24 PM
                 </div>
-              </div>
+              </div> */}
               {/* System Generated Message Ends */}
 
-              <div className={ChatListingStyles.channelMessageMain}>
+              {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
                     className={ChatListingStyles.profileAvtar}
@@ -466,15 +488,15 @@ const ChatListing = ({ showChatList, pinnedChatsDetails }) => {
                     interview.
                   </p>
                 </div>
-              </div>
+              </div> */}
 
-              <div className={ChatListingStyles.divider}>
+              {/* <div className={ChatListingStyles.divider}>
                 <span className={ChatListingStyles.dividerInner}>
                   2 Unread Messages
                 </span>
-              </div>
+              </div> */}
 
-              <div className={ChatListingStyles.channelMessageMain}>
+              {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
                     className={ChatListingStyles.profileAvtar}
@@ -565,7 +587,7 @@ const ChatListing = ({ showChatList, pinnedChatsDetails }) => {
                     />
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className={ChatListingStyles.channelWindowFooter}>

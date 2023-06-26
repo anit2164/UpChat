@@ -101,29 +101,30 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
   });
 
   const [showChat, setShowList] = useState(false);
-  const [groupId, setGroupId] = useState("");
+  const [listingChats, setListingChats] = useState([]);
 
   const showChatList = async (item) => {
-    setGroupId(item?.id);
+    // setGroupId(item?.id);
     setShowList(true);
     try {
       const firestore = firebase.firestore();
-      const unsubscribe = firestore.collection(`ChannelChatsMapping/${item?.id}/chats`)
-      .onSnapshot((snapshot) => {
-        const messagesData = snapshot.docs.map((doc) => doc.data());
-        console.log(messagesData,"messagedata");
-      });
+      const unsubscribe = firestore
+        .collection(`ChannelChatsMapping/${item?.id}/chats`)
+        .onSnapshot((snapshot) => {
+          const messagesData = snapshot.docs.map((doc) => doc.data());
+          console.log(messagesData, "messagedata");
+          setListingChats(messagesData);
+        });
 
-    return () => {
-      // Unsubscribe from Firestore snapshot listener when component unmounts
-      unsubscribe();
-    };
+      return () => {
+        // Unsubscribe from Firestore snapshot listener when component unmounts
+        unsubscribe();
+      };
     } catch (error) {
       console.log(error, "errororor");
       console.error(error);
     }
   };
-
 
   return (
     <>
@@ -175,7 +176,11 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
         )}
       </div>
       {showChat === true && (
-        <ChatListing showChatList={showChatList} showChat={showChat} />
+        <ChatListing
+          showChatList={showChatList}
+          showChat={showChat}
+          listingChats={listingChats}
+        />
       )}
     </>
   );
