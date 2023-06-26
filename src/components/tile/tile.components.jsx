@@ -13,63 +13,66 @@ import { ReactComponent as ViewHRDetailsSVG } from "@SVG/viewHrDetails.svg";
 
 firebase.initializeApp(firebaseConfig);
 
-const Tile = ({ search, data, LastPinnedGroups,LastSnoozeGroups }) => {
+const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
+  console.log(LastSnoozeGroups, "LastSnoozeGroups");
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
 
   let tempObj;
   let snoozeObj;
- 
 
-  const channelDropdown = useCallback(async (value, item) => {
-    console.log(item,"item");
-    if (value?.key === "PIN Channel") {
-      tempObj = item;
-      tempObj.isPinned = true;
-      console.log(tempObj, "tempObj");
-      try {
-        const firestore = firebase.firestore();
-        const collectionRef = firestore.collection("channels");
-        const snapshot = collectionRef.doc(tempObj.id);
+  const channelDropdown = useCallback(
+    async (value, item) => {
+      console.log(item, "item");
+      if (value?.key === "PIN Channel") {
+        tempObj = item;
+        tempObj.isPinned = true;
+        console.log(tempObj, "tempObj");
+        try {
+          const firestore = firebase.firestore();
+          const collectionRef = firestore.collection("channels");
+          const snapshot = collectionRef.doc(tempObj.id);
 
-        await snapshot.set(tempObj);
+          await snapshot.set(tempObj);
 
-        const dataArray = snapshot?.docs?.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+          const dataArray = snapshot?.docs?.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
 
-        setDataNew(dataArray);
-        setTempArr(dataArray);
-        LastPinnedGroups();
-      } catch (error) {
-        console.error(error);
+          setDataNew(dataArray);
+          setTempArr(dataArray);
+          LastPinnedGroups();
+        } catch (error) {
+          console.error(error);
+        }
+      } else if (value?.key === "Snooze") {
+        snoozeObj = item;
+        snoozeObj.isSnoozed = true;
+        console.log(snoozeObj, "snoozeObj");
+        try {
+          const firestore = firebase.firestore();
+          const collectionRef = firestore.collection("channels");
+          const snapshot = collectionRef.doc(snoozeObj.id);
+
+          await snapshot.set(snoozeObj);
+
+          const dataArray = snapshot?.docs?.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+
+          setDataNew(dataArray);
+          setTempArr(dataArray);
+          // LastPinnedGroups();
+          LastSnoozeGroups();
+        } catch (error) {
+          console.error(error);
+        }
       }
-    }else if (value?.key === "Snooze") {
-      snoozeObj = item;
-      snoozeObj.isSnoozed = true;
-      console.log(snoozeObj, "snoozeObj");
-      try {
-        const firestore = firebase.firestore();
-        const collectionRef = firestore.collection("channels");
-        const snapshot = collectionRef.doc(snoozeObj.id);
-
-        await snapshot.set(snoozeObj);
-
-        const dataArray = snapshot?.docs?.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setDataNew(dataArray);
-        setTempArr(dataArray);
-        // LastPinnedGroups();
-        LastSnoozeGroups();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }, [LastPinnedGroups,LastSnoozeGroups]);
+    },
+    [LastPinnedGroups, LastSnoozeGroups]
+  );
 
   const items = [
     {
@@ -100,10 +103,15 @@ const Tile = ({ search, data, LastPinnedGroups,LastSnoozeGroups }) => {
   ];
 
   const filterData = data?.filter((item) => {
-    return item?.isPinned === false;
+    console.log(item?.isSnoozed, "snoosss");
+    if (item?.isPinned === false) {
+      return item?.isPinned === false;
+    } else {
+      return item?.isSnoozed === false;
+    }
   });
 
-  console.log(filterData,"filterData");
+  console.log(filterData, "filterData");
 
   return (
     <>

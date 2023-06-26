@@ -16,7 +16,9 @@ import "firebase/compat/firestore";
 
 firebase.initializeApp(firebaseConfig);
 
-const SnoozeGroupDetails = ({ data,LastSnoozeGroups }) => {
+const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
+  const [dataNew, setDataNew] = useState([]);
+  const [tempArr, setTempArr] = useState([]);
   const items = [
     {
       label: ChannelMenu.VIEW_HR_DETAILS,
@@ -46,31 +48,34 @@ const SnoozeGroupDetails = ({ data,LastSnoozeGroups }) => {
 
   let moveToActiveObj;
 
-  const channelDropdown = useCallback(async (value, item) => {
-    console.log(item, "itemitemitemitemitemitem");
-    if (value?.key === "Move To Active") {
-      moveToActiveObj = item;
-      moveToActiveObj.isSnoozed = false;
-      try {
-        const firestore = firebase.firestore();
-        const collectionRef = firestore.collection("channels");
-        const snapshot = collectionRef.doc(moveToActiveObj.id);
+  const channelDropdown = useCallback(
+    async (value, item) => {
+      console.log(item, "value?.key");
+      if (value?.key === "Move To Active") {
+        moveToActiveObj = item;
+        moveToActiveObj.isSnoozed = false;
+        try {
+          const firestore = firebase.firestore();
+          const collectionRef = firestore.collection("channels");
+          const snapshot = collectionRef.doc(moveToActiveObj.id);
 
-        await snapshot.set(moveToActiveObj);
+          await snapshot.set(moveToActiveObj);
 
-        const dataArray = snapshot?.docs?.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+          const dataArray = snapshot?.docs?.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
 
-        setDataNew(dataArray);
-        setTempArr(dataArray);
-        LastSnoozeGroups();
-      } catch (error) {
-        console.error(error);
+          setDataNew(dataArray);
+          setTempArr(dataArray);
+          LastSnoozeGroups();
+        } catch (error) {
+          console.error(error);
+        }
       }
-    }
-  }, []);
+    },
+    [LastSnoozeGroups]
+  );
 
   return (
     <>

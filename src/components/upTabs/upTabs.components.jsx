@@ -22,7 +22,7 @@ const UpTabs = () => {
   const [updatePinnedChannel, setPinnedChannel] = useState(false);
   const [updateSoonzeChannel, setSoonzeChannel] = useState(false);
 
-  console.log(data,"datatatatat");
+  console.log(data, "datatatatat");
 
   const LastPinnedGroups = () => {
     setPinnedChannel(true);
@@ -56,7 +56,7 @@ const UpTabs = () => {
     };
 
     fetchData();
-  }, [updatePinnedChannel,updateSoonzeChannel]);
+  }, [updatePinnedChannel, updateSoonzeChannel]);
 
   useEffect(() => {
     if (search) {
@@ -129,7 +129,11 @@ const UpTabs = () => {
             </div>
 
             <div className={UpTabsStyle.chatListWrapper}>
-              <SnoozeGroupDetails search={search} data={data} LastSnoozeGroups={LastSnoozeGroups}/>
+              <SnoozeGroupDetails
+                search={search}
+                data={data}
+                LastSnoozeGroups={LastSnoozeGroups}
+              />
             </div>
           </TabPanel>
         </Tabs>
