@@ -22,8 +22,6 @@ const UpTabs = () => {
   const [updatePinnedChannel, setPinnedChannel] = useState(false);
   const [updateSoonzeChannel, setSoonzeChannel] = useState(false);
 
-  console.log(data, "datatatatat");
-
   const LastPinnedGroups = () => {
     setPinnedChannel(true);
   };

@@ -11,6 +11,7 @@ import { ChannelMenu } from "@/constants/application";
 import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
+import ChatListing from "../chat-list/chatListing";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -79,6 +80,12 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
     }
   }, []);
 
+  const [showPinnedChatsList, setShowPinnedChatsList] = useState(false);
+
+  const pinnedChatsDetails = () => {
+    setShowPinnedChatsList(true);
+  };
+
   return (
     <>
       <div className={PinChatDetailsStyle.chatWrapper}>
@@ -90,6 +97,7 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
               <div className={PinChatDetailsStyle.dFlex}>
                 <div
                   className={` ${PinChatDetailsStyle.chatInitialThumb} ${PinChatDetailsStyle.blueThumb} `}
+                  onClick={pinnedChatsDetails}
                 >
                   {item?.companyInitial}
                 </div>
@@ -129,6 +137,12 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
           <span className={PinChatDetailsStyle.noDataFound}>No data found</span>
         )}
       </div>
+      {showPinnedChatsList === true && (
+        <ChatListing
+          pinnedChatsDetails={pinnedChatsDetails}
+          showPinnedChatsList={showPinnedChatsList}
+        />
+      )}
     </>
   );
 };

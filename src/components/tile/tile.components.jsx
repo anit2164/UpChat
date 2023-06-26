@@ -10,11 +10,11 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { ChannelMenu } from "@/constants/application";
 import { ReactComponent as ViewHRDetailsSVG } from "@SVG/viewHrDetails.svg";
+import ChatListing from "../chat-list/chatListing";
 
 firebase.initializeApp(firebaseConfig);
 
 const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
-  console.log(LastSnoozeGroups, "LastSnoozeGroups");
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
 
@@ -103,8 +103,14 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
   ];
 
   const filterData = data?.filter((item) => {
-      return item?.isPinned === false && item?.isSnoozed === false;
+    return item?.isPinned === false && item?.isSnoozed === false;
   });
+
+  const [showChat, setShowList] = useState(false);
+
+  const showChatList = () => {
+    setShowList(true);
+  };
 
   return (
     <>
@@ -115,6 +121,7 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
               <div className={TileStyle.dFlex}>
                 <div
                   className={` ${TileStyle.chatInitialThumb} ${TileStyle.blueThumb} `}
+                  onClick={showChatList}
                 >
                   {item?.companyInitial}
                 </div>
@@ -154,6 +161,9 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
           <span className={TileStyle.noDataFound}>No data found</span>
         )}
       </div>
+      {showChat === true && (
+        <ChatListing showChatList={showChatList} showChat={showChat} />
+      )}
     </>
   );
 };
