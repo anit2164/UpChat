@@ -10,8 +10,13 @@ import { ReactComponent as LeaveSVG } from "@SVG/leave.svg";
 import { ReactComponent as SnoozeSVG } from "@SVG/snooze.svg";
 import { ReactComponent as MoveToActiveSVG } from "@SVG/moveToActive.svg";
 import { ChannelMenu } from "@/constants/application";
+import firebaseConfig from "../../firebase";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
 
-const SnoozeGroupDetails = ({ data }) => {
+firebase.initializeApp(firebaseConfig);
+
+const SnoozeGroupDetails = ({ data,LastSnoozeGroups }) => {
   const items = [
     {
       label: ChannelMenu.VIEW_HR_DETAILS,
@@ -39,19 +44,19 @@ const SnoozeGroupDetails = ({ data }) => {
     return item?.isSnoozed === true;
   });
 
-  let snoozeObj;
+  let moveToActiveObj;
 
   const channelDropdown = useCallback(async (value, item) => {
     console.log(item, "itemitemitemitemitemitem");
-    snoozeObj = item;
-    snoozeObj.isSnoozed = false;
-    if (value?.key === "Snooze") {
+    if (value?.key === "Move To Active") {
+      moveToActiveObj = item;
+      moveToActiveObj.isSnoozed = false;
       try {
         const firestore = firebase.firestore();
         const collectionRef = firestore.collection("channels");
-        const snapshot = collectionRef.doc(snoozeObj.id);
+        const snapshot = collectionRef.doc(moveToActiveObj.id);
 
-        await snapshot.set(snoozeObj);
+        await snapshot.set(moveToActiveObj);
 
         const dataArray = snapshot?.docs?.map((doc) => ({
           id: doc.id,
@@ -60,7 +65,7 @@ const SnoozeGroupDetails = ({ data }) => {
 
         setDataNew(dataArray);
         setTempArr(dataArray);
-        // LastPinnedGroups();
+        LastSnoozeGroups();
       } catch (error) {
         console.error(error);
       }

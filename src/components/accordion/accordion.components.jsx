@@ -15,6 +15,7 @@ const Accordion = ({
   search,
   data,
   LastPinnedGroups,
+  LastSnoozeGroups
 }) => {
   const [showBody, setShowBody] = useState(true);
 
@@ -37,7 +38,7 @@ const Accordion = ({
         </div>
       </div>
       {showBody && (
-        <Tile search={search} data={data} LastPinnedGroups={LastPinnedGroups} />
+        <Tile search={search} data={data} LastPinnedGroups={LastPinnedGroups} LastSnoozeGroups={LastSnoozeGroups} />
       )}
     </Fragment>
   );

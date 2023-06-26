@@ -20,9 +20,17 @@ const UpTabs = () => {
   const [data, setData] = useState([]);
   const [tempArr, setTempArr] = useState([]);
   const [updatePinnedChannel, setPinnedChannel] = useState(false);
+  const [updateSoonzeChannel, setSoonzeChannel] = useState(false);
+
+  console.log(data,"datatatatat");
 
   const LastPinnedGroups = () => {
     setPinnedChannel(true);
+  };
+
+  const LastSnoozeGroups = () => {
+    setSoonzeChannel(true);
+    // setPinnedChannel(true);
   };
 
   useEffect(() => {
@@ -41,13 +49,14 @@ const UpTabs = () => {
         setData(dataArray);
         setTempArr(dataArray);
         setPinnedChannel(false);
+        setSoonzeChannel(false);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchData();
-  }, [updatePinnedChannel]);
+  }, [updatePinnedChannel,updateSoonzeChannel]);
 
   useEffect(() => {
     if (search) {
@@ -102,6 +111,7 @@ const UpTabs = () => {
                 search={search}
                 data={data}
                 LastPinnedGroups={LastPinnedGroups}
+                LastSnoozeGroups={LastSnoozeGroups}
               />
             </div>
           </TabPanel>
@@ -119,7 +129,7 @@ const UpTabs = () => {
             </div>
 
             <div className={UpTabsStyle.chatListWrapper}>
-              <SnoozeGroupDetails search={search} data={data} />
+              <SnoozeGroupDetails search={search} data={data} LastSnoozeGroups={LastSnoozeGroups}/>
             </div>
           </TabPanel>
         </Tabs>

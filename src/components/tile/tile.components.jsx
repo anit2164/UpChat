@@ -13,19 +13,20 @@ import { ReactComponent as ViewHRDetailsSVG } from "@SVG/viewHrDetails.svg";
 
 firebase.initializeApp(firebaseConfig);
 
-const Tile = ({ search, data, LastPinnedGroups }) => {
+const Tile = ({ search, data, LastPinnedGroups,LastSnoozeGroups }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
 
   let tempObj;
   let snoozeObj;
-  console.log(tempObj, "tempObj");
-  console.log(snoozeObj, "snoozeObj");
+ 
 
   const channelDropdown = useCallback(async (value, item) => {
+    console.log(item,"item");
     if (value?.key === "PIN Channel") {
       tempObj = item;
       tempObj.isPinned = true;
+      console.log(tempObj, "tempObj");
       try {
         const firestore = firebase.firestore();
         const collectionRef = firestore.collection("channels");
@@ -44,10 +45,10 @@ const Tile = ({ search, data, LastPinnedGroups }) => {
       } catch (error) {
         console.error(error);
       }
-    } else if (value?.key === "Snooze") {
-      console.log(item, "itemitem");
+    }else if (value?.key === "Snooze") {
       snoozeObj = item;
       snoozeObj.isSnoozed = true;
+      console.log(snoozeObj, "snoozeObj");
       try {
         const firestore = firebase.firestore();
         const collectionRef = firestore.collection("channels");
@@ -63,11 +64,12 @@ const Tile = ({ search, data, LastPinnedGroups }) => {
         setDataNew(dataArray);
         setTempArr(dataArray);
         // LastPinnedGroups();
+        LastSnoozeGroups();
       } catch (error) {
         console.error(error);
       }
     }
-  }, []);
+  }, [LastPinnedGroups,LastSnoozeGroups]);
 
   const items = [
     {
@@ -100,6 +102,8 @@ const Tile = ({ search, data, LastPinnedGroups }) => {
   const filterData = data?.filter((item) => {
     return item?.isPinned === false;
   });
+
+  console.log(filterData,"filterData");
 
   return (
     <>
