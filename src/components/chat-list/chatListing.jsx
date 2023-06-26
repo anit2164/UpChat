@@ -1,5 +1,5 @@
 import ChatListingStyles from "./chatListing.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Collapse from "@Components/collapsible/collapsible.components";
 import Header from "@Components/header/header.components";
 import UpTabs from "@/components/upTabs/upTabs.components";

@@ -46,7 +46,6 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
     } else if (value?.key === "Snooze") {
       snoozeObj = item;
       snoozeObj.isSnoozed = true;
-      console.log(snoozeObj, "snoozeObj");
       try {
         const firestore = firebase.firestore();
         const collectionRef = firestore.collection("channels");
@@ -104,7 +103,6 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
   const [listingChats, setListingChats] = useState([]);
 
   const showChatList = async (item) => {
-    // setGroupId(item?.id);
     setShowList(true);
     try {
       const firestore = firebase.firestore();
