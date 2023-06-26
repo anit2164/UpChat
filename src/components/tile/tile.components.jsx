@@ -18,11 +18,14 @@ const Tile = ({ search, data, LastPinnedGroups }) => {
   const [tempArr, setTempArr] = useState([]);
 
   let tempObj;
+  let snoozeObj;
+  console.log(tempObj, "tempObj");
+  console.log(snoozeObj, "snoozeObj");
 
   const channelDropdown = useCallback(async (value, item) => {
-    tempObj = item;
-    tempObj.isPinned = true;
     if (value?.key === "PIN Channel") {
+      tempObj = item;
+      tempObj.isPinned = true;
       try {
         const firestore = firebase.firestore();
         const collectionRef = firestore.collection("channels");
@@ -42,7 +45,27 @@ const Tile = ({ search, data, LastPinnedGroups }) => {
         console.error(error);
       }
     } else if (value?.key === "Snooze") {
-      console.log("Snooze");
+      console.log(item, "itemitem");
+      snoozeObj = item;
+      snoozeObj.isSnoozed = true;
+      try {
+        const firestore = firebase.firestore();
+        const collectionRef = firestore.collection("channels");
+        const snapshot = collectionRef.doc(snoozeObj.id);
+
+        await snapshot.set(snoozeObj);
+
+        const dataArray = snapshot?.docs?.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setDataNew(dataArray);
+        setTempArr(dataArray);
+        // LastPinnedGroups();
+      } catch (error) {
+        console.error(error);
+      }
     }
   }, []);
 

@@ -5,5 +5,6 @@ export class ChannelMenu {
     static CHANNEL_LIBRARY = "Channel Library"
     static SNOOZE = "Snooze"
     static LEAVE = "Leave"
+    static MOVE_TO_ACTIVE = "Move To Active"
 }
 Object.freeze(ChannelMenu)
