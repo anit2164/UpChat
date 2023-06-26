@@ -55,7 +55,7 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
   const channelDropdown = useCallback(async (value, item) => {
     tempObj = item;
     tempObj.isPinned = false;
-    if (value?.key === "UNPIN Channel") {
+    if (value?.key === "Unpin Channel") {
       try {
         const firestore = firebase.firestore();
         const collectionRef = firestore.collection("channels");
