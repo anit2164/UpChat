@@ -81,9 +81,28 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
   }, []);
 
   const [showPinnedChatsList, setShowPinnedChatsList] = useState(false);
+  const [listingChats, setListingChats] = useState([]);
 
-  const pinnedChatsDetails = () => {
+  const pinnedChatsDetails = (item) => {
     setShowPinnedChatsList(true);
+    try {
+      const firestore = firebase.firestore();
+      const unsubscribe = firestore
+        .collection(`ChannelChatsMapping/${item?.id}/chats`)
+        .onSnapshot((snapshot) => {
+          const messagesData = snapshot.docs.map((doc) => doc.data());
+          console.log(messagesData, "messagedata");
+          setListingChats(messagesData);
+        });
+
+      return () => {
+        // Unsubscribe from Firestore snapshot listener when component unmounts
+        unsubscribe();
+      };
+    } catch (error) {
+      console.log(error, "errororor");
+      console.error(error);
+    }
   };
 
   return (
@@ -97,7 +116,7 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
               <div className={PinChatDetailsStyle.dFlex}>
                 <div
                   className={` ${PinChatDetailsStyle.chatInitialThumb} ${PinChatDetailsStyle.blueThumb} `}
-                  onClick={pinnedChatsDetails}
+                  onClick={()=>pinnedChatsDetails(item)}
                 >
                   {item?.companyInitial}
                 </div>
@@ -141,6 +160,7 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
         <ChatListing
           pinnedChatsDetails={pinnedChatsDetails}
           showPinnedChatsList={showPinnedChatsList}
+          listingChats={listingChats}
         />
       )}
     </>
