@@ -13,6 +13,7 @@ import { ChannelMenu } from "@/constants/application";
 import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
+import ChatListing from "../chat-list/chatListing";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -76,6 +77,32 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
     },
     [LastSnoozeGroups]
   );
+  
+  const [showSnoozeChatsList, setShowSnoozeChatsList] = useState(false);
+  const [listingChats, setListingChats] = useState([]);
+
+  const snoozeChatsDetails = (item) => {
+    setShowSnoozeChatsList(true);
+    try {
+      const firestore = firebase.firestore();
+      const unsubscribe = firestore
+        .collection(`ChannelChatsMapping/${item?.id}/chats`)
+        .onSnapshot((snapshot) => {
+          const messagesData = snapshot.docs.map((doc) => doc.data());
+          console.log(messagesData, "messagedata");
+          setListingChats(messagesData);
+        });
+
+      return () => {
+        // Unsubscribe from Firestore snapshot listener when component unmounts
+        unsubscribe();
+      };
+    } catch (error) {
+      console.log(error, "errororor");
+      console.error(error);
+    }
+  };
+
 
   return (
     <>
@@ -88,6 +115,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
               <div className={SnoozeGroupsStyle.dFlex}>
                 <div
                   className={` ${SnoozeGroupsStyle.chatInitialThumb} ${SnoozeGroupsStyle.blueThumb} `}
+                  onClick={()=>snoozeChatsDetails(item)}
                 >
                   {item?.companyInitial}
                 </div>
@@ -127,6 +155,10 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
           <span className={SnoozeGroupsStyle.noDataFound}>No data found</span>
         )}
       </div>
+      {showSnoozeChatsList === true && (
+      <ChatListing snoozeChatsDetails={snoozeChatsDetails} showSnoozeChatsList={showSnoozeChatsList} listingChats={listingChats}
+      />
+      )}
     </>
   );
 };

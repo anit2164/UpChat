@@ -28,7 +28,7 @@ import { ReactComponent as FiUsersSVG } from "@SVG/fiUsers.svg";
 import { ReactComponent as FiUserPlusSVG } from "@SVG/fiUserPlus.svg";
 import { ReactComponent as FiShareSVG } from "@SVG/fiShare.svg";
 
-const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats }) => {
+const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats,snoozeChatsDetails,showSnoozeChatsList }) => {
   console.log(listingChats, "listingChats");
   const [toggle, setToggle] = useState(false);
 
@@ -197,7 +197,7 @@ const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats }) => {
 
   return (
     <>
-      {!(showChatList || pinnedChatsDetails) && (
+      {!(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
         <main className={ChatListingStyles.main}>
           {toggle && (
             <>
@@ -210,7 +210,7 @@ const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats }) => {
         </main>
       )}
 
-      {(showChatList || pinnedChatsDetails) && (
+      {(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
         <div className={ChatListingStyles.channelWindow}>
           <div className={ChatListingStyles.channelWindowHeader}>
             <div className={ChatListingStyles.channelHeaderLeft}>
@@ -282,6 +282,7 @@ const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats }) => {
 
             <div className={ChatListingStyles.channelWindowMessages}>
               {listingChats?.map((item) => {
+                console.log(listingChats,"123456");
                 return (
                   <>
                     <div className={ChatListingStyles.channelMessageMain}>
