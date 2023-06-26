@@ -29,8 +29,6 @@ import { ReactComponent as FiUserPlusSVG } from "@SVG/fiUserPlus.svg";
 import { ReactComponent as FiShareSVG } from "@SVG/fiShare.svg";
 
 const ChatListing = ({ showChatList, pinnedChatsDetails }) => {
-  console.log(showChatList, "showChatList");
-  console.log(pinnedChatsDetails, "pinnedChatsDetails");
   const [toggle, setToggle] = useState(false);
 
   const channelMainDropdown = [

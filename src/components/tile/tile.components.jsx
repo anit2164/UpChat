@@ -104,36 +104,26 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
   const [groupId, setGroupId] = useState("");
 
   const showChatList = async (item) => {
-    console.log(item, "itemitemitem");
     setGroupId(item?.id);
     setShowList(true);
     try {
       const firestore = firebase.firestore();
-      const collectionRef = firestore.collection("channels");
-      const collectionRef1 = firestore
-        .collection("ChannelChatsMapping")
-        .get(item?.id);
+      const unsubscribe = firestore.collection(`ChannelChatsMapping/${item?.id}/chats`)
+      .onSnapshot((snapshot) => {
+        const messagesData = snapshot.docs.map((doc) => doc.data());
+        console.log(messagesData,"messagedata");
+      });
 
-      console.log(collectionRef1, "collectionRef1");
-
-      // const snapshot = collectionRef.doc(item?.id);
-      // await snapshot.set(tempObj);
-
-      const dataArray = collectionRef1?.docs?.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setDataNew(dataArray);
-      setTempArr(dataArray);
-      // LastPinnedGroups();
+    return () => {
+      // Unsubscribe from Firestore snapshot listener when component unmounts
+      unsubscribe();
+    };
     } catch (error) {
       console.log(error, "errororor");
       console.error(error);
     }
   };
 
-  console.log(dataNew, "dataNew");
 
   return (
     <>
