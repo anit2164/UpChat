@@ -103,15 +103,8 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
   ];
 
   const filterData = data?.filter((item) => {
-    console.log(item?.isSnoozed, "snoosss");
-    if (item?.isPinned === false) {
-      return item?.isPinned === false;
-    } else {
-      return item?.isSnoozed === false;
-    }
+      return item?.isPinned === false && item?.isSnoozed === false;
   });
-
-  console.log(filterData, "filterData");
 
   return (
     <>
