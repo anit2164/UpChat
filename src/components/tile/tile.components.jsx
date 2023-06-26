@@ -21,59 +21,53 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
   let tempObj;
   let snoozeObj;
 
-  const channelDropdown = useCallback(
-    async (value, item) => {
-      console.log(item, "item");
-      if (value?.key === "PIN Channel") {
-        tempObj = item;
-        tempObj.isPinned = true;
-        console.log(tempObj, "tempObj");
-        try {
-          const firestore = firebase.firestore();
-          const collectionRef = firestore.collection("channels");
-          const snapshot = collectionRef.doc(tempObj.id);
+  const channelDropdown = useCallback(async (value, item) => {
+    if (value?.key === "PIN Channel") {
+      tempObj = item;
+      tempObj.isPinned = true;
+      try {
+        const firestore = firebase.firestore();
+        const collectionRef = firestore.collection("channels");
+        const snapshot = collectionRef.doc(tempObj.id);
 
-          await snapshot.set(tempObj);
+        await snapshot.set(tempObj);
 
-          const dataArray = snapshot?.docs?.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
+        const dataArray = snapshot?.docs?.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-          setDataNew(dataArray);
-          setTempArr(dataArray);
-          LastPinnedGroups();
-        } catch (error) {
-          console.error(error);
-        }
-      } else if (value?.key === "Snooze") {
-        snoozeObj = item;
-        snoozeObj.isSnoozed = true;
-        console.log(snoozeObj, "snoozeObj");
-        try {
-          const firestore = firebase.firestore();
-          const collectionRef = firestore.collection("channels");
-          const snapshot = collectionRef.doc(snoozeObj.id);
-
-          await snapshot.set(snoozeObj);
-
-          const dataArray = snapshot?.docs?.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-
-          setDataNew(dataArray);
-          setTempArr(dataArray);
-          // LastPinnedGroups();
-          LastSnoozeGroups();
-        } catch (error) {
-          console.error(error);
-        }
+        setDataNew(dataArray);
+        setTempArr(dataArray);
+        LastPinnedGroups();
+      } catch (error) {
+        console.error(error);
       }
-    },
-    [LastPinnedGroups, LastSnoozeGroups]
-  );
+    } else if (value?.key === "Snooze") {
+      snoozeObj = item;
+      snoozeObj.isSnoozed = true;
+      console.log(snoozeObj, "snoozeObj");
+      try {
+        const firestore = firebase.firestore();
+        const collectionRef = firestore.collection("channels");
+        const snapshot = collectionRef.doc(snoozeObj.id);
 
+        await snapshot.set(snoozeObj);
+
+        const dataArray = snapshot?.docs?.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setDataNew(dataArray);
+        setTempArr(dataArray);
+        // LastPinnedGroups();
+        LastSnoozeGroups();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, []);
   const items = [
     {
       label: ChannelMenu.PIN_CHANNEL,
@@ -107,10 +101,39 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
   });
 
   const [showChat, setShowList] = useState(false);
+  const [groupId, setGroupId] = useState("");
 
-  const showChatList = () => {
+  const showChatList = async (item) => {
+    console.log(item, "itemitemitem");
+    setGroupId(item?.id);
     setShowList(true);
+    try {
+      const firestore = firebase.firestore();
+      const collectionRef = firestore.collection("channels");
+      const collectionRef1 = firestore
+        .collection("ChannelChatsMapping")
+        .get(item?.id);
+
+      console.log(collectionRef1, "collectionRef1");
+
+      // const snapshot = collectionRef.doc(item?.id);
+      // await snapshot.set(tempObj);
+
+      const dataArray = collectionRef1?.docs?.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setDataNew(dataArray);
+      setTempArr(dataArray);
+      // LastPinnedGroups();
+    } catch (error) {
+      console.log(error, "errororor");
+      console.error(error);
+    }
   };
+
+  console.log(dataNew, "dataNew");
 
   return (
     <>
@@ -121,7 +144,7 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
               <div className={TileStyle.dFlex}>
                 <div
                   className={` ${TileStyle.chatInitialThumb} ${TileStyle.blueThumb} `}
-                  onClick={showChatList}
+                  onClick={() => showChatList(item)}
                 >
                   {item?.companyInitial}
                 </div>
