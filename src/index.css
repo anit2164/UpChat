@@ -201,7 +201,7 @@ input[type="number"] {
 :where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-item,
 :where(.css-dev-only-do-not-override-12jzuas).ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-submenu-title,
 :where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-submenu-title {
-  padding: 7px 16px;
+  padding: 8px 16px;
   font-size: 12px;
   color: #232323;
 }
@@ -215,6 +215,11 @@ input[type="number"] {
 :where(.css-dev-only-do-not-override-12jzuas).ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-submenu-title-active,
 :where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-submenu-title-active {
   background-color: #FFF9E1;
+}
+
+:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-icon,
+:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-item-icon{
+  margin-inline-end: 12px;
 }
 
 /** ============ ANTD DROPDOWN ENDS ===============*/
