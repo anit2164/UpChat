@@ -167,6 +167,13 @@ const MemberListing = (allChannelItem) => {
               >
               </Dropdown> */}
               <ul>
+                <li><div className={ChatListingStyles.membersMenuMain}>
+          6 Members
+          <span className={ChatListingStyles.chatWindowClose}></span>
+        </div></li>
+        <li>
+
+        </li>
                 <li>
                     {userDataList?.map((item)=>{
                         return(
@@ -184,10 +191,22 @@ const MemberListing = (allChannelItem) => {
             >
               {item?.userDesignation}
             </span>
+            <span className={ChatListingStyles.removeLink}>Remove</span>
           </div>
         </div>
                         )
                     })}
+                </li>
+                <li>
+                <div className={ChatListingStyles.membersArea}>
+          <div className={ChatListingStyles.membersAreaLeft}>
+            <FiUserPlusSVG />
+            <div className={ChatListingStyles.addMembers}>Add Members</div>
+          </div>
+          <span>
+            <FiShareSVG />
+          </span>
+        </div>
                 </li>
               </ul>
                 <InfoIcon />
