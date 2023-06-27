@@ -232,8 +232,6 @@ const ChatListing = ({
       const snapshot = await collectionRef.add(obj);
       console.log(snapshot, "snnsnsns");
 
-      // await snapshot.set(snoozeObj);
-
       // return () => {
       //   // Unsubscribe from Firestore snapshot listener when component unmounts
       //   unsubscribe();
