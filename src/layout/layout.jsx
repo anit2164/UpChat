@@ -384,8 +384,6 @@ const Layout = () => {
 					</div>
 				</div>
 				
-			</div>
-			<div className={LayoutStyle.channelWindowFooterWrap}>
 				<div className={LayoutStyle.replyToWrapper}>
 					<div className={LayoutStyle.replyToTop}>
 						<FiReplySVG />Replying to Darshan Modi, <span>Today at 12:31PM</span>
@@ -393,9 +391,11 @@ const Layout = () => {
 						</div>
 					<div className={LayoutStyle.replyToMessage}>
 						<p>That will be great <b>Prachi & Bhuvan</b>, this will help us get things moving ahead with a schedule.</p>
+						{/* <p>That will be great <b>Prachi & Bhuvan</b>, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule.</p> */}
 					</div>
 				</div>
-				
+			</div>
+			<div className={LayoutStyle.channelWindowFooterWrap}>
 				<div className={LayoutStyle.channelWindowFooter}>
 					<input type="text" placeholder="Please allow me sometime" />
 					<span className={` ${LayoutStyle.channelAddMedia} ${LayoutStyle.channelAddMediaActive} `}>

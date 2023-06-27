@@ -733,7 +733,8 @@
     border-top: 1px solid #E2E2E2;
     border-bottom: 1px solid #FFDA31;
     padding: 8px 16px;
-    
+    padding-right: 0;
+
     position: absolute;
     bottom: 52px;
     z-index: 999;
@@ -747,25 +748,36 @@
 }
 .replyToTop svg{
     margin-right: 8px;
+    width: 12px;
+    height: 13px;
 }
 .replyToTop > span{
     font-size: 8px;
 }
 .replyToTop .chatWindowClose{
     position: absolute;
-    right: 0;
+    right: 5px;
+}
+.replyToTop .chatWindowClose::before,
+.replyToTop .chatWindowClose::after{
+    width: 9px;
 }
 
 .replyToMessage{
     font-weight: 400;
     line-height: 14px;
     color: #232323;
+    margin-top: 9px;
+    max-height: 42px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 .replyToMessage b{
     font-weight: 500;
 }
 .replyToMessage p{
-    margin-top: 8px;
+    margin-top: 0;
+    max-width: 83%;
 }
 .replyToMessage p:last-child{
     margin-bottom: 0;
