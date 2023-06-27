@@ -12,28 +12,29 @@ import { useEffect, useState } from "react";
 firebase.initializeApp(firebaseConfig);
 
 const MemberListing = (allChannelItem) => {
+  const [userDataList, setUserDataList] = useState();
+  console.log(userDataList, "userDataList");
 
-    const [userDataList,setUserDataList] = useState();
-    console.log(userDataList,"userDataList");
-    
-    useEffect(() => {
-        try {
-            const firestore = firebase.firestore();
-            const unsubscribe = firestore
-            .collection(`ChannelUserMapping/${allChannelItem?.allChannelItem?.id}/user`)
-            .onSnapshot((snapshot) => {
-                const userData = snapshot.docs.map((doc) => doc.data());
-                setUserDataList(userData);
-            });
-    
-            return () => {
-            // Unsubscribe from Firestore snapshot listener when component unmounts
-            unsubscribe();
-            };
-        } catch (error) {
-            console.error(error);
-        }
-    }, [allChannelItem])
+  useEffect(() => {
+    try {
+      const firestore = firebase.firestore();
+      const unsubscribe = firestore
+        .collection(
+          `ChannelUserMapping/${allChannelItem?.allChannelItem?.id}/user`
+        )
+        .onSnapshot((snapshot) => {
+          const userData = snapshot.docs.map((doc) => doc.data());
+          setUserDataList(userData);
+        });
+
+      return () => {
+        // Unsubscribe from Firestore snapshot listener when component unmounts
+        unsubscribe();
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  }, [allChannelItem]);
 
   const membersDropdown = [
     {
@@ -151,13 +152,13 @@ const MemberListing = (allChannelItem) => {
 
   return (
     <>
-          <div className={ChatListingStyles.channelWindowStatus}>
-            <div className={ChatListingStyles.channelStatusLeft}>
-              HR Status: In Process
-            </div>
-            <div className={ChatListingStyles.channelStatusRight}>
-              <span>6 members</span>
-              {/* <Dropdown
+      <div className={ChatListingStyles.channelWindowStatus}>
+        <div className={ChatListingStyles.channelStatusLeft}>
+          HR Status: In Process
+        </div>
+        <div className={ChatListingStyles.channelStatusRight}>
+          <span>6 members</span>
+          {/* <Dropdown
                 className={ChatListingStyles.channelStatusInfo}
                 placement="bottomRight"
                 menu={{
@@ -166,52 +167,58 @@ const MemberListing = (allChannelItem) => {
                 trigger={["click"]}
               >
               </Dropdown> */}
-              <ul>
-                <li><div className={ChatListingStyles.membersMenuMain}>
-          6 Members
-          <span className={ChatListingStyles.chatWindowClose}></span>
-        </div></li>
-        <li>
-
-        </li>
-                <li>
-                    {userDataList?.map((item)=>{
-                        return(
-                            <div className={ChatListingStyles.membersArea}>
-          <div className={ChatListingStyles.membersAreaLeft}>
-            <img
-              className={ChatListingStyles.profileAvtar}
-              src="https://i.pravatar.cc/40"
-              width="24"
-              height="24"
-            />
-            <div className={ChatListingStyles.profileName}>{item?.userName}</div>
-            <span
-              className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
-            >
-              {item?.userDesignation}
-            </span>
-            <span className={ChatListingStyles.removeLink}>Remove</span>
-          </div>
+          <ul>
+            <li>
+              <div className={ChatListingStyles.membersMenuMain}>
+                6 Members
+                <span className={ChatListingStyles.chatWindowClose}></span>
+              </div>
+            </li>
+            <li></li>
+            <li>
+              {userDataList?.map((item) => {
+                return (
+                  <div className={ChatListingStyles.membersArea}>
+                    <div className={ChatListingStyles.membersAreaLeft}>
+                      <img
+                        className={ChatListingStyles.profileAvtar}
+                        src="https://i.pravatar.cc/40"
+                        width="24"
+                        height="24"
+                      />
+                      <div className={ChatListingStyles.profileName}>
+                        {item?.userName}
+                      </div>
+                      <span
+                        className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
+                      >
+                        {item?.userDesignation}
+                      </span>
+                      <span className={ChatListingStyles.removeLink}>
+                        Remove
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </li>
+            <li>
+              <div className={ChatListingStyles.membersArea}>
+                <div className={ChatListingStyles.membersAreaLeft}>
+                  <FiUserPlusSVG />
+                  <div className={ChatListingStyles.addMembers}>
+                    Add Members
+                  </div>
+                </div>
+                <span>
+                  <FiShareSVG />
+                </span>
+              </div>
+            </li>
+          </ul>
+          <InfoIcon />
         </div>
-                        )
-                    })}
-                </li>
-                <li>
-                <div className={ChatListingStyles.membersArea}>
-          <div className={ChatListingStyles.membersAreaLeft}>
-            <FiUserPlusSVG />
-            <div className={ChatListingStyles.addMembers}>Add Members</div>
-          </div>
-          <span>
-            <FiShareSVG />
-          </span>
-        </div>
-                </li>
-              </ul>
-                <InfoIcon />
-            </div>
-          </div>
+      </div>
     </>
   );
 };
