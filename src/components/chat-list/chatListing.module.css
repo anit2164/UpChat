@@ -385,6 +385,7 @@
   width: 52px;
   background: #ffda31;
   border-left: 1px solid #cecccc;
+  cursor: pointer;
 }
 .channelSubmit > img {
   position: relative;
