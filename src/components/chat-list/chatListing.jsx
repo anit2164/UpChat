@@ -30,7 +30,10 @@ import { ReactComponent as FiShareSVG } from "@SVG/fiShare.svg";
 import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
-firebase.initializeApp(firebaseConfig);
+import { useDispatch, useSelector } from "react-redux";
+import { sendMessageHandler } from "@/redux_toolkit/slices/sendMessage";
+
+firebase.initializeApp(firebaseConfig)
 
 const ChatListing = ({
   showChatList,
@@ -40,6 +43,9 @@ const ChatListing = ({
   showSnoozeChatsList,
   allChannelItem,
 }) => {
+  const dispatch = useDispatch();
+  const sendMessageData = useSelector((state) => state?.sendMessage);
+
   console.log(allChannelItem, "allChannelItem");
   const [toggle, setToggle] = useState(false);
   const [messageHandler, setMessageHandler] = useState("");
@@ -210,7 +216,7 @@ const ChatListing = ({
   const sendMessage = async () => {
     try {
       let obj = {
-        date: "27-june-2023",
+        date: new Date(),
         documentUrl: "",
         enc_chatID: allChannelItem?.enc_channelID,
         hrID: allChannelItem?.hrID,
@@ -218,24 +224,18 @@ const ChatListing = ({
         senderID: "Shreyash Zinzuvadia",
         text: messageHandler,
       };
-      // const unsubscribe = firestore
-      //   .collection(`ChannelChatsMapping/${allChannelItem?.id}/chats`)
-      //   .onSnapshot((snapshot) => {
-      //     const messagesData = snapshot.set(obj);
-      //     console.log(messagesData, "messagesData");
-      //     // setListingChats(messagesData);
-      //   });
+      let apiObj = {
+        id:allChannelItem?.hrID,
+        note:messageHandler
+      }
       const firestore = firebase.firestore();
       const collectionRef = firestore.collection(
         `ChannelChatsMapping/${allChannelItem?.id}/chats`
-      );
+      )
       const snapshot = await collectionRef.add(obj);
-      console.log(snapshot, "snnsnsns");
 
-      // return () => {
-      //   // Unsubscribe from Firestore snapshot listener when component unmounts
-      //   unsubscribe();
-      // };
+
+      dispatch(sendMessageHandler(apiObj))
     } catch (error) {
       console.error(error);
     }
