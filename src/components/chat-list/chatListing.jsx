@@ -29,7 +29,6 @@ import { ReactComponent as FiUserPlusSVG } from "@SVG/fiUserPlus.svg";
 import { ReactComponent as FiShareSVG } from "@SVG/fiShare.svg";
 
 const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats,snoozeChatsDetails,showSnoozeChatsList }) => {
-  console.log(listingChats, "listingChats");
   const [toggle, setToggle] = useState(false);
 
   const channelMainDropdown = [
@@ -282,7 +281,6 @@ const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats,snoozeChat
 
             <div className={ChatListingStyles.channelWindowMessages}>
               {listingChats?.map((item) => {
-                console.log(listingChats,"123456");
                 return (
                   <>
                     <div className={ChatListingStyles.channelMessageMain}>
