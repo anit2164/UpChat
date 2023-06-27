@@ -235,7 +235,13 @@ const ChatListing = ({
       const snapshot = await collectionRef.add(obj);
 
 
+      const element = document.documentElement || document.body;
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
       dispatch(sendMessageHandler(apiObj))
+      // window.scrollTo(0,0)
     } catch (error) {
       console.error(error);
     }

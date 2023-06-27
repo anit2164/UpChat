@@ -109,10 +109,11 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
     try {
       const firestore = firebase.firestore();
       const unsubscribe = firestore
-        .collection(`ChannelChatsMapping/${item?.id}/chats`)
+        .collection(`ChannelChatsMapping/${item?.id}/chats`).orderBy("date","asc")
         .onSnapshot((snapshot) => {
           const messagesData = snapshot.docs.map((doc) => doc.data());
           setListingChats(messagesData);
+          console.log(messagesData,"message");
         });
 
       return () => {
