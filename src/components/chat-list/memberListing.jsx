@@ -157,7 +157,7 @@ const MemberListing = (allChannelItem) => {
             </div>
             <div className={ChatListingStyles.channelStatusRight}>
               <span>6 members</span>
-              <Dropdown
+              {/* <Dropdown
                 className={ChatListingStyles.channelStatusInfo}
                 placement="bottomRight"
                 menu={{
@@ -165,8 +165,32 @@ const MemberListing = (allChannelItem) => {
                 }}
                 trigger={["click"]}
               >
+              </Dropdown> */}
+              <ul>
+                <li>
+                    {userDataList?.map((item)=>{
+                        return(
+                            <div className={ChatListingStyles.membersArea}>
+          <div className={ChatListingStyles.membersAreaLeft}>
+            <img
+              className={ChatListingStyles.profileAvtar}
+              src="https://i.pravatar.cc/40"
+              width="24"
+              height="24"
+            />
+            <div className={ChatListingStyles.profileName}>{item?.userName}</div>
+            <span
+              className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
+            >
+              {item?.userDesignation}
+            </span>
+          </div>
+        </div>
+                        )
+                    })}
+                </li>
+              </ul>
                 <InfoIcon />
-              </Dropdown>
             </div>
           </div>
     </>
