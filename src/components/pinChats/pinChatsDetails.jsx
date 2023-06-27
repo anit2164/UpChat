@@ -82,13 +82,16 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
 
   const [showPinnedChatsList, setShowPinnedChatsList] = useState(false);
   const [listingChats, setListingChats] = useState([]);
+  const [pinnedChatsItem, setPinnedChatsItem] = useState();
 
   const pinnedChatsDetails = (item) => {
+    setPinnedChatsItem(item);
     setShowPinnedChatsList(true);
     try {
       const firestore = firebase.firestore();
       const unsubscribe = firestore
         .collection(`ChannelChatsMapping/${item?.id}/chats`)
+        .orderBy("date", "asc")
         .onSnapshot((snapshot) => {
           const messagesData = snapshot.docs.map((doc) => doc.data());
           setListingChats(messagesData);
@@ -159,6 +162,7 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
           pinnedChatsDetails={pinnedChatsDetails}
           showPinnedChatsList={showPinnedChatsList}
           listingChats={listingChats}
+          allChannelItem={pinnedChatsItem}
         />
       )}
     </>

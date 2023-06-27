@@ -33,7 +33,7 @@ import "firebase/compat/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import { sendMessageHandler } from "@/redux_toolkit/slices/sendMessage";
 
-firebase.initializeApp(firebaseConfig)
+firebase.initializeApp(firebaseConfig);
 
 const ChatListing = ({
   showChatList,
@@ -46,7 +46,6 @@ const ChatListing = ({
   const dispatch = useDispatch();
   const sendMessageData = useSelector((state) => state?.sendMessage);
 
-  console.log(allChannelItem, "allChannelItem");
   const [toggle, setToggle] = useState(false);
   const [messageHandler, setMessageHandler] = useState("");
 
@@ -225,22 +224,16 @@ const ChatListing = ({
         text: messageHandler,
       };
       let apiObj = {
-        id:allChannelItem?.hrID,
-        note:messageHandler
-      }
+        id: allChannelItem?.hrID,
+        note: messageHandler,
+      };
       const firestore = firebase.firestore();
       const collectionRef = firestore.collection(
         `ChannelChatsMapping/${allChannelItem?.id}/chats`
-      )
-      const snapshot = await collectionRef.add(obj);
+      );
+      await collectionRef.add(obj);
 
-
-      const element = document.documentElement || document.body;
-    element.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-      dispatch(sendMessageHandler(apiObj))
+      dispatch(sendMessageHandler(apiObj));
       // window.scrollTo(0,0)
     } catch (error) {
       console.error(error);
