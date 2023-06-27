@@ -79,13 +79,15 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
   
   const [showSnoozeChatsList, setShowSnoozeChatsList] = useState(false);
   const [listingChats, setListingChats] = useState([]);
-
+  const [allChannelItem, setAllChannelItem] = useState();
+  
   const snoozeChatsDetails = (item) => {
+    setAllChannelItem(item)
     setShowSnoozeChatsList(true);
     try {
       const firestore = firebase.firestore();
       const unsubscribe = firestore
-        .collection(`ChannelChatsMapping/${item?.id}/chats`)
+        .collection(`ChannelChatsMapping/${item?.id}/chats`).orderBy("date","asc")
         .onSnapshot((snapshot) => {
           const messagesData = snapshot.docs.map((doc) => doc.data());
           setListingChats(messagesData);
@@ -154,6 +156,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
       </div>
       {showSnoozeChatsList === true && (
       <ChatListing snoozeChatsDetails={snoozeChatsDetails} showSnoozeChatsList={showSnoozeChatsList} listingChats={listingChats}
+      allChannelItem={allChannelItem}
       />
       )}
     </>
