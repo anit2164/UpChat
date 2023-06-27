@@ -51,7 +51,6 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
 
   const channelDropdown = useCallback(
     async (value, item) => {
-      console.log(item, "value?.key");
       if (value?.key === "Move To Active") {
         moveToActiveObj = item;
         moveToActiveObj.isSnoozed = false;
@@ -89,7 +88,6 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
         .collection(`ChannelChatsMapping/${item?.id}/chats`)
         .onSnapshot((snapshot) => {
           const messagesData = snapshot.docs.map((doc) => doc.data());
-          console.log(messagesData, "messagedata");
           setListingChats(messagesData);
         });
 
@@ -98,7 +96,6 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
         unsubscribe();
       };
     } catch (error) {
-      console.log(error, "errororor");
       console.error(error);
     }
   };

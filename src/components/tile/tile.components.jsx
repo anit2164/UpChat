@@ -110,7 +110,6 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
         .collection(`ChannelChatsMapping/${item?.id}/chats`)
         .onSnapshot((snapshot) => {
           const messagesData = snapshot.docs.map((doc) => doc.data());
-          console.log(messagesData, "messagedatapined");
           setListingChats(messagesData);
         });
 
@@ -119,7 +118,6 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
         unsubscribe();
       };
     } catch (error) {
-      console.log(error, "errororor");
       console.error(error);
     }
   };

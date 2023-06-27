@@ -91,7 +91,6 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
         .collection(`ChannelChatsMapping/${item?.id}/chats`)
         .onSnapshot((snapshot) => {
           const messagesData = snapshot.docs.map((doc) => doc.data());
-          console.log(messagesData, "messagedata");
           setListingChats(messagesData);
         });
 
@@ -100,7 +99,6 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
         unsubscribe();
       };
     } catch (error) {
-      console.log(error, "errororor");
       console.error(error);
     }
   };
