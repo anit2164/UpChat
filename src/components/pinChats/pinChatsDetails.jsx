@@ -114,7 +114,7 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
               <div className={PinChatDetailsStyle.dFlex}>
                 <div
                   className={` ${PinChatDetailsStyle.chatInitialThumb} ${PinChatDetailsStyle.blueThumb} `}
-                  onClick={()=>pinnedChatsDetails(item)}
+                  onClick={() => pinnedChatsDetails(item)}
                 >
                   {item?.companyInitial}
                 </div>

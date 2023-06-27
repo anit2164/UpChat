@@ -27,10 +27,22 @@ import { ReactComponent as EmojiThumbsUpLightSkinSVG } from "@SVG/emojiThumbsUpL
 import { ReactComponent as FiUsersSVG } from "@SVG/fiUsers.svg";
 import { ReactComponent as FiUserPlusSVG } from "@SVG/fiUserPlus.svg";
 import { ReactComponent as FiShareSVG } from "@SVG/fiShare.svg";
+import firebaseConfig from "../../firebase";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+firebase.initializeApp(firebaseConfig);
 
-const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats,snoozeChatsDetails,showSnoozeChatsList }) => {
-  console.log(listingChats, "listingChats");
+const ChatListing = ({
+  showChatList,
+  pinnedChatsDetails,
+  listingChats,
+  snoozeChatsDetails,
+  showSnoozeChatsList,
+  allChannelItem,
+}) => {
+  console.log(allChannelItem, "allChannelItem");
   const [toggle, setToggle] = useState(false);
+  const [messageHandler, setMessageHandler] = useState("");
 
   const channelMainDropdown = [
     {
@@ -195,6 +207,42 @@ const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats,snoozeChat
     },
   ];
 
+  const sendMessage = async () => {
+    try {
+      let obj = {
+        date: "27-june-2023",
+        documentUrl: "",
+        enc_chatID: allChannelItem?.enc_channelID,
+        hrID: allChannelItem?.hrID,
+        isActivity: true,
+        senderID: "Shreyash Zinzuvadia",
+        text: messageHandler,
+      };
+      // const unsubscribe = firestore
+      //   .collection(`ChannelChatsMapping/${allChannelItem?.id}/chats`)
+      //   .onSnapshot((snapshot) => {
+      //     const messagesData = snapshot.set(obj);
+      //     console.log(messagesData, "messagesData");
+      //     // setListingChats(messagesData);
+      //   });
+      const firestore = firebase.firestore();
+      const collectionRef = firestore.collection(
+        `ChannelChatsMapping/${allChannelItem?.id}/chats`
+      );
+      const snapshot = await collectionRef.add(obj);
+      console.log(snapshot, "snnsnsns");
+
+      // await snapshot.set(snoozeObj);
+
+      // return () => {
+      //   // Unsubscribe from Firestore snapshot listener when component unmounts
+      //   unsubscribe();
+      // };
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       {!(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
@@ -282,7 +330,6 @@ const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats,snoozeChat
 
             <div className={ChatListingStyles.channelWindowMessages}>
               {listingChats?.map((item) => {
-                console.log(listingChats,"123456");
                 return (
                   <>
                     <div className={ChatListingStyles.channelMessageMain}>
@@ -592,11 +639,18 @@ const ChatListing = ({ showChatList, pinnedChatsDetails, listingChats,snoozeChat
             </div>
           </div>
           <div className={ChatListingStyles.channelWindowFooter}>
-            <input type="text" placeholder="Please allow me sometime" />
+            <input
+              type="text"
+              placeholder="Please allow me sometime"
+              onChange={(e) => setMessageHandler(e.target.value)}
+            />
             <span className={ChatListingStyles.channelAddMedia}>
               <span className={ChatListingStyles.mediaPlus}></span>
             </span>
-            <span className={ChatListingStyles.channelSubmit}>
+            <span
+              className={ChatListingStyles.channelSubmit}
+              onClick={sendMessage}
+            >
               <SendIcon />
             </span>
           </div>

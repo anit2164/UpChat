@@ -101,8 +101,10 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
 
   const [showChat, setShowList] = useState(false);
   const [listingChats, setListingChats] = useState([]);
+  const [allChannelItem, setAllChannelItem] = useState();
 
   const showChatList = async (item) => {
+    setAllChannelItem(item);
     setShowList(true);
     try {
       const firestore = firebase.firestore();
@@ -176,6 +178,7 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
           showChatList={showChatList}
           showChat={showChat}
           listingChats={listingChats}
+          allChannelItem={allChannelItem}
         />
       )}
     </>
