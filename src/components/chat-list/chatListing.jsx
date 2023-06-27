@@ -1,5 +1,5 @@
 import ChatListingStyles from "./chatListing.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Collapse from "@Components/collapsible/collapsible.components";
 import Header from "@Components/header/header.components";
 import UpTabs from "@/components/upTabs/upTabs.components";
@@ -211,34 +211,47 @@ const ChatListing = ({
       ),
     },
   ];
-
+  const chatContainerRef = useRef(null);
   const sendMessage = async () => {
-    try {
-      let obj = {
-        date: new Date(),
-        documentUrl: "",
-        enc_chatID: allChannelItem?.enc_channelID,
-        hrID: allChannelItem?.hrID,
-        isActivity: true,
-        senderID: "Shreyash Zinzuvadia",
-        text: messageHandler,
-      };
-      let apiObj = {
-        id: allChannelItem?.hrID,
-        note: messageHandler,
-      };
-      const firestore = firebase.firestore();
-      const collectionRef = firestore.collection(
-        `ChannelChatsMapping/${allChannelItem?.id}/chats`
-      );
-      await collectionRef.add(obj);
+    if (messageHandler) {
+      setMessageHandler("");
+      try {
+        let obj = {
+          date: new Date(),
+          documentUrl: "",
+          enc_chatID: allChannelItem?.enc_channelID,
+          hrID: allChannelItem?.hrID,
+          isActivity: true,
+          senderID: "Shreyash Zinzuvadia",
+          text: messageHandler,
+        };
+        let apiObj = {
+          id: allChannelItem?.hrID,
+          note: messageHandler,
+        };
+        const firestore = firebase.firestore();
+        const collectionRef = firestore.collection(
+          `ChannelChatsMapping/${allChannelItem?.id}/chats`
+        );
+        await collectionRef.add(obj);
 
-      dispatch(sendMessageHandler(apiObj));
-      // window.scrollTo(0,0)
-    } catch (error) {
-      console.error(error);
+        dispatch(sendMessageHandler(apiObj));
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
+
+  // useEffect(() => {
+  //   // sendMessage();
+  //   if (chatContainerRef.current) {
+  //     window.scrollTo(
+  //       0,
+  //       (chatContainerRef.current.scrollTop =
+  //         chatContainerRef.current.offsetTop)
+  //     );
+  //   }
+  // }, [listingChats, chatContainerRef]);
 
   return (
     <>
@@ -325,7 +338,11 @@ const ChatListing = ({
               </div>
             </div>
 
-            <div className={ChatListingStyles.channelWindowMessages}>
+            <div
+              className={ChatListingStyles.channelWindowMessages}
+              id="messagelist"
+              // ref={chatContainerRef}
+            >
               {listingChats?.map((item) => {
                 return (
                   <>
@@ -639,6 +656,7 @@ const ChatListing = ({
             <input
               type="text"
               placeholder="Please allow me sometime"
+              value={messageHandler}
               onChange={(e) => setMessageHandler(e.target.value)}
             />
             <span className={ChatListingStyles.channelAddMedia}>
