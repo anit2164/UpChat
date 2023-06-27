@@ -782,4 +782,30 @@
 .replyToMessage p:last-child{
     margin-bottom: 0;
 }
+
+.quotedMessage{
+    background: #F5F5F5;
+    padding: 8px;
+    margin-bottom: 7px;
+}
+.quotedMessage P{
+    font-size: 10px;
+    line-height: 16px;
+    margin-bottom: 8px;
+}
+.quotedMessageChild{
+    font-size: 8px;
+    font-weight: 500;
+    line-height: 15px;
+
+    display: flex;
+    /* align-items: center; */
+}
+.quotedMessageChild svg{
+    margin-right: 4px;
+}
+.quotedMessageChild span{
+    font-weight: 400;
+    margin-left: 4px;
+}
 /* */

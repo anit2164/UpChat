@@ -359,19 +359,54 @@ const Layout = () => {
 
 					<div className={LayoutStyle.channelMessageMain}>
 						<div className={LayoutStyle.channelMessageInner}>
-						<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="30" height="30" />
-						<div className={LayoutStyle.profileName}>Bhuvan Desai</div>
-						<span className={LayoutStyle.timeStamp}>12:34PM</span>
-						<Dropdown className={` ${LayoutStyle.dotMenuMain} ${LayoutStyle.dotMenuhz} `} placement="bottomRight" menu={{
-							items: chatDropdown,
-							}}
-							trigger={['click']}>
-							<a onClick={(e) => e.preventDefault()}>
-								<Space>
-									<span className={LayoutStyle.dotMenu}></span>
-								</Space>
-							</a>
-						</Dropdown>
+							<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="30" height="30" />
+							<div className={LayoutStyle.profileName}>Bhuvan Desai</div>
+							<span className={LayoutStyle.timeStamp}>12:34PM</span>
+							<Dropdown className={` ${LayoutStyle.dotMenuMain} ${LayoutStyle.dotMenuhz} `} placement="bottomRight" menu={{
+								items: chatDropdown,
+								}}
+								trigger={['click']}>
+								<a onClick={(e) => e.preventDefault()}>
+									<Space>
+										<span className={LayoutStyle.dotMenu}></span>
+									</Space>
+								</a>
+							</Dropdown>
+							<BookmarkIcon className={LayoutStyle.bookmarkIcon} />
+						</div>
+						<div className={` ${LayoutStyle.channelMessageBox} ${LayoutStyle.channelMessageRight} `}>
+							<div className={LayoutStyle.quotedMessage}>
+								<p>That will be great <b>Prachi</b> & <b>Bhuvan</b>, this will help us get things moving ahead with a schedule.</p>
+								<div className={LayoutStyle.quotedMessageChild}><FiReplySVG width="10" height="16" />Darshan Modi, <span>Today at 12:31PM</span></div>
+							</div>
+							<p>Yes <b>Darshan</b>, kindly proceed.</p>
+							<div className={LayoutStyle.chatReaction}>
+								<div className={LayoutStyle.chatReactionInner}>
+									<div className={LayoutStyle.chatReactionCircle}>
+										<span className={LayoutStyle.chatReactionSmile}>
+											<SmileIcon />
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className={LayoutStyle.channelMessageMain}>
+						<div className={LayoutStyle.channelMessageInner}>
+							<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="30" height="30" />
+							<div className={LayoutStyle.profileName}>Bhuvan Desai</div>
+							<span className={LayoutStyle.timeStamp}>12:34PM</span>
+							<Dropdown className={` ${LayoutStyle.dotMenuMain} ${LayoutStyle.dotMenuhz} `} placement="bottomRight" menu={{
+								items: chatDropdown,
+								}}
+								trigger={['click']}>
+								<a onClick={(e) => e.preventDefault()}>
+									<Space>
+										<span className={LayoutStyle.dotMenu}></span>
+									</Space>
+								</a>
+							</Dropdown>
 						</div>
 						<div className={` ${LayoutStyle.channelMessageBox} ${LayoutStyle.channelMessageLeft} `}>
 							<p>Here are the images you were asking for please check.</p>
@@ -384,6 +419,7 @@ const Layout = () => {
 					</div>
 				</div>
 				
+				{/* Reply To Message Feature Starts */}
 				<div className={LayoutStyle.replyToWrapper}>
 					<div className={LayoutStyle.replyToTop}>
 						<FiReplySVG />Replying to Darshan Modi, <span>Today at 12:31PM</span>
@@ -394,6 +430,8 @@ const Layout = () => {
 						{/* <p>That will be great <b>Prachi & Bhuvan</b>, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule.</p> */}
 					</div>
 				</div>
+				{/* Reply To Message Feature Ends */}
+				
 			</div>
 			<div className={LayoutStyle.channelWindowFooterWrap}>
 				<div className={LayoutStyle.channelWindowFooter}>
@@ -402,6 +440,8 @@ const Layout = () => {
 						<div className={LayoutStyle.mediaOptions}>
 							<span className={LayoutStyle.mediaOptionsActive}>
 								<SmileIcon />
+
+
 								{/* <div className={LayoutStyle.emojiPopup}>
 									<div className={LayoutStyle.emojiPopupSearch}>
 										<SearchIcon className={LayoutStyle.searchIcon} />
