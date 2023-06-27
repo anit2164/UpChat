@@ -4,9 +4,7 @@ import Collapse from "@Components/collapsible/collapsible.components";
 import Header from "@Components/header/header.components";
 import UpTabs from "@/components/upTabs/upTabs.components";
 import { Dropdown, Space } from "antd";
-import { ReactComponent as InfoIcon } from "@SVG/fiInfo.svg";
 import { ReactComponent as SendIcon } from "@SVG/fiSend.svg";
-import { ReactComponent as BookmarkIcon } from "@SVG/bookmarkIcon.svg";
 import { ReactComponent as SearchIcon } from "@SVG/search.svg";
 import { ReactComponent as ArrowIcon } from "@SVG/fiArrowRight.svg";
 import { ReactComponent as SmileIcon } from "@SVG/fiSmile.svg";
@@ -23,15 +21,12 @@ import { ReactComponent as FiVolumeMuteSVG } from "@SVG/fiVolumeMute.svg";
 import { ReactComponent as FiReplySVG } from "@SVG/fiReply.svg";
 import { ReactComponent as FiCopySVG } from "@SVG/fiCopy.svg";
 import { ReactComponent as FiBookmarkOutlinedSVG } from "@SVG/fiBookmarkOutlined.svg";
-import { ReactComponent as EmojiThumbsUpLightSkinSVG } from "@SVG/emojiThumbsUpLightSkin.svg";
-import { ReactComponent as FiUsersSVG } from "@SVG/fiUsers.svg";
-import { ReactComponent as FiUserPlusSVG } from "@SVG/fiUserPlus.svg";
-import { ReactComponent as FiShareSVG } from "@SVG/fiShare.svg";
 import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import { sendMessageHandler } from "@/redux_toolkit/slices/sendMessage";
+import MemberListing from "./memberListing";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -98,120 +93,6 @@ const ChatListing = ({
     },
   ];
 
-  const membersDropdown = [
-    {
-      key: "0",
-      label: (
-        <div className={ChatListingStyles.membersMenuMain}>
-          6 Members
-          <span className={ChatListingStyles.chatWindowClose}></span>
-        </div>
-      ),
-      icon: <FiUsersSVG />,
-    },
-    {
-      type: "divider",
-    },
-    {
-      key: "1",
-      label: (
-        <div className={ChatListingStyles.membersArea}>
-          <div className={ChatListingStyles.membersAreaLeft}>
-            <img
-              className={ChatListingStyles.profileAvtar}
-              src="https://i.pravatar.cc/40"
-              width="24"
-              height="24"
-            />
-            <div className={ChatListingStyles.profileName}>Prachi Porwal</div>
-            <span
-              className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
-            >
-              Sales Consultant
-            </span>
-          </div>
-          <span className={ChatListingStyles.removeLink}>Remove</span>
-        </div>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <div className={ChatListingStyles.membersArea}>
-          <div className={ChatListingStyles.membersAreaLeft}>
-            <img
-              className={ChatListingStyles.profileAvtar}
-              src="https://i.pravatar.cc/40"
-              width="24"
-              height="24"
-            />
-            <div className={ChatListingStyles.profileName}>Majid Ali</div>
-            <span
-              className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.deliveryTeam} `}
-            >
-              Delivery Team
-            </span>
-          </div>
-          <span className={ChatListingStyles.removeLink}>Remove</span>
-        </div>
-      ),
-    },
-    {
-      key: "3",
-      label: (
-        <div className={ChatListingStyles.membersArea}>
-          <div className={ChatListingStyles.membersAreaLeft}>
-            <img
-              className={ChatListingStyles.profileAvtar}
-              src="https://i.pravatar.cc/40"
-              width="24"
-              height="24"
-            />
-            <div className={ChatListingStyles.profileName}>Darshan Modi</div>
-            <span
-              className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
-            >
-              COE Team
-            </span>
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: "4",
-      label: (
-        <div className={ChatListingStyles.membersArea}>
-          <div className={ChatListingStyles.membersAreaLeft}>
-            <img
-              className={ChatListingStyles.profileAvtar}
-              src="https://i.pravatar.cc/40"
-              width="24"
-              height="24"
-            />
-            <div className={ChatListingStyles.profileName}>Bhuvan Desai</div>
-          </div>
-          <span className={ChatListingStyles.removeLink}>Leave Chat</span>
-        </div>
-      ),
-    },
-    {
-      type: "divider",
-    },
-    {
-      label: (
-        <div className={ChatListingStyles.membersArea}>
-          <div className={ChatListingStyles.membersAreaLeft}>
-            <FiUserPlusSVG />
-            <div className={ChatListingStyles.addMembers}>Add Members</div>
-          </div>
-          <span>
-            <FiShareSVG />
-          </span>
-        </div>
-      ),
-    },
-  ];
-  const chatContainerRef = useRef(null);
   const sendMessage = async () => {
     if (messageHandler) {
       setMessageHandler("");
@@ -302,24 +183,7 @@ const ChatListing = ({
               ></span>
             </div>
           </div>
-          <div className={ChatListingStyles.channelWindowStatus}>
-            <div className={ChatListingStyles.channelStatusLeft}>
-              HR Status: In Process
-            </div>
-            <div className={ChatListingStyles.channelStatusRight}>
-              <span>6 members</span>
-              <Dropdown
-                className={ChatListingStyles.channelStatusInfo}
-                placement="bottomRight"
-                menu={{
-                  items: membersDropdown,
-                }}
-                trigger={["click"]}
-              >
-                <InfoIcon />
-              </Dropdown>
-            </div>
-          </div>
+          <MemberListing allChannelItem={allChannelItem}/>
           <div className={ChatListingStyles.channelWindowInner}>
             <div className={ChatListingStyles.searchInChatWrapper}>
               <div className={ChatListingStyles.searchInChatInner}>
@@ -388,12 +252,6 @@ const ChatListing = ({
                       >
                         <p>
                           {item?.text}
-                          {/* Lorem ipsum is a placeholder text commonly used to
-                          demonstrate the visual form of a document or a
-                          typeface without relying on meaningful content. Lorem
-                          ipsum is a placeholder text commonly used to
-                          demonstrate the visual form of a document or a
-                          typeface without relying on meaningful content. */}
                         </p>
                         <div className={ChatListingStyles.chatReaction}>
                           <div className={ChatListingStyles.chatReactionInner}>
