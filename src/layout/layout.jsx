@@ -372,41 +372,6 @@ const Layout = () => {
 									</Space>
 								</a>
 							</Dropdown>
-							<BookmarkIcon className={LayoutStyle.bookmarkIcon} />
-						</div>
-						<div className={` ${LayoutStyle.channelMessageBox} ${LayoutStyle.channelMessageRight} `}>
-							<div className={LayoutStyle.quotedMessage}>
-								<p>That will be great <b>Prachi</b> & <b>Bhuvan</b>, this will help us get things moving ahead with a schedule.</p>
-								<div className={LayoutStyle.quotedMessageChild}><FiReplySVG width="10" height="16" />Darshan Modi, <span>Today at 12:31PM</span></div>
-							</div>
-							<p>Yes <b>Darshan</b>, kindly proceed.</p>
-							<div className={LayoutStyle.chatReaction}>
-								<div className={LayoutStyle.chatReactionInner}>
-									<div className={LayoutStyle.chatReactionCircle}>
-										<span className={LayoutStyle.chatReactionSmile}>
-											<SmileIcon />
-										</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div className={LayoutStyle.channelMessageMain}>
-						<div className={LayoutStyle.channelMessageInner}>
-							<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="30" height="30" />
-							<div className={LayoutStyle.profileName}>Bhuvan Desai</div>
-							<span className={LayoutStyle.timeStamp}>12:34PM</span>
-							<Dropdown className={` ${LayoutStyle.dotMenuMain} ${LayoutStyle.dotMenuhz} `} placement="bottomRight" menu={{
-								items: chatDropdown,
-								}}
-								trigger={['click']}>
-								<a onClick={(e) => e.preventDefault()}>
-									<Space>
-										<span className={LayoutStyle.dotMenu}></span>
-									</Space>
-								</a>
-							</Dropdown>
 						</div>
 						<div className={` ${LayoutStyle.channelMessageBox} ${LayoutStyle.channelMessageLeft} `}>
 							<p>Here are the images you were asking for please check.</p>
@@ -419,18 +384,7 @@ const Layout = () => {
 					</div>
 				</div>
 				
-				{/* Reply To Message Feature Starts */}
-				<div className={LayoutStyle.replyToWrapper}>
-					<div className={LayoutStyle.replyToTop}>
-						<FiReplySVG />Replying to Darshan Modi, <span>Today at 12:31PM</span>
-						<span className={LayoutStyle.chatWindowClose}></span>
-						</div>
-					<div className={LayoutStyle.replyToMessage}>
-						<p>That will be great <b>Prachi & Bhuvan</b>, this will help us get things moving ahead with a schedule.</p>
-						{/* <p>That will be great <b>Prachi & Bhuvan</b>, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule.</p> */}
-					</div>
-				</div>
-				{/* Reply To Message Feature Ends */}
+				
 				
 			</div>
 			<div className={LayoutStyle.channelWindowFooterWrap}>
@@ -438,26 +392,49 @@ const Layout = () => {
 					<input type="text" placeholder="Please allow me sometime" />
 					<span className={` ${LayoutStyle.channelAddMedia} ${LayoutStyle.channelAddMediaActive} `}>
 						<div className={LayoutStyle.mediaOptions}>
-							<span className={LayoutStyle.mediaOptionsActive}>
+							<span>
 								<SmileIcon />
-
-
-								{/* <div className={LayoutStyle.emojiPopup}>
-									<div className={LayoutStyle.emojiPopupSearch}>
-										<SearchIcon className={LayoutStyle.searchIcon} />
-										<input type="text" placeholder="Search Emoji" />
+								<div className={` ${LayoutStyle.chatPopup} ${LayoutStyle.chatArrowBottom} ${LayoutStyle.emojiPopup} `}
+									style={{
+										display: 'none'
+									}}
+								>
+									<div className={LayoutStyle.chatPopupInner}>
+										<div className={LayoutStyle.emojiPopupSearch}>
+											<SearchIcon className={LayoutStyle.searchIcon} />
+											<input type="text" placeholder="Search Emoji" />
+										</div>
+										<div className={LayoutStyle.popupContent}>
+											<span>Smileys & People</span>
+										</div>
 									</div>
-								</div> */}
-
-								{/* Tooltip for Emoji Starts */}
-								{/* <Tooltip title="Thanks for using antd. Have a nice day!" trigger="click">
-									<span>
-									</span>
-								</Tooltip> */}
-								{/* Tooltip for Emoji Ends */}
+								</div>
 
 							</span>
-							<span><FiImageSVG /></span>
+							<span className={LayoutStyle.mediaOptionsActive}>
+								<FiImageSVG />
+								<div className={` ${LayoutStyle.chatPopup} ${LayoutStyle.chatArrowBottom} ${LayoutStyle.attachementPopup} `}>
+									<div className={LayoutStyle.chatPopupInner}>
+										<div className={LayoutStyle.popupContent}>
+											<span>Attachments</span>
+											<div className={LayoutStyle.attachedMedia}>
+												<span>
+													<span className={LayoutStyle.chatWindowClose}></span>
+													<img src="https://i.pravatar.cc/56" width="56" height="56" />
+												</span>
+												<span>
+													<span className={LayoutStyle.chatWindowClose}></span>
+													<img src="https://i.pravatar.cc/56" width="56" height="56" />
+												</span>
+												<span>
+													<span className={LayoutStyle.chatWindowClose}></span>
+													<img src="https://i.pravatar.cc/56" width="56" height="56" />
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</span>
 							<span><FiFolderPlusSVG /></span>
 						</div>
 						<span className={LayoutStyle.mediaPlus}></span>
@@ -514,7 +491,40 @@ const Layout = () => {
 					</div>
 				</div>
 				<div className={LayoutStyle.channelWindowMessages}>
-					
+					<div className={LayoutStyle.channelMessageMain}>
+						<div className={LayoutStyle.channelMessageInner}>
+							<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="30" height="30" />
+							<div className={LayoutStyle.profileName}>Bhuvan Desai</div>
+							<span className={LayoutStyle.timeStamp}>12:34PM</span>
+							<Dropdown className={` ${LayoutStyle.dotMenuMain} ${LayoutStyle.dotMenuhz} `} placement="bottomRight" menu={{
+								items: chatDropdown,
+								}}
+								trigger={['click']}>
+								<a onClick={(e) => e.preventDefault()}>
+									<Space>
+										<span className={LayoutStyle.dotMenu}></span>
+									</Space>
+								</a>
+							</Dropdown>
+							<BookmarkIcon className={LayoutStyle.bookmarkIcon} />
+						</div>
+						<div className={` ${LayoutStyle.channelMessageBox} ${LayoutStyle.channelMessageRight} `}>
+							<div className={LayoutStyle.quotedMessage}>
+								<p>That will be great <b>Prachi</b> & <b>Bhuvan</b>, this will help us get things moving ahead with a schedule.</p>
+								<div className={LayoutStyle.quotedMessageChild}><FiReplySVG width="10" height="16" />Darshan Modi, <span>Today at 12:31PM</span></div>
+							</div>
+							<p>Yes <b>Darshan</b>, kindly proceed.</p>
+							<div className={LayoutStyle.chatReaction}>
+								<div className={LayoutStyle.chatReactionInner}>
+									<div className={LayoutStyle.chatReactionCircle}>
+										<span className={LayoutStyle.chatReactionSmile}>
+											<SmileIcon />
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 
 					<div className={LayoutStyle.channelMessageMain}>
 						<div className={LayoutStyle.channelMessageInner}>
@@ -750,13 +760,28 @@ const Layout = () => {
 						</div>
 					</div>
 				</div>
+
+				{/* Reply To Message Feature Starts */}
+				<div className={LayoutStyle.replyToWrapper}>
+					<div className={LayoutStyle.replyToTop}>
+						<FiReplySVG />Replying to Darshan Modi, <span>Today at 12:31PM</span>
+						<span className={LayoutStyle.chatWindowClose}></span>
+						</div>
+					<div className={LayoutStyle.replyToMessage}>
+						<p>That will be great <b>Prachi & Bhuvan</b>, this will help us get things moving ahead with a schedule.</p>
+						{/* <p>That will be great <b>Prachi & Bhuvan</b>, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule. That will be great Prachi & Bhuvan, this will help us get things moving ahead with a schedule.</p> */}
+					</div>
+				</div>
+				{/* Reply To Message Feature Ends */}
 			</div>
-			<div className={LayoutStyle.channelWindowFooter}>
-				<input type="text" placeholder="Please allow me sometime" />
-				<span className={LayoutStyle.channelAddMedia}>
-					<span className={LayoutStyle.mediaPlus}></span>
-				</span>
-				<span className={LayoutStyle.channelSubmit}><SendIcon/></span>
+			<div className={LayoutStyle.channelWindowFooterWrap}>
+				<div className={LayoutStyle.channelWindowFooter}>
+					<input type="text" placeholder="Please allow me sometime" />
+					<span className={LayoutStyle.channelAddMedia}>
+						<span className={LayoutStyle.mediaPlus}></span>
+					</span>
+					<span className={LayoutStyle.channelSubmit}><SendIcon/></span>
+				</div>
 			</div>
 		</div>
 	</>
