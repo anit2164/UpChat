@@ -43,6 +43,7 @@ const ChatListing = ({
 
   const [toggle, setToggle] = useState(false);
   const [messageHandler, setMessageHandler] = useState("");
+  const [smileIcon,setSmileIcon] = useState(false);
 
   const channelMainDropdown = [
     {
@@ -261,7 +262,7 @@ const ChatListing = ({
                         <p>{item?.text}</p>
                         <div className={ChatListingStyles.chatReaction}>
                           <div className={ChatListingStyles.chatReactionInner}>
-                            <div
+                           {smileIcon && <div
                               className={ChatListingStyles.chatReactionPopup}
                             >
                               <span>
@@ -285,9 +286,10 @@ const ChatListing = ({
                               <span
                                 className={ChatListingStyles.addNewEmoji}
                               ></span>
-                            </div>
+                            </div>} 
                             <div
                               className={ChatListingStyles.chatReactionCircle}
+                              onClick={()=>{setSmileIcon(!smileIcon)}}
                             >
                               <span
                                 className={ChatListingStyles.chatReactionActive}
