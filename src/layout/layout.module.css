@@ -93,6 +93,9 @@
 .channelWindowTwo{
     right: 998px;
 }
+.channelWindowThree{
+    right: 1497px;
+}
 
 .channelWindowHeader{
     display: flex;
@@ -935,5 +938,61 @@
 .quotedMessageChild span{
     font-weight: 400;
     margin-left: 4px;
+}
+/* */
+
+/* Scroll to Bottom */
+.scrollToBottom{
+    position: absolute;
+    bottom: 68px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.scrollToBottom svg{
+    display: block;
+}
+
+/* BookMarked Messages */
+.bookMarkedHeader{
+    padding: 8px 16px;
+    background: #F7F7F7;
+    font-size: 14px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.bookMarkedHeader .channelStatusLeft{
+    font-weight: 400;
+    line-height: 24px;
+    text-decoration: underline;
+
+    display: flex;
+    align-items: center;
+}
+.bookMarkedHeader .channelStatusLeft svg{
+    display: block;
+    margin-right: 10px;
+}
+
+.bookmarkChannelWindow .channelWindowInner{
+    height: 506px;
+}
+
+.bookmarkWindowFooterWrap{
+    position: relative;
+}
+.bookmarkWindowFooter{
+    background: #FFF9E1;
+    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.25);
+    padding: 14px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 20px;
+    /* border-top: 1px solid #CECCCC; */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 /* */
