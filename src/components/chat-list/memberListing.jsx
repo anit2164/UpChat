@@ -166,33 +166,39 @@ const MemberListing = (allChannelItem) => {
               <span className={ChatListingStyles.chatWindowClose}></span>
             </li>
             {/* <li></li> */}
-            <li className={ChatListingStyles.membersArea}>
+            <li>
               {userDataList?.map((item) => {
                 return (
                   // <div className={ChatListingStyles.}>
-                  <div className={ChatListingStyles.membersAreaLeft}>
-                    <img
-                      className={ChatListingStyles.profileAvtar}
-                      src="https://i.pravatar.cc/40"
-                      width="24"
-                      height="24"
-                    />
-                    <div className={ChatListingStyles.profileName}>
-                      {item?.userName}
+                  <>
+                    <div className={ChatListingStyles.membersArea}>
+                      <div className={ChatListingStyles.membersAreaLeft}>
+                        <img
+                          className={ChatListingStyles.profileAvtar}
+                          src="https://i.pravatar.cc/40"
+                          width="24"
+                          height="24"
+                        />
+                        <div className={ChatListingStyles.profileName}>
+                          {item?.userName}
+                        </div>
+                        <span
+                          className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
+                        >
+                          {item?.userDesignation}
+                        </span>
+                      </div>
+                      <span className={ChatListingStyles.removeLink}>
+                        Remove
+                      </span>
                     </div>
-                    <span
-                      className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
-                    >
-                      {item?.userDesignation}
-                    </span>
-                    <span className={ChatListingStyles.removeLink}>Remove</span>
-                  </div>
+                  </>
                   // </div>
                 );
               })}
             </li>
             <li>
-              <div className={ChatListingStyles.membersArea}>
+              <div className={ChatListingStyles.membersAreaFooter}>
                 <div className={ChatListingStyles.membersAreaLeft}>
                   <FiUserPlusSVG />
                   <div className={ChatListingStyles.addMembers}>
