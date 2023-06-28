@@ -43,7 +43,7 @@ const ChatListing = ({
 
   const [toggle, setToggle] = useState(false);
   const [messageHandler, setMessageHandler] = useState("");
-  const [smileIcon,setSmileIcon] = useState(false);
+  const [smileIcon, setSmileIcon] = useState(false);
 
   const channelMainDropdown = [
     {
@@ -135,13 +135,6 @@ const ChatListing = ({
   //   }
   // }, [listingChats, chatContainerRef]);
 
-  const seconds = 1687849569;
-  const convertToDate = new Date(seconds * 1000).toISOString();
-  console.log(convertToDate);
-  const dateTime = new Date(convertToDate);
-  const time = dateTime.toLocaleTimeString();
-  console.log(time);
-
   return (
     <>
       {!(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
@@ -217,6 +210,11 @@ const ChatListing = ({
               // ref={chatContainerRef}
             >
               {listingChats?.map((item) => {
+                console.log(
+                  new Date(item?.date?.seconds * 1000).toLocaleTimeString(),
+                  "itemitemitem"
+                );
+                // new Date(seconds * 1000).toISOString()
                 return (
                   <>
                     <div className={ChatListingStyles.channelMessageMain}>
@@ -237,7 +235,9 @@ const ChatListing = ({
                           Sales Consultant
                         </span>
                         <span className={ChatListingStyles.timeStamp}>
-                          5:48PM
+                          {new Date(item?.date?.seconds * 1000)
+                            .toLocaleTimeString()
+                            .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                         </span>
                         <Dropdown
                           className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
@@ -262,34 +262,38 @@ const ChatListing = ({
                         <p>{item?.text}</p>
                         <div className={ChatListingStyles.chatReaction}>
                           <div className={ChatListingStyles.chatReactionInner}>
-                           {smileIcon && <div
-                              className={ChatListingStyles.chatReactionPopup}
-                            >
-                              <span>
-                                <SmileIcon1 />
-                              </span>
-                              <span>
-                                <SmileIcon2 />
-                              </span>
-                              <span>
-                                <SmileIcon3 />
-                              </span>
-                              <span>
-                                <SmileIcon4 />
-                              </span>
-                              <span>
-                                <SmileIcon5 />
-                              </span>
-                              <span>
-                                <SmileIcon6 />
-                              </span>
-                              <span
-                                className={ChatListingStyles.addNewEmoji}
-                              ></span>
-                            </div>} 
+                            {smileIcon && (
+                              <div
+                                className={ChatListingStyles.chatReactionPopup}
+                              >
+                                <span>
+                                  <SmileIcon1 />
+                                </span>
+                                <span>
+                                  <SmileIcon2 />
+                                </span>
+                                <span>
+                                  <SmileIcon3 />
+                                </span>
+                                <span>
+                                  <SmileIcon4 />
+                                </span>
+                                <span>
+                                  <SmileIcon5 />
+                                </span>
+                                <span>
+                                  <SmileIcon6 />
+                                </span>
+                                <span
+                                  className={ChatListingStyles.addNewEmoji}
+                                ></span>
+                              </div>
+                            )}
                             <div
                               className={ChatListingStyles.chatReactionCircle}
-                              onClick={()=>{setSmileIcon(!smileIcon)}}
+                              onClick={() => {
+                                setSmileIcon(!smileIcon);
+                              }}
                             >
                               <span
                                 className={ChatListingStyles.chatReactionActive}
