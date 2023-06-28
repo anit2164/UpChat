@@ -134,6 +134,13 @@ const ChatListing = ({
   //   }
   // }, [listingChats, chatContainerRef]);
 
+  const seconds = 1687849569;
+  const convertToDate = new Date(seconds * 1000).toISOString();
+  console.log(convertToDate)
+  const dateTime = new Date(convertToDate);
+  const time  = dateTime.toLocaleTimeString();
+  console.log(time); 
+
   return (
     <>
       {!(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
