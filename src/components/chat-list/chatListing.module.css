@@ -693,3 +693,13 @@
   font-family: "Montserrat", sans-serif;
   margin-left: 32%;
 }
+/* Scroll to Bottom */
+.scrollToBottom {
+  position: absolute;
+  bottom: 68px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.scrollToBottom svg {
+  display: block;
+}
