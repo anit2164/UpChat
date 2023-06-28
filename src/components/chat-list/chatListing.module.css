@@ -688,7 +688,8 @@
 }
 
 .noDataFound {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 400px;
   font-family: "Montserrat", sans-serif;
+  margin-left: 32%;
 }

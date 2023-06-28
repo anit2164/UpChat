@@ -220,6 +220,7 @@ input[type="number"] {
 :where(.css-dev-only-do-not-override-12jzuas).ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-icon,
 :where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-item-icon{
   margin-inline-end: 12px;
+  max-width: 16px;
 }
 
 /** ============ ANTD DROPDOWN ENDS ===============*/
