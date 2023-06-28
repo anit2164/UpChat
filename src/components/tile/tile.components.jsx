@@ -130,11 +130,10 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
       <div className={TileStyle.chatWrapper}>
         {filterData?.map((item) => {
           return (
-            <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}>
+            <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}  onClick={() => showChatList(item)}>
               <div className={TileStyle.dFlex}>
                 <div
                   className={` ${TileStyle.chatInitialThumb} ${TileStyle.blueThumb} `}
-                  onClick={() => showChatList(item)}
                 >
                   {item?.companyInitial}
                 </div>
