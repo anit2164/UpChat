@@ -13,7 +13,7 @@ firebase.initializeApp(firebaseConfig);
 
 const MemberListing = (allChannelItem) => {
   const [userDataList, setUserDataList] = useState();
-  const [hideMemberModel,setHideMemberModel] = useState(false)
+  const [hideMemberModel, setHideMemberModel] = useState(false);
 
   useEffect(() => {
     try {
@@ -159,64 +159,75 @@ const MemberListing = (allChannelItem) => {
         <div className={ChatListingStyles.channelStatusRight}>
           <div className={ChatListingStyles.membersMenuMainHeader}>
             <span>{userDataList?.length} members</span>
-            <InfoIcon className={ChatListingStyles.infoActive} onClick={()=>{
-                setHideMemberModel(!hideMemberModel)
-              }}/>
+            <InfoIcon
+              className={ChatListingStyles.infoActive}
+              onClick={() => {
+                setHideMemberModel(!hideMemberModel);
+              }}
+            />
           </div>
-          {hideMemberModel &&<ul className={ChatListingStyles.membersMenuMain}>
-            <li className={ChatListingStyles.membersAreaHeader}>
-              <FiUsersSVG />{userDataList?.length} Members
-              <span className={ChatListingStyles.chatWindowClose} onClick={()=>{
-                setHideMemberModel(!hideMemberModel)
-              }}></span>
-            </li>
-            <li>
-              {userDataList?.map((item) => {
-                return (
-                  <>
-                    <div className={ChatListingStyles.membersArea}>
-                      <div className={ChatListingStyles.membersAreaLeft}>
-                        <img
-                          className={ChatListingStyles.profileAvtar}
-                          src="https://i.pravatar.cc/40"
-                          width="24"
-                          height="24"
-                        />
-                        <div className={ChatListingStyles.profileName}>
-                          {item?.userName}
+          {hideMemberModel && (
+            <ul className={ChatListingStyles.membersMenuMain}>
+              <li className={ChatListingStyles.membersAreaHeader}>
+                <FiUsersSVG />
+                {userDataList?.length} Members
+                <span
+                  className={ChatListingStyles.chatWindowClose}
+                  onClick={() => {
+                    setHideMemberModel(!hideMemberModel);
+                  }}
+                ></span>
+              </li>
+              <li>
+                {userDataList?.map((item) => {
+                  return (
+                    <>
+                      <div className={ChatListingStyles.membersArea}>
+                        <div className={ChatListingStyles.membersAreaLeft}>
+                          <img
+                            className={ChatListingStyles.profileAvtar}
+                            src="https://i.pravatar.cc/40"
+                            width="24"
+                            height="24"
+                          />
+                          <div className={ChatListingStyles.profileName}>
+                            {item?.userName}
+                          </div>
+                          <span
+                            className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
+                          >
+                            {item?.userDesignation}
+                          </span>
                         </div>
-                        <span
-                          className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
-                        >
-                          {item?.userDesignation}
+                        <span className={ChatListingStyles.removeLink}>
+                          Remove
                         </span>
                       </div>
-                      <span className={ChatListingStyles.removeLink}>
-                        Remove
-                      </span>
+                    </>
+                    // </div>
+                  );
+                })}
+                {userDataList?.length === 0 && (
+                  <span className={ChatListingStyles.noDataFound}>
+                    No members found
+                  </span>
+                )}
+              </li>
+              <li>
+                <div className={ChatListingStyles.membersAreaFooter}>
+                  <div className={ChatListingStyles.membersAreaLeft}>
+                    <FiUserPlusSVG />
+                    <div className={ChatListingStyles.addMembers}>
+                      Add Members
                     </div>
-                  </>
-                  // </div>
-                );
-              })}
-              {userDataList?.length === 0 && (
-              <span className={ChatListingStyles.noDataFound}>No data found</span>
-        )}
-            </li>
-            <li>
-              <div className={ChatListingStyles.membersAreaFooter}>
-                <div className={ChatListingStyles.membersAreaLeft}>
-                  <FiUserPlusSVG />
-                  <div className={ChatListingStyles.addMembers}>
-                    Add Members
                   </div>
+                  <span>
+                    <FiShareSVG />
+                  </span>
                 </div>
-                <span>
-                  <FiShareSVG />
-                </span>
-              </div>
-            </li>
-          </ul>}
+              </li>
+            </ul>
+          )}
         </div>
       </div>
     </>
