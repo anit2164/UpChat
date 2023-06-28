@@ -13,6 +13,7 @@ firebase.initializeApp(firebaseConfig);
 
 const MemberListing = (allChannelItem) => {
   const [userDataList, setUserDataList] = useState();
+  const [hideMemberModel,setHideMemberModel] = useState(false)
 
   useEffect(() => {
     try {
@@ -157,19 +158,21 @@ const MemberListing = (allChannelItem) => {
         </div>
         <div className={ChatListingStyles.channelStatusRight}>
           <div className={ChatListingStyles.membersMenuMainHeader}>
-            <span>6 members</span>
-            <InfoIcon className={ChatListingStyles.infoActive} />
+            <span>{userDataList?.length} members</span>
+            <InfoIcon className={ChatListingStyles.infoActive} onClick={()=>{
+                setHideMemberModel(!hideMemberModel)
+              }}/>
           </div>
-          <ul className={ChatListingStyles.membersMenuMain}>
+          {hideMemberModel &&<ul className={ChatListingStyles.membersMenuMain}>
             <li className={ChatListingStyles.membersAreaHeader}>
-              <FiUsersSVG />6 Members
-              <span className={ChatListingStyles.chatWindowClose}></span>
+              <FiUsersSVG />{userDataList?.length} Members
+              <span className={ChatListingStyles.chatWindowClose} onClick={()=>{
+                setHideMemberModel(!hideMemberModel)
+              }}></span>
             </li>
-            {/* <li></li> */}
             <li>
               {userDataList?.map((item) => {
                 return (
-                  // <div className={ChatListingStyles.}>
                   <>
                     <div className={ChatListingStyles.membersArea}>
                       <div className={ChatListingStyles.membersAreaLeft}>
@@ -196,6 +199,9 @@ const MemberListing = (allChannelItem) => {
                   // </div>
                 );
               })}
+              {userDataList?.length === 0 && (
+              <span className={ChatListingStyles.noDataFound}>No data found</span>
+        )}
             </li>
             <li>
               <div className={ChatListingStyles.membersAreaFooter}>
@@ -210,7 +216,7 @@ const MemberListing = (allChannelItem) => {
                 </span>
               </div>
             </li>
-          </ul>
+          </ul>}
         </div>
       </div>
     </>
