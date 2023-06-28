@@ -104,7 +104,7 @@ const ChatListing = ({
           enc_chatID: allChannelItem?.enc_channelID,
           hrID: allChannelItem?.hrID,
           isActivity: true,
-          senderID: "Shreyash Zinzuvadia",
+          senderEmpID: "Shreyash Zinzuvadia",
           text: messageHandler,
         };
         let apiObj = {
