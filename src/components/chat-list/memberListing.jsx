@@ -35,119 +35,119 @@ const MemberListing = (allChannelItem) => {
     }
   }, [allChannelItem]);
 
-//   const membersDropdown = [
-//     {
-//       key: "0",
-//       label: (
-//         <div className={ChatListingStyles.membersMenuMain}>
-//           6 Members
-//           <span className={ChatListingStyles.chatWindowClose}></span>
-//         </div>
-//       ),
-//       icon: <FiUsersSVG />,
-//     },
-//     {
-//       type: "divider",
-//     },
-//     {
-//       key: "1",
-//       label: (
-//         <div className={ChatListingStyles.membersArea}>
-//           <div className={ChatListingStyles.membersAreaLeft}>
-//             <img
-//               className={ChatListingStyles.profileAvtar}
-//               src="https://i.pravatar.cc/40"
-//               width="24"
-//               height="24"
-//             />
-//             <div className={ChatListingStyles.profileName}>Prachi Porwal</div>
-//             <span
-//               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
-//             >
-//               Sales Consultant
-//             </span>
-//           </div>
-//           <span className={ChatListingStyles.removeLink}>Remove</span>
-//         </div>
-//       ),
-//     },
-//     {
-//       key: "2",
-//       label: (
-//         <div className={ChatListingStyles.membersArea}>
-//           <div className={ChatListingStyles.membersAreaLeft}>
-//             <img
-//               className={ChatListingStyles.profileAvtar}
-//               src="https://i.pravatar.cc/40"
-//               width="24"
-//               height="24"
-//             />
-//             <div className={ChatListingStyles.profileName}>Majid Ali</div>
-//             <span
-//               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.deliveryTeam} `}
-//             >
-//               Delivery Team
-//             </span>
-//           </div>
-//           <span className={ChatListingStyles.removeLink}>Remove</span>
-//         </div>
-//       ),
-//     },
-//     {
-//       key: "3",
-//       label: (
-//         <div className={ChatListingStyles.membersArea}>
-//           <div className={ChatListingStyles.membersAreaLeft}>
-//             <img
-//               className={ChatListingStyles.profileAvtar}
-//               src="https://i.pravatar.cc/40"
-//               width="24"
-//               height="24"
-//             />
-//             <div className={ChatListingStyles.profileName}>Darshan Modi</div>
-//             <span
-//               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
-//             >
-//               COE Team
-//             </span>
-//           </div>
-//         </div>
-//       ),
-//     },
-//     {
-//       key: "4",
-//       label: (
-//         <div className={ChatListingStyles.membersArea}>
-//           <div className={ChatListingStyles.membersAreaLeft}>
-//             <img
-//               className={ChatListingStyles.profileAvtar}
-//               src="https://i.pravatar.cc/40"
-//               width="24"
-//               height="24"
-//             />
-//             <div className={ChatListingStyles.profileName}>Bhuvan Desai</div>
-//           </div>
-//           <span className={ChatListingStyles.removeLink}>Leave Chat</span>
-//         </div>
-//       ),
-//     },
-//     {
-//       type: "divider",
-//     },
-//     {
-//       label: (
-//         <div className={ChatListingStyles.membersArea}>
-//           <div className={ChatListingStyles.membersAreaLeft}>
-//             <FiUserPlusSVG />
-//             <div className={ChatListingStyles.addMembers}>Add Members</div>
-//           </div>
-//           <span>
-//             <FiShareSVG />
-//           </span>
-//         </div>
-//       ),
-//     },
-//   ];
+  //   const membersDropdown = [
+  //     {
+  //       key: "0",
+  //       label: (
+  //         <div className={ChatListingStyles.membersMenuMain}>
+  //           6 Members
+  //           <span className={ChatListingStyles.chatWindowClose}></span>
+  //         </div>
+  //       ),
+  //       icon: <FiUsersSVG />,
+  //     },
+  //     {
+  //       type: "divider",
+  //     },
+  //     {
+  //       key: "1",
+  //       label: (
+  //         <div className={ChatListingStyles.membersArea}>
+  //           <div className={ChatListingStyles.membersAreaLeft}>
+  //             <img
+  //               className={ChatListingStyles.profileAvtar}
+  //               src="https://i.pravatar.cc/40"
+  //               width="24"
+  //               height="24"
+  //             />
+  //             <div className={ChatListingStyles.profileName}>Prachi Porwal</div>
+  //             <span
+  //               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
+  //             >
+  //               Sales Consultant
+  //             </span>
+  //           </div>
+  //           <span className={ChatListingStyles.removeLink}>Remove</span>
+  //         </div>
+  //       ),
+  //     },
+  //     {
+  //       key: "2",
+  //       label: (
+  //         <div className={ChatListingStyles.membersArea}>
+  //           <div className={ChatListingStyles.membersAreaLeft}>
+  //             <img
+  //               className={ChatListingStyles.profileAvtar}
+  //               src="https://i.pravatar.cc/40"
+  //               width="24"
+  //               height="24"
+  //             />
+  //             <div className={ChatListingStyles.profileName}>Majid Ali</div>
+  //             <span
+  //               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.deliveryTeam} `}
+  //             >
+  //               Delivery Team
+  //             </span>
+  //           </div>
+  //           <span className={ChatListingStyles.removeLink}>Remove</span>
+  //         </div>
+  //       ),
+  //     },
+  //     {
+  //       key: "3",
+  //       label: (
+  //         <div className={ChatListingStyles.membersArea}>
+  //           <div className={ChatListingStyles.membersAreaLeft}>
+  //             <img
+  //               className={ChatListingStyles.profileAvtar}
+  //               src="https://i.pravatar.cc/40"
+  //               width="24"
+  //               height="24"
+  //             />
+  //             <div className={ChatListingStyles.profileName}>Darshan Modi</div>
+  //             <span
+  //               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
+  //             >
+  //               COE Team
+  //             </span>
+  //           </div>
+  //         </div>
+  //       ),
+  //     },
+  //     {
+  //       key: "4",
+  //       label: (
+  //         <div className={ChatListingStyles.membersArea}>
+  //           <div className={ChatListingStyles.membersAreaLeft}>
+  //             <img
+  //               className={ChatListingStyles.profileAvtar}
+  //               src="https://i.pravatar.cc/40"
+  //               width="24"
+  //               height="24"
+  //             />
+  //             <div className={ChatListingStyles.profileName}>Bhuvan Desai</div>
+  //           </div>
+  //           <span className={ChatListingStyles.removeLink}>Leave Chat</span>
+  //         </div>
+  //       ),
+  //     },
+  //     {
+  //       type: "divider",
+  //     },
+  //     {
+  //       label: (
+  //         <div className={ChatListingStyles.membersArea}>
+  //           <div className={ChatListingStyles.membersAreaLeft}>
+  //             <FiUserPlusSVG />
+  //             <div className={ChatListingStyles.addMembers}>Add Members</div>
+  //           </div>
+  //           <span>
+  //             <FiShareSVG />
+  //           </span>
+  //         </div>
+  //       ),
+  //     },
+  //   ];
 
   return (
     <>
@@ -156,48 +156,38 @@ const MemberListing = (allChannelItem) => {
           HR Status: In Process
         </div>
         <div className={ChatListingStyles.channelStatusRight}>
-          <span>6 members</span>
-          {/* <Dropdown
-                className={ChatListingStyles.channelStatusInfo}
-                placement="bottomRight"
-                menu={{
-                  items: membersDropdown,
-                }}
-                trigger={["click"]}
-              >
-              </Dropdown> */}
-          {/* <ul>
-            <li>
-              <div className={ChatListingStyles.membersMenuMain}>
-                6 Members
-                <span className={ChatListingStyles.chatWindowClose}></span>
-              </div>
+          <div className={ChatListingStyles.membersMenuMainHeader}>
+            <span>6 members</span>
+            <InfoIcon className={ChatListingStyles.infoActive} />
+          </div>
+          <ul className={ChatListingStyles.membersMenuMain}>
+            <li className={ChatListingStyles.membersAreaHeader}>
+              <FiUsersSVG />6 Members
+              <span className={ChatListingStyles.chatWindowClose}></span>
             </li>
-            <li></li>
-            <li>
+            {/* <li></li> */}
+            <li className={ChatListingStyles.membersArea}>
               {userDataList?.map((item) => {
                 return (
-                  <div className={ChatListingStyles.membersArea}>
-                    <div className={ChatListingStyles.membersAreaLeft}>
-                      <img
-                        className={ChatListingStyles.profileAvtar}
-                        src="https://i.pravatar.cc/40"
-                        width="24"
-                        height="24"
-                      />
-                      <div className={ChatListingStyles.profileName}>
-                        {item?.userName}
-                      </div>
-                      <span
-                        className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
-                      >
-                        {item?.userDesignation}
-                      </span>
-                      <span className={ChatListingStyles.removeLink}>
-                        Remove
-                      </span>
+                  // <div className={ChatListingStyles.}>
+                  <div className={ChatListingStyles.membersAreaLeft}>
+                    <img
+                      className={ChatListingStyles.profileAvtar}
+                      src="https://i.pravatar.cc/40"
+                      width="24"
+                      height="24"
+                    />
+                    <div className={ChatListingStyles.profileName}>
+                      {item?.userName}
                     </div>
+                    <span
+                      className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
+                    >
+                      {item?.userDesignation}
+                    </span>
+                    <span className={ChatListingStyles.removeLink}>Remove</span>
                   </div>
+                  // </div>
                 );
               })}
             </li>
@@ -214,8 +204,7 @@ const MemberListing = (allChannelItem) => {
                 </span>
               </div>
             </li>
-          </ul> */}
-          <InfoIcon />
+          </ul>
         </div>
       </div>
     </>
