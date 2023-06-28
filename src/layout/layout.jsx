@@ -39,6 +39,8 @@ import { ReactComponent as FiUserPlusSVG } from '@SVG/fiUserPlus.svg';
 import { ReactComponent as FiShareSVG } from '@SVG/fiShare.svg';
 import { ReactComponent as FiImageSVG } from '@SVG/fiImage.svg';
 import { ReactComponent as FiFolderPlusSVG } from '@SVG/fiFolderPlus.svg';
+import { ReactComponent as ScrollToBottomSVG } from '@SVG/scrollToBottom.svg';
+import { ReactComponent as FiChevronLeftSVG } from '@SVG/fiChevronLeft.svg';
 
 const Layout = () => {
 	const [toggle, setToggle] = useState(false);
@@ -52,7 +54,7 @@ const Layout = () => {
 		{
 			label: 'Bookmarks',
 			key: '1',
-			icon: <BookmarkIconDark />,
+			icon: <BookmarkIconDark width="11" height="13" />,
 		},
 		{
 			label: 'Channel Library',
@@ -193,7 +195,102 @@ const Layout = () => {
 			/>
 		</main>
 
-		<div className={LayoutStyle.channelWindow}>
+		{/* Bookmarked Messages Starts */}
+		<div className={` ${LayoutStyle.channelWindow} ${LayoutStyle.bookmarkChannelWindow} `}>
+			<div className={LayoutStyle.channelWindowHeader}>
+				<div className={LayoutStyle.channelHeaderLeft}>
+					<div className={` ${LayoutStyle.chatInitialThumb} ${LayoutStyle.blueThumb} `}>AN</div>
+					<div className={LayoutStyle.channelName}>Senior Backend... | Andela | HR170523201242</div>
+				</div>
+				<div className={LayoutStyle.channelHeaderRight}>
+					<Dropdown className={` ${LayoutStyle.dotMenuMain} ${LayoutStyle.dotMenuhz} `}  placement="bottomRight" menu={{
+						items: channelMainDropdown,
+						}}
+						trigger={['click']}>
+						<a onClick={(e) => e.preventDefault()}>
+							<Space>
+								<span className={LayoutStyle.dotMenu}></span>
+							</Space>
+						</a>
+					</Dropdown>
+					<span  className={LayoutStyle.chatWindowClose}></span>
+				</div>
+			</div>
+
+			<div className={LayoutStyle.bookMarkedHeader}>
+				<div className={LayoutStyle.channelStatusLeft}>
+					<BookmarkIconDark width="13" height="17" />
+					Bookmarked messages
+				</div>
+				<div className={LayoutStyle.channelStatusRight}>
+					<FiChevronLeftSVG width="14" height="14" />
+				</div>
+			</div>
+
+			<div className={LayoutStyle.channelWindowInner}>
+				<div className={LayoutStyle.channelWindowMessages}>
+					<div className={LayoutStyle.channelMessageMain}>
+						<div className={LayoutStyle.channelMessageInner}>
+							<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="30" height="30" />
+							<div className={LayoutStyle.profileName}>Bhuvan Desai</div>
+							<span className={LayoutStyle.timeStamp}>12:34PM</span>
+							<Dropdown className={` ${LayoutStyle.dotMenuMain} ${LayoutStyle.dotMenuhz} `} placement="bottomRight" menu={{
+								items: chatDropdown,
+								}}
+								trigger={['click']}>
+								<a onClick={(e) => e.preventDefault()}>
+									<Space>
+										<span className={LayoutStyle.dotMenu}></span>
+									</Space>
+								</a>
+							</Dropdown>
+						</div>
+						<div className={` ${LayoutStyle.channelMessageBox} ${LayoutStyle.channelMessageRight} `}>
+							<p>Yes <b>Prachi</b>, please allow me sometime will update you shortly regarding total number of talents available for interview.</p>
+							<div className={LayoutStyle.messageReactionWrapper}>
+								<span className={LayoutStyle.messageReaction}>
+									<EmojiThumbsUpLightSkinSVG />2
+								</span>
+								<span className={LayoutStyle.messageReaction}>
+									<EmojiThumbsUpLightSkinSVG />10
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div className={LayoutStyle.channelMessageMain}>
+						<div className={LayoutStyle.channelMessageInner}>
+							<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="30" height="30" />
+							<div className={LayoutStyle.profileName}>Darshan Modi</div>
+							<span className={` ${LayoutStyle.profileDesignation} ${LayoutStyle.deliveryTeam} `}>Delivery Team</span>
+							<span className={LayoutStyle.timeStamp}>12:44PM</span>
+							<Dropdown className={` ${LayoutStyle.dotMenuMain} ${LayoutStyle.dotMenuhz} `} placement="bottomRight" menu={{
+								items: chatDropdown,
+								}}
+								trigger={['click']}>
+								<a onClick={(e) => e.preventDefault()}>
+									<Space>
+										<span className={LayoutStyle.dotMenu}></span>
+									</Space>
+								</a>
+							</Dropdown>
+						</div>
+						<div className={` ${LayoutStyle.channelMessageBox} ${LayoutStyle.channelMessageLeft} `}>
+							<p>That will be great <b>Prachi</b> & <b>Bhuvan</b>, this will help us get things moving ahead with a schedule.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div className={LayoutStyle.bookmarkWindowFooterWrap}>
+				<div className={LayoutStyle.bookmarkWindowFooter}>
+					2 Bookmarked Message
+				</div>
+			</div>
+		</div>
+		{/* Bookmarked Messages Ends */}
+
+		<div className={` ${LayoutStyle.channelWindow} ${LayoutStyle.channelWindowTwo} `}>
 			<div className={LayoutStyle.channelWindowHeader}>
 				<div className={LayoutStyle.channelHeaderLeft}>
 					<div className={` ${LayoutStyle.chatInitialThumb} ${LayoutStyle.blueThumb} `}>AN</div>
@@ -226,6 +323,8 @@ const Layout = () => {
 					</Dropdown>
 				</div>
 			</div>
+
+			
 			<div className={LayoutStyle.channelWindowInner}>
 				<div className={LayoutStyle.channelWindowMessages}>
 					<div className={LayoutStyle.channelMessageMain}>
@@ -384,7 +483,7 @@ const Layout = () => {
 					</div>
 				</div>
 				
-				
+				<span className={LayoutStyle.scrollToBottom}><ScrollToBottomSVG /></span>
 				
 			</div>
 			<div className={LayoutStyle.channelWindowFooterWrap}>
@@ -413,7 +512,11 @@ const Layout = () => {
 							</span>
 							<span className={LayoutStyle.mediaOptionsActive}>
 								<FiImageSVG />
-								<div className={` ${LayoutStyle.chatPopup} ${LayoutStyle.chatArrowBottom} ${LayoutStyle.attachementPopup} `}>
+								<div className={` ${LayoutStyle.chatPopup} ${LayoutStyle.chatArrowBottom} ${LayoutStyle.attachementPopup} `}
+									style={{
+										display: 'none'
+									}}
+								>
 									<div className={LayoutStyle.chatPopupInner}>
 										<div className={LayoutStyle.popupContent}>
 											<span>Attachments</span>
@@ -444,7 +547,7 @@ const Layout = () => {
 			</div>
 		</div>
 
-		<div  className={` ${LayoutStyle.channelWindow} ${LayoutStyle.channelWindowTwo} `}>
+		<div  className={` ${LayoutStyle.channelWindow} ${LayoutStyle.channelWindowThree} `}>
 			<div className={LayoutStyle.channelWindowHeader}>
 				<div className={LayoutStyle.channelHeaderLeft}>
 					<div className={` ${LayoutStyle.chatInitialThumb} ${LayoutStyle.blueThumb} `}>AN</div>
