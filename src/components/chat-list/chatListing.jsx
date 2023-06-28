@@ -210,11 +210,6 @@ const ChatListing = ({
               // ref={chatContainerRef}
             >
               {listingChats?.map((item) => {
-                console.log(
-                  new Date(item?.date?.seconds * 1000).toLocaleTimeString(),
-                  "itemitemitem"
-                );
-                // new Date(seconds * 1000).toISOString()
                 return (
                   <>
                     <div className={ChatListingStyles.channelMessageMain}>

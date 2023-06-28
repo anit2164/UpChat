@@ -13,7 +13,6 @@ firebase.initializeApp(firebaseConfig);
 
 const MemberListing = (allChannelItem) => {
   const [userDataList, setUserDataList] = useState();
-  console.log(userDataList, "userDataList");
 
   useEffect(() => {
     try {
