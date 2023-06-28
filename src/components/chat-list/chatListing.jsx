@@ -27,6 +27,7 @@ import "firebase/compat/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import { sendMessageHandler } from "@/redux_toolkit/slices/sendMessage";
 import MemberListing from "./memberListing";
+import { ReactComponent as ScrollToBottomSVG } from "@SVG/scrollToBottom.svg";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -94,6 +95,15 @@ const ChatListing = ({
       icon: <FiBookmarkOutlinedSVG />,
     },
   ];
+  // const bottomToTopRef = useRef(null);
+
+  // const scrollToTop = () => {
+  //   bottomToTopRef.current?.scrollIntoView({
+  //     block: "start",
+  //     // bottom: 0,
+  //     behavior: "smooth",
+  //   });
+  // };
 
   const sendMessage = async () => {
     if (messageHandler) {
@@ -125,16 +135,37 @@ const ChatListing = ({
     }
   };
 
-  // useEffect(() => {
-  //   // sendMessage();
-  //   if (chatContainerRef.current) {
-  //     window.scrollTo(
-  //       0,
-  //       (chatContainerRef.current.scrollTop =
-  //         chatContainerRef.current.offsetTop)
-  //     );
-  //   }
-  // }, [listingChats, chatContainerRef]);
+  const handleKeyDown = async (e) => {
+    if (e.key === "Enter") {
+      if (messageHandler) {
+        setMessageHandler("");
+        try {
+          let obj = {
+            date: new Date(),
+            documentUrl: "",
+            enc_chatID: allChannelItem?.enc_channelID,
+            hrID: allChannelItem?.hrID,
+            isActivity: true,
+            senderEmpID: "Shreyash Zinzuvadia",
+            text: messageHandler,
+          };
+          let apiObj = {
+            id: allChannelItem?.hrID,
+            note: messageHandler,
+          };
+          const firestore = firebase.firestore();
+          const collectionRef = firestore.collection(
+            `ChannelChatsMapping/${allChannelItem?.id}/chats`
+          );
+          await collectionRef.add(obj);
+
+          dispatch(sendMessageHandler(apiObj));
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+  };
 
   return (
     <>
@@ -207,8 +238,7 @@ const ChatListing = ({
 
             <div
               className={ChatListingStyles.channelWindowMessages}
-              id="messagelist"
-              // ref={chatContainerRef}
+              id="content"
             >
               {listingChats?.map((item,key) => {
                 return (
@@ -251,6 +281,12 @@ const ChatListing = ({
                             </Space>
                           </a>
                         </Dropdown>
+                        <span
+                          className={ChatListingStyles.scrollToBottom}
+                          // onClick={scrollToTop}
+                        >
+                          <ScrollToBottomSVG />
+                        </span>
                       </div>
                       <div
                         className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageLeft} `}
@@ -308,6 +344,7 @@ const ChatListing = ({
                   </>
                 );
               })}
+
               {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
@@ -518,6 +555,7 @@ const ChatListing = ({
                 </div>
               </div> */}
             </div>
+            {/* <div ref={bottomToTopRef}></div> */}
           </div>
           <div className={ChatListingStyles.channelWindowFooter}>
             <input
@@ -525,6 +563,7 @@ const ChatListing = ({
               placeholder="Please allow me sometime"
               value={messageHandler}
               onChange={(e) => setMessageHandler(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
             <span className={ChatListingStyles.channelAddMedia}>
               <span className={ChatListingStyles.mediaPlus}></span>
