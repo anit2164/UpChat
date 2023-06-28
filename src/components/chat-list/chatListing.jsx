@@ -38,6 +38,7 @@ const ChatListing = ({
   showSnoozeChatsList,
   allChannelItem,
 }) => {
+  console.log(listingChats);
   const dispatch = useDispatch();
   const sendMessageData = useSelector((state) => state?.sendMessage);
 
@@ -222,12 +223,12 @@ const ChatListing = ({
                         />
                         <div className={ChatListingStyles.profileName}>
                           {/* Prachi Porwal */}
-                          {item?.senderID}
+                          {item?.senderEmpID}
                         </div>
                         <span
                           className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
                         >
-                          Sales Consultant
+                          {item?.senderDesignation}
                         </span>
                         <span className={ChatListingStyles.timeStamp}>
                           {new Date(item?.date?.seconds * 1000)
