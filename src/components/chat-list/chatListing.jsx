@@ -44,6 +44,7 @@ const ChatListing = ({
   const [toggle, setToggle] = useState(false);
   const [messageHandler, setMessageHandler] = useState("");
   const [smileIcon, setSmileIcon] = useState(false);
+  const [chatMapKey,setChatMapKey] = useState();
 
   const channelMainDropdown = [
     {
@@ -209,7 +210,7 @@ const ChatListing = ({
               id="messagelist"
               // ref={chatContainerRef}
             >
-              {listingChats?.map((item) => {
+              {listingChats?.map((item,key) => {
                 return (
                   <>
                     <div className={ChatListingStyles.channelMessageMain}>
@@ -255,9 +256,9 @@ const ChatListing = ({
                         className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageLeft} `}
                       >
                         <p>{item?.text}</p>
-                        <div className={ChatListingStyles.chatReaction}>
+                        <div className={ChatListingStyles.chatReaction} >
                           <div className={ChatListingStyles.chatReactionInner}>
-                            {smileIcon && (
+                            {chatMapKey===key && smileIcon &&(
                               <div
                                 className={ChatListingStyles.chatReactionPopup}
                               >
@@ -288,6 +289,7 @@ const ChatListing = ({
                               className={ChatListingStyles.chatReactionCircle}
                               onClick={() => {
                                 setSmileIcon(!smileIcon);
+                                setChatMapKey(key)
                               }}
                             >
                               <span
