@@ -110,9 +110,8 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
           return (
             <div
               className={`${SnoozeGroupsStyle.chatItem} ${SnoozeGroupsStyle.unreadMsg}`}
-              onClick={()=>snoozeChatsDetails(item)}
             >
-              <div className={SnoozeGroupsStyle.dFlex}>
+              <div className={SnoozeGroupsStyle.dFlex}  onClick={()=>snoozeChatsDetails(item)}>
                 <div
                   className={` ${SnoozeGroupsStyle.chatInitialThumb} ${SnoozeGroupsStyle.blueThumb} `}
                  

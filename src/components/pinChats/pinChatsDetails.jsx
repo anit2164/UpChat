@@ -113,9 +113,8 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
           return (
             <div
               className={`${PinChatDetailsStyle.chatItem} ${PinChatDetailsStyle.unreadMsg}`}
-              onClick={() => pinnedChatsDetails(item)}
             >
-              <div className={PinChatDetailsStyle.dFlex}>
+              <div className={PinChatDetailsStyle.dFlex} onClick={() => pinnedChatsDetails(item)}>
                 <div
                   className={` ${PinChatDetailsStyle.chatInitialThumb} ${PinChatDetailsStyle.blueThumb} `}
                 >
