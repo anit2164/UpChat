@@ -167,7 +167,7 @@ const MemberListing = (allChannelItem) => {
                 trigger={["click"]}
               >
               </Dropdown> */}
-          <ul>
+          {/* <ul>
             <li>
               <div className={ChatListingStyles.membersMenuMain}>
                 6 Members
@@ -215,7 +215,7 @@ const MemberListing = (allChannelItem) => {
                 </span>
               </div>
             </li>
-          </ul>
+          </ul> */}
           <InfoIcon />
         </div>
       </div>

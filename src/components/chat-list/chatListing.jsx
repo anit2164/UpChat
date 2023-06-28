@@ -156,10 +156,11 @@ const ChatListing = ({
               <div
                 className={` ${ChatListingStyles.chatInitialThumb} ${ChatListingStyles.blueThumb} `}
               >
-                AN
+                {allChannelItem?.companyInitial}
               </div>
               <div className={ChatListingStyles.channelName}>
-                Senior Backend... | Andela | HR170523201242
+                {allChannelItem?.role} | {allChannelItem?.companyName} |{" "}
+                {allChannelItem?.hrNumber}
               </div>
             </div>
             <div className={ChatListingStyles.channelHeaderRight}>
@@ -183,7 +184,7 @@ const ChatListing = ({
               ></span>
             </div>
           </div>
-          <MemberListing allChannelItem={allChannelItem}/>
+          <MemberListing allChannelItem={allChannelItem} />
           <div className={ChatListingStyles.channelWindowInner}>
             <div className={ChatListingStyles.searchInChatWrapper}>
               <div className={ChatListingStyles.searchInChatInner}>
@@ -250,9 +251,7 @@ const ChatListing = ({
                       <div
                         className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageLeft} `}
                       >
-                        <p>
-                          {item?.text}
-                        </p>
+                        <p>{item?.text}</p>
                         <div className={ChatListingStyles.chatReaction}>
                           <div className={ChatListingStyles.chatReactionInner}>
                             <div
@@ -522,7 +521,7 @@ const ChatListing = ({
             </span>
             <span
               className={ChatListingStyles.channelSubmit}
-              onClick={sendMessage}
+              onClick={(e) => sendMessage(e)}
             >
               <SendIcon />
             </span>
