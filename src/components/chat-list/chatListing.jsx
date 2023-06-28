@@ -137,10 +137,10 @@ const ChatListing = ({
 
   const seconds = 1687849569;
   const convertToDate = new Date(seconds * 1000).toISOString();
-  console.log(convertToDate)
+  console.log(convertToDate);
   const dateTime = new Date(convertToDate);
-  const time  = dateTime.toLocaleTimeString();
-  console.log(time); 
+  const time = dateTime.toLocaleTimeString();
+  console.log(time);
 
   return (
     <>
@@ -260,7 +260,7 @@ const ChatListing = ({
                         className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageLeft} `}
                       >
                         <p>{item?.text}</p>
-                        <div className={ChatListingStyles.chatReaction}>
+                        {/* <div className={ChatListingStyles.chatReaction}>
                           <div className={ChatListingStyles.chatReactionInner}>
                            {smileIcon && <div
                               className={ChatListingStyles.chatReactionPopup}
@@ -298,7 +298,7 @@ const ChatListing = ({
                               </span>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     {/* <div className={ChatListingStyles.divider}>
