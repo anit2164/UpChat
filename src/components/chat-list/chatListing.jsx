@@ -260,7 +260,7 @@ const ChatListing = ({
                         className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageLeft} `}
                       >
                         <p>{item?.text}</p>
-                        {/* <div className={ChatListingStyles.chatReaction}>
+                        <div className={ChatListingStyles.chatReaction}>
                           <div className={ChatListingStyles.chatReactionInner}>
                            {smileIcon && <div
                               className={ChatListingStyles.chatReactionPopup}
@@ -298,7 +298,7 @@ const ChatListing = ({
                               </span>
                             </div>
                           </div>
-                        </div> */}
+                        </div>
                       </div>
                     </div>
                     {/* <div className={ChatListingStyles.divider}>
