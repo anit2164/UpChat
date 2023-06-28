@@ -130,7 +130,7 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
                 </div>
               </div>
               <div className={PinChatDetailsStyle.dFlexTime}>
-                <div className={PinChatDetailsStyle.timeStamp}>12:30 PM</div>
+                <div className={PinChatDetailsStyle.timeStamp}>{item?.lastMessageTime}</div>
                 <div className={PinChatDetailsStyle.unreadNum}>5</div>
                 <Dropdown
                   className={PinChatDetailsStyle.dotMenuMain}
