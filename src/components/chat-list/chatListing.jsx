@@ -104,7 +104,7 @@ const ChatListing = ({
           enc_chatID: allChannelItem?.enc_channelID,
           hrID: allChannelItem?.hrID,
           isActivity: true,
-          senderID: "Shreyash Zinzuvadia",
+          senderEmpID: "Shreyash Zinzuvadia",
           text: messageHandler,
         };
         let apiObj = {
@@ -222,12 +222,12 @@ const ChatListing = ({
                         />
                         <div className={ChatListingStyles.profileName}>
                           {/* Prachi Porwal */}
-                          {item?.senderID}
+                          {item?.senderEmpID}
                         </div>
                         <span
                           className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
                         >
-                          Sales Consultant
+                          {item?.senderDesignation}
                         </span>
                         <span className={ChatListingStyles.timeStamp}>
                           {new Date(item?.date?.seconds * 1000)
