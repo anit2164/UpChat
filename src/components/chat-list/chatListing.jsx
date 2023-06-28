@@ -38,7 +38,6 @@ const ChatListing = ({
   showSnoozeChatsList,
   allChannelItem,
 }) => {
-  console.log(listingChats);
   const dispatch = useDispatch();
   const sendMessageData = useSelector((state) => state?.sendMessage);
 
