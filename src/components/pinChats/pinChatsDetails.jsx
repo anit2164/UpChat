@@ -30,11 +30,11 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
       key: ChannelMenu.VIEW_HR_DETAILS,
       icon: <ViewHRDetailsSVG />,
     },
-    {
-      label: ChannelMenu.CHANNEL_LIBRARY,
-      key: ChannelMenu.CHANNEL_LIBRARY,
-      icon: <ChannelLibrarySVG />,
-    },
+    // {
+    //   label: ChannelMenu.CHANNEL_LIBRARY,
+    //   key: ChannelMenu.CHANNEL_LIBRARY,
+    //   icon: <ChannelLibrarySVG />,
+    // },
     // {
     //   label: ChannelMenu.SNOOZE,
     //   key: ChannelMenu.SNOOZE,

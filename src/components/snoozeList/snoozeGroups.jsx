@@ -26,11 +26,11 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
       key: ChannelMenu.VIEW_HR_DETAILS,
       icon: <ViewHRDetailsSVG />,
     },
-    {
-      label: ChannelMenu.CHANNEL_LIBRARY,
-      key: ChannelMenu.CHANNEL_LIBRARY,
-      icon: <ChannelLibrarySVG />,
-    },
+    // {
+    //   label: ChannelMenu.CHANNEL_LIBRARY,
+    //   key: ChannelMenu.CHANNEL_LIBRARY,
+    //   icon: <ChannelLibrarySVG />,
+    // },
     {
       label: ChannelMenu.MOVE_TO_ACTIVE,
       key: ChannelMenu.MOVE_TO_ACTIVE,
