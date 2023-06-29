@@ -38,6 +38,7 @@ const ChatListing = ({
   snoozeChatsDetails,
   showSnoozeChatsList,
   allChannelItem,
+  showChat,
 }) => {
   const dispatch = useDispatch();
   const sendMessageData = useSelector((state) => state?.sendMessage);
@@ -45,7 +46,7 @@ const ChatListing = ({
   const [toggle, setToggle] = useState(false);
   const [messageHandler, setMessageHandler] = useState("");
   const [smileIcon, setSmileIcon] = useState(false);
-  const [chatMapKey,setChatMapKey] = useState();
+  const [chatMapKey, setChatMapKey] = useState();
 
   const channelMainDropdown = [
     {
@@ -95,15 +96,14 @@ const ChatListing = ({
       icon: <FiBookmarkOutlinedSVG />,
     },
   ];
-  // const bottomToTopRef = useRef(null);
+  const bottomToTopRef = useRef(null);
 
-  // const scrollToTop = () => {
-  //   bottomToTopRef.current?.scrollIntoView({
-  //     block: "start",
-  //     // bottom: 0,
-  //     behavior: "smooth",
-  //   });
-  // };
+  const scrollToBottom = () => {
+    bottomToTopRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  };
 
   const sendMessage = async () => {
     if (messageHandler) {
@@ -127,7 +127,7 @@ const ChatListing = ({
           `ChannelChatsMapping/${allChannelItem?.id}/chats`
         );
         await collectionRef.add(obj);
-
+        scrollToBottom();
         dispatch(sendMessageHandler(apiObj));
       } catch (error) {
         console.error(error);
@@ -164,8 +164,20 @@ const ChatListing = ({
           console.error(error);
         }
       }
+
+      scrollToBottom();
     }
   };
+
+  useEffect(() => {
+    if (showChat === true) {
+      scrollToBottom();
+      // bottomToTopRef.current?.scrollIntoView({
+      //   behavior: "smooth",
+      //   block: "end",
+      // });
+    }
+  }, [showChat, listingChats]);
 
   return (
     <>
@@ -218,9 +230,18 @@ const ChatListing = ({
             </div>
           </div>
           <MemberListing allChannelItem={allChannelItem} />
-          <div className={ChatListingStyles.channelWindowInner}>
-            <div className={ChatListingStyles.searchInChatWrapper}>
-              <div className={ChatListingStyles.searchInChatInner}>
+          <div
+            className={ChatListingStyles.channelWindowInner}
+            // ref={bottomToTopRef}
+          >
+            <div
+              className={ChatListingStyles.searchInChatWrapper}
+              // ref={bottomToTopRef}
+            >
+              <div
+                className={ChatListingStyles.searchInChatInner}
+                // ref={bottomToTopRef}
+              >
                 <SearchIcon className={ChatListingStyles.searchIcon} />
                 <input type="text" placeholder="Search in chat" />
                 <span className={ChatListingStyles.closeIcon}></span>
@@ -240,10 +261,13 @@ const ChatListing = ({
               className={ChatListingStyles.channelWindowMessages}
               id="content"
             >
-              {listingChats?.map((item,key) => {
+              {listingChats?.map((item, key) => {
                 return (
                   <>
-                    <div className={ChatListingStyles.channelMessageMain}>
+                    <div
+                      className={ChatListingStyles.channelMessageMain}
+                      ref={bottomToTopRef}
+                    >
                       <div className={ChatListingStyles.channelMessageInner}>
                         <img
                           className={ChatListingStyles.profileAvtar}
@@ -283,7 +307,7 @@ const ChatListing = ({
                         </Dropdown>
                         <span
                           className={ChatListingStyles.scrollToBottom}
-                          // onClick={scrollToTop}
+                          onClick={scrollToBottom}
                         >
                           <ScrollToBottomSVG />
                         </span>
@@ -292,9 +316,9 @@ const ChatListing = ({
                         className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageLeft} `}
                       >
                         <p>{item?.text}</p>
-                        <div className={ChatListingStyles.chatReaction} >
+                        <div className={ChatListingStyles.chatReaction}>
                           <div className={ChatListingStyles.chatReactionInner}>
-                            {chatMapKey===key && smileIcon &&(
+                            {chatMapKey === key && smileIcon && (
                               <div
                                 className={ChatListingStyles.chatReactionPopup}
                               >
@@ -325,7 +349,7 @@ const ChatListing = ({
                               className={ChatListingStyles.chatReactionCircle}
                               onClick={() => {
                                 setSmileIcon(!smileIcon);
-                                setChatMapKey(key)
+                                setChatMapKey(key);
                               }}
                             >
                               <span
