@@ -710,3 +710,15 @@
 .scrollToBottom svg {
   display: block;
 }
+.circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  /* font-size: 250px; */
+  /* font-family: roboto, arial; */
+  color: white;
+  line-height: 30px;
+  text-align: center;
+  background: orange;
+  margin-right: 8px;
+}
