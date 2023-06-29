@@ -101,6 +101,7 @@ const UpTabs = () => {
                 search={search}
                 data={data}
                 LastPinnedGroups={LastPinnedGroups}
+                setData={setData}
               />
               <Accordion
                 icon={<BriefcaseSVG />}
@@ -110,6 +111,7 @@ const UpTabs = () => {
                 data={data}
                 LastPinnedGroups={LastPinnedGroups}
                 LastSnoozeGroups={LastSnoozeGroups}
+                setData={setData}
               />
             </div>
           </TabPanel>

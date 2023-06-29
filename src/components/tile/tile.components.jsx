@@ -14,7 +14,13 @@ import ChatListing from "../chat-list/chatListing";
 
 firebase.initializeApp(firebaseConfig);
 
-const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
+const Tile = ({
+  search,
+  data,
+  LastPinnedGroups,
+  LastSnoozeGroups,
+  setData,
+}) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
 
@@ -125,14 +131,33 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
     }
   };
 
+  const updateChannel = async (date) => {
+    allChannelItem.lastMessageTime = date;
+    try {
+      const firestore = firebase.firestore();
+      const collectionRef = firestore.collection("channels");
+      const snapshot = collectionRef.doc(allChannelItem.id);
+      await snapshot.set(allChannelItem);
+      let _data = await collectionRef.get();
+      const dataArray = _data?.docs?.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setData(dataArray);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <>
       <div className={TileStyle.chatWrapper}>
         {filterData?.map((item) => {
-          console.log(filterData,"filterData");
           return (
-            <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}  >
-              <div className={TileStyle.dFlex} onClick={() => showChatList(item)}>
+            <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}>
+              <div
+                className={TileStyle.dFlex}
+                onClick={() => showChatList(item)}
+              >
                 <div
                   className={` ${TileStyle.chatInitialThumb} ${TileStyle.blueThumb} `}
                 >
@@ -148,7 +173,11 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
                 </div>
               </div>
               <div className={TileStyle.dFlexTime}>
-                <div className={TileStyle.timeStamp}>{item?.lastMessageTime}</div>
+                <div className={TileStyle.timeStamp}>
+                  {new Date(item?.lastMessageTime * 1000)
+                    .toLocaleTimeString()
+                    .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
+                </div>
                 <div className={TileStyle.unreadNum}>5</div>
                 <Dropdown
                   className={TileStyle.dotMenuMain}
@@ -180,6 +209,7 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
           showChat={showChat}
           listingChats={listingChats}
           allChannelItem={allChannelItem}
+          updateChannel={updateChannel}
         />
       )}
     </>

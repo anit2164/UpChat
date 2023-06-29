@@ -16,6 +16,7 @@ const PinAccordian = ({
   search,
   data,
   LastPinnedGroups,
+  setData,
 }) => {
   const [showBody, setShowBody] = useState(true);
 
@@ -42,6 +43,7 @@ const PinAccordian = ({
           search={search}
           data={data}
           LastPinnedGroups={LastPinnedGroups}
+          setData={setData}
         />
       )}
     </Fragment>

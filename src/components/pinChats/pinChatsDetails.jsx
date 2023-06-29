@@ -15,7 +15,7 @@ import ChatListing from "../chat-list/chatListing";
 
 firebase.initializeApp(firebaseConfig);
 
-const PinChatDetails = ({ data, LastPinnedGroups }) => {
+const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
 
@@ -30,16 +30,6 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
       key: ChannelMenu.VIEW_HR_DETAILS,
       icon: <ViewHRDetailsSVG />,
     },
-    // {
-    //   label: ChannelMenu.CHANNEL_LIBRARY,
-    //   key: ChannelMenu.CHANNEL_LIBRARY,
-    //   icon: <ChannelLibrarySVG />,
-    // },
-    // {
-    //   label: ChannelMenu.SNOOZE,
-    //   key: ChannelMenu.SNOOZE,
-    //   icon: <SnoozeSVG />,
-    // },
     {
       label: ChannelMenu.LEAVE,
       key: ChannelMenu.LEAVE,
@@ -106,6 +96,24 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
     }
   };
 
+  const updateChannel = async (date) => {
+    pinnedChatsItem.lastMessageTime = date;
+    try {
+      const firestore = firebase.firestore();
+      const collectionRef = firestore.collection("channels");
+      const snapshot = collectionRef.doc(pinnedChatsItem.id);
+      await snapshot.set(pinnedChatsItem);
+      let _data = await collectionRef.get();
+      const dataArray = _data?.docs?.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setData(dataArray);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <div className={PinChatDetailsStyle.chatWrapper}>
@@ -114,7 +122,10 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
             <div
               className={`${PinChatDetailsStyle.chatItem} ${PinChatDetailsStyle.unreadMsg}`}
             >
-              <div className={PinChatDetailsStyle.dFlex} onClick={() => pinnedChatsDetails(item)}>
+              <div
+                className={PinChatDetailsStyle.dFlex}
+                onClick={() => pinnedChatsDetails(item)}
+              >
                 <div
                   className={` ${PinChatDetailsStyle.chatInitialThumb} ${PinChatDetailsStyle.blueThumb} `}
                 >
@@ -130,7 +141,11 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
                 </div>
               </div>
               <div className={PinChatDetailsStyle.dFlexTime}>
-                <div className={PinChatDetailsStyle.timeStamp}>{item?.lastMessageTime}</div>
+                <div className={PinChatDetailsStyle.timeStamp}>
+                  {new Date(item?.lastMessageTime * 1000)
+                    .toLocaleTimeString()
+                    .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
+                </div>
                 <div className={PinChatDetailsStyle.unreadNum}>5</div>
                 <Dropdown
                   className={PinChatDetailsStyle.dotMenuMain}
@@ -162,6 +177,7 @@ const PinChatDetails = ({ data, LastPinnedGroups }) => {
           showPinnedChatsList={showPinnedChatsList}
           listingChats={listingChats}
           allChannelItem={pinnedChatsItem}
+          updateChannel={updateChannel}
         />
       )}
     </>

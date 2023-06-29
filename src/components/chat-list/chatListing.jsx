@@ -1,5 +1,5 @@
 import ChatListingStyles from "./chatListing.module.css";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Collapse from "@Components/collapsible/collapsible.components";
 import Header from "@Components/header/header.components";
 import UpTabs from "@/components/upTabs/upTabs.components";
@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { sendMessageHandler } from "@/redux_toolkit/slices/sendMessage";
 import MemberListing from "./memberListing";
 import { ReactComponent as ScrollToBottomSVG } from "@SVG/scrollToBottom.svg";
+// import Tile from "../tile/tile.components";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -40,7 +41,9 @@ const ChatListing = ({
   showChat,
   showPinnedChatsList,
   showSnoozeChatsList,
+  updateChannel,
 }) => {
+  console.log(allChannelItem, "allChannelItem");
   const dispatch = useDispatch();
   const sendMessageData = useSelector((state) => state?.sendMessage);
 
@@ -48,6 +51,8 @@ const ChatListing = ({
   const [messageHandler, setMessageHandler] = useState("");
   const [smileIcon, setSmileIcon] = useState(false);
   const [chatMapKey, setChatMapKey] = useState();
+  // const [dataNew, setDataNew] = useState([]);
+  // const [tempArr, setTempArr] = useState([]);
 
   const channelMainDropdown = [
     {
@@ -134,6 +139,7 @@ const ChatListing = ({
         );
         await collectionRef.add(obj);
         scrollToBottom();
+        updateChannel(new Date());
         dispatch(sendMessageHandler(apiObj));
       } catch (error) {
         console.error(error);
@@ -169,7 +175,7 @@ const ChatListing = ({
             `ChannelChatsMapping/${allChannelItem?.id}/chats`
           );
           await collectionRef.add(obj);
-
+          updateChannel(new Date());
           dispatch(sendMessageHandler(apiObj));
         } catch (error) {
           console.error(error);
@@ -187,10 +193,6 @@ const ChatListing = ({
       showSnoozeChatsList === true
     ) {
       scrollToBottom();
-      // bottomToTopRef.current?.scrollIntoView({
-      //   behavior: "smooth",
-      //   block: "end",
-      // });
     }
   }, [showChat, listingChats]);
 
@@ -238,25 +240,13 @@ const ChatListing = ({
                   </Space>
                 </a>
               </Dropdown>
-              <span
-                className={ChatListingStyles.chatWindowClose}
-                // onClick={() => showChatList(!showChat)}
-              ></span>
+              <span className={ChatListingStyles.chatWindowClose}></span>
             </div>
           </div>
           <MemberListing allChannelItem={allChannelItem} />
-          <div
-            className={ChatListingStyles.channelWindowInner}
-            // ref={bottomToTopRef}
-          >
-            <div
-              className={ChatListingStyles.searchInChatWrapper}
-              // ref={bottomToTopRef}
-            >
-              <div
-                className={ChatListingStyles.searchInChatInner}
-                // ref={bottomToTopRef}
-              >
+          <div className={ChatListingStyles.channelWindowInner}>
+            <div className={ChatListingStyles.searchInChatWrapper}>
+              <div className={ChatListingStyles.searchInChatInner}>
                 <SearchIcon className={ChatListingStyles.searchIcon} />
                 <input type="text" placeholder="Search in chat" />
                 <span className={ChatListingStyles.closeIcon}></span>
@@ -320,12 +310,14 @@ const ChatListing = ({
                             </Space>
                           </a>
                         </Dropdown>
+                        {/* {listingChats?.length > 8 && ( */}
                         <span
                           className={ChatListingStyles.scrollToBottom}
                           onClick={scrollToBottom}
                         >
                           <ScrollToBottomSVG />
                         </span>
+                        {/* )} */}
                       </div>
                       <div
                         className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageLeft} `}
@@ -594,7 +586,6 @@ const ChatListing = ({
                 </div>
               </div> */}
             </div>
-            {/* <div ref={bottomToTopRef}></div> */}
           </div>
           <div className={ChatListingStyles.channelWindowFooter}>
             <input
@@ -616,6 +607,7 @@ const ChatListing = ({
           </div>
         </div>
       )}
+      {/* <Tile date={date} /> */}
     </>
   );
 };

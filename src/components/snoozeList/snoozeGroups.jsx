@@ -76,18 +76,19 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
     },
     [LastSnoozeGroups]
   );
-  
+
   const [showSnoozeChatsList, setShowSnoozeChatsList] = useState(false);
   const [listingChats, setListingChats] = useState([]);
   const [allChannelItem, setAllChannelItem] = useState();
-  
+
   const snoozeChatsDetails = (item) => {
-    setAllChannelItem(item)
+    setAllChannelItem(item);
     setShowSnoozeChatsList(true);
     try {
       const firestore = firebase.firestore();
       const unsubscribe = firestore
-        .collection(`ChannelChatsMapping/${item?.id}/chats`).orderBy("date","asc")
+        .collection(`ChannelChatsMapping/${item?.id}/chats`)
+        .orderBy("date", "asc")
         .onSnapshot((snapshot) => {
           const messagesData = snapshot.docs.map((doc) => doc.data());
           setListingChats(messagesData);
@@ -102,6 +103,23 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
     }
   };
 
+  const updateChannel = async (date) => {
+    allChannelItem.lastMessageTime = date;
+    try {
+      const firestore = firebase.firestore();
+      const collectionRef = firestore.collection("channels");
+      const snapshot = collectionRef.doc(allChannelItem.id);
+      await snapshot.set(allChannelItem);
+      let _data = await collectionRef.get();
+      const dataArray = _data?.docs?.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setData(dataArray);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -111,10 +129,12 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
             <div
               className={`${SnoozeGroupsStyle.chatItem} ${SnoozeGroupsStyle.unreadMsg}`}
             >
-              <div className={SnoozeGroupsStyle.dFlex}  onClick={()=>snoozeChatsDetails(item)}>
+              <div
+                className={SnoozeGroupsStyle.dFlex}
+                onClick={() => snoozeChatsDetails(item)}
+              >
                 <div
                   className={` ${SnoozeGroupsStyle.chatInitialThumb} ${SnoozeGroupsStyle.blueThumb} `}
-                 
                 >
                   {item?.companyInitial}
                 </div>
@@ -128,7 +148,11 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
                 </div>
               </div>
               <div className={SnoozeGroupsStyle.dFlexTime}>
-                <div className={SnoozeGroupsStyle.timeStamp}>{item?.lastMessageTime}</div>
+                <div className={SnoozeGroupsStyle.timeStamp}>
+                  {new Date(item?.lastMessageTime * 1000)
+                    .toLocaleTimeString()
+                    .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
+                </div>
                 <div className={SnoozeGroupsStyle.unreadNum}>5</div>
                 <Dropdown
                   className={SnoozeGroupsStyle.dotMenuMain}
@@ -155,9 +179,13 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
         )}
       </div>
       {showSnoozeChatsList === true && (
-      <ChatListing snoozeChatsDetails={snoozeChatsDetails} showSnoozeChatsList={showSnoozeChatsList} listingChats={listingChats}
-      allChannelItem={allChannelItem}
-      />
+        <ChatListing
+          snoozeChatsDetails={snoozeChatsDetails}
+          showSnoozeChatsList={showSnoozeChatsList}
+          listingChats={listingChats}
+          allChannelItem={allChannelItem}
+          updateChannel={updateChannel}
+        />
       )}
     </>
   );
