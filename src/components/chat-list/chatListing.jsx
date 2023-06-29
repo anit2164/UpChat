@@ -43,7 +43,6 @@ const ChatListing = ({
   showSnoozeChatsList,
   updateChannel,
 }) => {
-  console.log(allChannelItem, "allChannelItem");
   const dispatch = useDispatch();
   const sendMessageData = useSelector((state) => state?.sendMessage);
 
@@ -51,8 +50,7 @@ const ChatListing = ({
   const [messageHandler, setMessageHandler] = useState("");
   const [smileIcon, setSmileIcon] = useState(false);
   const [chatMapKey, setChatMapKey] = useState();
-  // const [dataNew, setDataNew] = useState([]);
-  // const [tempArr, setTempArr] = useState([]);
+  const [search,setSearch] = useState("");
 
   const channelMainDropdown = [
     {
@@ -196,6 +194,13 @@ const ChatListing = ({
     }
   }, [showChat, listingChats]);
 
+
+  const filterData = listingChats?.filter((item) => {
+    return (
+      item?.text?.toLowerCase()?.includes(search?.toLowerCase()) 
+    );
+  });
+
   return (
     <>
       {!(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
@@ -248,7 +253,9 @@ const ChatListing = ({
             <div className={ChatListingStyles.searchInChatWrapper}>
               <div className={ChatListingStyles.searchInChatInner}>
                 <SearchIcon className={ChatListingStyles.searchIcon} />
-                <input type="text" placeholder="Search in chat" />
+                <input type="text" placeholder="Search in chat" onChange={(e)=>{
+setSearch(e.target.value);
+                }}/>
                 <span className={ChatListingStyles.closeIcon}></span>
                 <span className={ChatListingStyles.numberOfSearch}>
                   <span className={ChatListingStyles.arrowIcon}>
@@ -266,7 +273,7 @@ const ChatListing = ({
               className={ChatListingStyles.channelWindowMessages}
               id="content"
             >
-              {listingChats?.map((item, key) => {
+              {filterData?.map((item, key) => {
                 return (
                   <>
                     <div
@@ -375,6 +382,10 @@ const ChatListing = ({
                   </>
                 );
               })}
+              {filterData?.length===0&&(
+
+              <p>No Chats Found</p>
+              )}
 
               {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
