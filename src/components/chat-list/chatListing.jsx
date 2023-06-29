@@ -234,7 +234,9 @@ const ChatListing = ({
       )}
 
       {(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
-        <div className={ChatListingStyles.channelWindow}>
+        <div
+          className={` ${ChatListingStyles.channelWindow} ${ChatListingStyles.chatListingWindow} `}
+        >
           <div className={ChatListingStyles.channelWindowHeader}>
             <div className={ChatListingStyles.channelHeaderLeft}>
               <div
