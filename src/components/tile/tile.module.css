@@ -85,10 +85,10 @@
 }
 
 .timeStamp {
-    color: #676767;
-    margin-right: 8px;
-    font-size: 10px;
-    font-weight: 400;
+  color: #676767;
+  margin-right: 8px;
+  font-size: 10px;
+  font-weight: 400;
 }
 
 .unreadNum {
@@ -106,12 +106,12 @@
 }
 
 .dotMenuMain {
-    padding: 11px 5px;
-    border-radius: 30px;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
+  padding: 11px 5px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .dotMenuMain:hover {
