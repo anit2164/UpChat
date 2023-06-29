@@ -129,6 +129,7 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
     <>
       <div className={TileStyle.chatWrapper}>
         {filterData?.map((item) => {
+          console.log(filterData,"filterData");
           return (
             <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}  >
               <div className={TileStyle.dFlex} onClick={() => showChatList(item)}>
@@ -147,7 +148,7 @@ const Tile = ({ search, data, LastPinnedGroups, LastSnoozeGroups }) => {
                 </div>
               </div>
               <div className={TileStyle.dFlexTime}>
-                <div className={TileStyle.timeStamp}>12:30 PM</div>
+                <div className={TileStyle.timeStamp}>{item?.lastMessageTime}</div>
                 <div className={TileStyle.unreadNum}>5</div>
                 <Dropdown
                   className={TileStyle.dotMenuMain}

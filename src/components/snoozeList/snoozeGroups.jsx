@@ -128,7 +128,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
                 </div>
               </div>
               <div className={SnoozeGroupsStyle.dFlexTime}>
-                <div className={SnoozeGroupsStyle.timeStamp}>12:30 PM</div>
+                <div className={SnoozeGroupsStyle.timeStamp}>{item?.lastMessageTime}</div>
                 <div className={SnoozeGroupsStyle.unreadNum}>5</div>
                 <Dropdown
                   className={SnoozeGroupsStyle.dotMenuMain}
