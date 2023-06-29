@@ -23,8 +23,8 @@
 
 /* Channel Window - 19/06/2023 */
 .chatInitialThumb {
-  width: 40px;
-  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -100,6 +100,7 @@
 .channelHeaderRight {
   display: flex;
   align-items: center;
+  text-align: left;
 }
 .channelWindow .chatInitialThumb {
   width: 30px;
@@ -671,6 +672,11 @@
 .removeLink {
   text-decoration: underline;
   font-size: 11px;
+  cursor: pointer;
+  opacity: 0;
+}
+.membersArea:hover .removeLink {
+  opacity: 1;
 }
 
 .addMembers {
