@@ -17,7 +17,7 @@ import ChatListing from "../chat-list/chatListing";
 
 firebase.initializeApp(firebaseConfig);
 
-const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
+const SnoozeGroupDetails = ({ data, LastSnoozeGroups,setData }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
   const items = [
@@ -185,6 +185,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups }) => {
           listingChats={listingChats}
           allChannelItem={allChannelItem}
           updateChannel={updateChannel}
+          // setData = {setData}
         />
       )}
     </>

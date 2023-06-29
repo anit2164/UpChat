@@ -133,6 +133,7 @@ const UpTabs = () => {
                 search={search}
                 data={data}
                 LastSnoozeGroups={LastSnoozeGroups}
+                setData={setData}
               />
             </div>
           </TabPanel>
