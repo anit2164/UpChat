@@ -118,13 +118,13 @@ const ChatListing = ({
           documentUrl: "",
           enc_chatID: allChannelItem?.enc_channelID,
           hrID: allChannelItem?.hrID,
-          isActivity: true,
-          senderEmpID: "Shreyash Zinzuvadia",
+          isActivity: false,
+          senderEmpID: "",
           text: messageHandler,
-          isNotes: false,
+          isNotes: true,
           remark: "",
           senderDesignation: "",
-          senderName: "",
+          senderName: "Shreyash Zinzuvadia",
           talentName: "",
         };
         let apiObj = {
@@ -155,13 +155,13 @@ const ChatListing = ({
             documentUrl: "",
             enc_chatID: allChannelItem?.enc_channelID,
             hrID: allChannelItem?.hrID,
-            isActivity: true,
-            senderEmpID: "Shreyash Zinzuvadia",
+            isActivity: false,
+            senderEmpID: "",
             text: messageHandler,
-            isNotes: false,
+            isNotes: true,
             remark: "",
             senderDesignation: "",
-            senderName: "",
+            senderName: "Shreyash Zinzuvadia",
             talentName: "",
           };
           let apiObj = {
@@ -289,7 +289,7 @@ setSearch(e.target.value);
                         />
                         <div className={ChatListingStyles.profileName}>
                           {/* Prachi Porwal */}
-                          {item?.senderEmpID}
+                          {item?.senderName}
                         </div>
                         <span
                           className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}

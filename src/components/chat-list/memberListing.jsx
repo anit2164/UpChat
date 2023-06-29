@@ -184,12 +184,15 @@ const MemberListing = (allChannelItem) => {
                     <>
                       <div className={ChatListingStyles.membersArea}>
                         <div className={ChatListingStyles.membersAreaLeft}>
-                          <img
+                          {/* <img
                             className={ChatListingStyles.profileAvtar}
-                            src="https://i.pravatar.cc/40"
+                            src={}
                             width="24"
                             height="24"
-                          />
+                          /> */}
+                          <span className={ChatListingStyles.circle}>
+                            {item?.userInitial}
+                          </span>
                           <div className={ChatListingStyles.profileName}>
                             {item?.userName}
                           </div>
