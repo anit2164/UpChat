@@ -36,9 +36,10 @@ const ChatListing = ({
   pinnedChatsDetails,
   listingChats,
   snoozeChatsDetails,
-  showSnoozeChatsList,
   allChannelItem,
   showChat,
+  showPinnedChatsList,
+  showSnoozeChatsList,
 }) => {
   const dispatch = useDispatch();
   const sendMessageData = useSelector((state) => state?.sendMessage);
@@ -117,6 +118,11 @@ const ChatListing = ({
           isActivity: true,
           senderEmpID: "Shreyash Zinzuvadia",
           text: messageHandler,
+          isNotes: false,
+          remark: "",
+          senderDesignation: "",
+          senderName: "",
+          talentName: "",
         };
         let apiObj = {
           id: allChannelItem?.hrID,
@@ -148,6 +154,11 @@ const ChatListing = ({
             isActivity: true,
             senderEmpID: "Shreyash Zinzuvadia",
             text: messageHandler,
+            isNotes: false,
+            remark: "",
+            senderDesignation: "",
+            senderName: "",
+            talentName: "",
           };
           let apiObj = {
             id: allChannelItem?.hrID,
@@ -170,7 +181,11 @@ const ChatListing = ({
   };
 
   useEffect(() => {
-    if (showChat === true) {
+    if (
+      showChat === true ||
+      showPinnedChatsList === true ||
+      showSnoozeChatsList === true
+    ) {
       scrollToBottom();
       // bottomToTopRef.current?.scrollIntoView({
       //   behavior: "smooth",
