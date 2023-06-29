@@ -489,6 +489,53 @@ const Layout = () => {
 			<div className={LayoutStyle.channelWindowFooterWrap}>
 				<div className={LayoutStyle.channelWindowFooter}>
 					<input type="text" placeholder="Please allow me sometime" />
+
+					{/* User mention popup Starts */}
+					<div className={` ${LayoutStyle.chatPopup} ${LayoutStyle.chatArrowBottom} ${LayoutStyle.userMentionPoup} `}
+						style={{
+							display: 'block'
+						}}
+					>
+						<div className={LayoutStyle.chatPopupInner}>
+							<div className={LayoutStyle.membersArea}>
+								<div className={LayoutStyle.membersAreaLeft}>
+									<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="24" height="24" />
+									<div className={LayoutStyle.profileName}>Prachi PorwalPorwal</div>
+									<span className={` ${LayoutStyle.profileDesignation} ${LayoutStyle.sales} `}>Sales Consultant</span>
+								</div>
+							</div>
+							<div className={LayoutStyle.membersArea}>
+								<div className={LayoutStyle.membersAreaLeft}>
+									<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="24" height="24" />
+									<div className={LayoutStyle.profileName}>Majid Ali</div>
+									<span className={` ${LayoutStyle.profileDesignation} ${LayoutStyle.deliveryTeam} `}>Delivery Team</span>
+								</div>
+							</div>
+							<div className={LayoutStyle.membersArea}>
+								<div className={LayoutStyle.membersAreaLeft}>
+									<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="24" height="24" />
+									<div className={LayoutStyle.profileName}>Darshan Modi</div>
+									<span className={` ${LayoutStyle.profileDesignation} ${LayoutStyle.coeteam} `}>COE Team</span>
+								</div>
+							</div>
+							<div className={LayoutStyle.membersArea}>
+								<div className={LayoutStyle.membersAreaLeft}>
+									<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="24" height="24" />
+									<div className={LayoutStyle.profileName}>Chintan Doshi</div>
+									<span className={` ${LayoutStyle.profileDesignation} ${LayoutStyle.deliveryTeam} `}>Delivery Team</span>
+								</div>
+							</div>
+							<div className={LayoutStyle.membersArea}>
+								<div className={LayoutStyle.membersAreaLeft}>
+									<img className={LayoutStyle.profileAvtar} src="https://i.pravatar.cc/40" width="24" height="24" />
+									<div className={LayoutStyle.profileName}>Reema Madan</div>
+									<span className={` ${LayoutStyle.profileDesignation} ${LayoutStyle.sales} `}>Sales Consultant</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					{/* User mention popup Ends */}
+
 					<span className={` ${LayoutStyle.channelAddMedia} ${LayoutStyle.channelAddMediaActive} `}>
 						<div className={LayoutStyle.mediaOptions}>
 							<span>

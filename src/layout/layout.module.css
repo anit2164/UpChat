@@ -91,10 +91,10 @@
 
 /* Temporary CSS style to display another chat window */
 .channelWindowTwo{
-    right: 998px;
+    right: 988px;
 }
 .channelWindowThree{
-    right: 1497px;
+    right: 1477px;
 }
 
 .channelWindowHeader{
@@ -347,6 +347,7 @@
 }
 .channelWindowFooter input[type=text]{
     flex: 1;
+    width: 100%;
     max-height: 52px;
     border: none;
     padding: 16px;
@@ -994,5 +995,29 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+/* */
+
+/* User Mention Popup */
+.userMentionPoup{
+    position: absolute;
+    bottom: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    min-width: 272px;
+}
+.userMentionPoup::before{
+    left: 50%;
+}
+.userMentionPoup .chatPopupInner{
+    padding: 16px;
+    max-height: 223px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.userMentionPoup .chatPopupInner .membersArea:not(:last-child){
+    margin-bottom: 16px;
 }
 /* */
