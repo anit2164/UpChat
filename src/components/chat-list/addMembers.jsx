@@ -187,12 +187,29 @@ const AddMembers = ({
 
   const userNameList = (e, item) => {
     if (e.target.checked) {
-      setUserName([...showUserName, item]);
+      setUserName([...showUserName, `${item?.userName} (${item?.userID})`]);
     } else {
-      setUserName(showUserName.filter((showUserName) => showUserName !== item));
+      setUserName(
+        showUserName.filter(
+          (showUserName) =>
+            showUserName !== `${item?.userName} (${item?.userID})`
+        )
+      );
     }
   };
-  console.log(showUserName, "showUserName");
+
+  // const [items, setItems] = useState();
+
+  const removeSelectedMember = (item) => {
+    console.log(item, "iteteett");
+    if (showUserName) {
+      setUserName(showUserName.filter((showUserName) => showUserName !== item));
+      // const updatedItems = item?.map((itemInfo) =>
+      //   itemInfo === item ? { ...itemInfo, checked: false } : item
+      // );
+      // setUserName(updatedItems);
+    }
+  };
 
   return (
     <>
@@ -228,12 +245,6 @@ const AddMembers = ({
               return (
                 <div className={ChatListingStyles.membersArea}>
                   <div className={ChatListingStyles.membersAreaLeft}>
-                    {/* <img
-                              className={ChatListingStyles.profileAvtar}
-                              src={}
-                              width="24"
-                              height="24"
-                            /> */}
                     <span
                       className={` ${ChatListingStyles.circle} ${ChatListingStyles.blueThumb} `}
                     >
@@ -253,7 +264,7 @@ const AddMembers = ({
                       type="checkbox"
                       name="selectMember"
                       // value={item?.userName}
-                      onChange={(e) => userNameList(e, item?.userName)}
+                      onChange={(e) => userNameList(e, item)}
                     />
                     <span></span>
                   </div>
@@ -266,10 +277,14 @@ const AddMembers = ({
           <li>
             <div className={ChatListingStyles.addedMember}>
               {showUserName?.map((item) => {
+                console.log(item, "dsdsdsdsdsaaa");
                 return (
                   <span>
                     {item}
-                    <span className={ChatListingStyles.removeMember}></span>
+                    <span
+                      className={ChatListingStyles.removeMember}
+                      onClick={() => removeSelectedMember(item)}
+                    ></span>
                   </span>
                 );
               })}
