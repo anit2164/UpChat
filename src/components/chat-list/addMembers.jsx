@@ -8,18 +8,25 @@ import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { useEffect, useState } from "react";
-import AddMembers from "./addMembers";
+import { useDispatch, useSelector } from "react-redux";
+import { addMemberListingHandler } from "@/redux_toolkit/slices/addMemberListing";
+
+import { ReactComponent as FiChevronLeftSVG } from "@SVG/fiChevronLeft.svg";
+import { ReactComponent as SearchSVG } from "@SVG/search.svg";
 
 firebase.initializeApp(firebaseConfig);
 
-const MemberListing = (allChannelItem) => {
+const AddMembers = ({
+  allChannelItem,
+  showAddMemberModel,
+  setShowAddMemberModel,
+  setHideMemberModel,
+}) => {
   const [userDataList, setUserDataList] = useState();
-  const [hideMemberModel, setHideMemberModel] = useState(false);
-  const [showAddMemberModel, setShowAddMemberModel] = useState(false);
-
-  useEffect(() => {
-    setHideMemberModel(false);
-  }, [allChannelItem]);
+  // const [hideMemberModel, setHideMemberModel] = useState(false);
+  const [search, setSearch] = useState("");
+  const dispatch = useDispatch();
+  const addMemberListingdata = useSelector((state) => state?.addMemberListing);
 
   useEffect(() => {
     try {
@@ -42,6 +49,11 @@ const MemberListing = (allChannelItem) => {
     }
   }, [allChannelItem]);
 
+  useEffect(() => {
+    dispatch(addMemberListingHandler());
+  }, []);
+
+  console.log(addMemberListingdata?.data?.details, "addMemberListingdata");
   //   const membersDropdown = [
   //     {
   //       key: "0",
@@ -156,104 +168,90 @@ const MemberListing = (allChannelItem) => {
   //     },
   //   ];
 
+  // const filterData = addMemberListingdata?.data?.details?.filter((item) => {
+  //   return (
+  //     item?.userName?.toLowerCase()?.includes(search?.toLowerCase()) ||
+  //     item?.userID?.toLowerCase()?.includes(search?.toLowerCase())
+  //   );
+  // });
+
+  // const filterData = data?.filter((item) => {
+  //   return item?.isPinned === true;
+  // });
+
+  const filterData = addMemberListingdata?.data?.details?.filter((item) => {
+    return item?.userName?.toLowerCase()?.includes(search?.toLowerCase());
+  });
+
   return (
     <>
-      <div className={ChatListingStyles.channelWindowStatus}>
-        <div className={ChatListingStyles.channelStatusLeft}>
-          HR Status: In Process
-        </div>
-        <div className={ChatListingStyles.channelStatusRight}>
-          <div className={ChatListingStyles.membersMenuMainHeader}>
-            <span>{userDataList?.length} members</span>
-            <InfoIcon
-              className={ChatListingStyles.infoActive}
-              onClick={() => {
-                setHideMemberModel(!hideMemberModel);
+      <div
+        className={` ${ChatListingStyles.channelWindowStatus} ${ChatListingStyles.addMembersPopup} `}
+      >
+        <ul className={ChatListingStyles.membersMenuMain}>
+          <li className={ChatListingStyles.membersAreaHeader}>
+            <FiUserPlusSVG />
+            Add Members
+            <span className={ChatListingStyles.chatWindowBack}>
+              <FiChevronLeftSVG
+                width="14"
+                onClick={() => {
+                  setShowAddMemberModel(!showAddMemberModel);
+                  setHideMemberModel(true);
+                }}
+              />
+            </span>
+          </li>
+          <li className={ChatListingStyles.membersAreaSearch}>
+            <SearchSVG />
+            <input
+              type="search"
+              placeholder="Search Name, Employee ID or Email."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
               }}
             />
-          </div>
-          {hideMemberModel && (
-            <ul className={ChatListingStyles.membersMenuMain}>
-              <li className={ChatListingStyles.membersAreaHeader}>
-                <FiUsersSVG />
-                {userDataList?.length} Members
-                <span
-                  className={ChatListingStyles.chatWindowClose}
-                  onClick={() => {
-                    setHideMemberModel(!hideMemberModel);
-                  }}
-                ></span>
-              </li>
-              <li>
-                {userDataList?.map((item) => {
-                  return (
-                    <>
-                      <div className={ChatListingStyles.membersArea}>
-                        <div className={ChatListingStyles.membersAreaLeft}>
-                          {/* <img
-                            className={ChatListingStyles.profileAvtar}
-                            src={}
-                            width="24"
-                            height="24"
-                          /> */}
-                          <span className={ChatListingStyles.circle}>
-                            {item?.userInitial}
-                          </span>
-                          <div className={ChatListingStyles.profileName}>
-                            {item?.userName}
-                          </div>
-                          <span
-                            className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
-                          >
-                            {item?.userDesignation}
-                          </span>
-                        </div>
-                        <span className={ChatListingStyles.removeLink}>
-                          Remove
-                        </span>
-                      </div>
-                    </>
-                    // </div>
-                  );
-                })}
-                {userDataList?.length === 0 && (
-                  <span className={ChatListingStyles.noDataFound}>
-                    No members found
-                  </span>
-                )}
-              </li>
-              <li>
-                <div className={ChatListingStyles.membersAreaFooter}>
+          </li>
+          <li className={ChatListingStyles.memberListing}>
+            {filterData?.map((item) => {
+              return (
+                <div className={ChatListingStyles.membersArea}>
                   <div className={ChatListingStyles.membersAreaLeft}>
-                    <FiUserPlusSVG />
-                    <div
-                      className={ChatListingStyles.addMembers}
-                      onClick={() => {
-                        setShowAddMemberModel(!showAddMemberModel);
-                        setHideMemberModel(false);
-                      }}
-                    >
-                      Add Members
+                    {/* <img
+                              className={ChatListingStyles.profileAvtar}
+                              src={}
+                              width="24"
+                              height="24"
+                            /> */}
+                    <span className={ChatListingStyles.circle}>
+                      {item?.userIntial}
+                    </span>
+                    <div className={ChatListingStyles.profileName}>
+                      {item?.userName}({item?.userID})
                     </div>
+                    <span
+                      className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
+                    >
+                      {item?.userType}
+                    </span>
                   </div>
-                  <span>
-                    <FiShareSVG />
-                  </span>
                 </div>
-              </li>
-            </ul>
-          )}
-          {showAddMemberModel && (
-            <AddMembers
-              showAddMemberModel={showAddMemberModel}
-              setShowAddMemberModel={setShowAddMemberModel}
-              setHideMemberModel={setHideMemberModel}
-            />
-          )}
-        </div>
+              );
+            })}
+          </li>
+          {filterData?.length === 0 && <p>No Members Found</p>}
+
+          <li>
+            <div className={ChatListingStyles.addMembersAreaFooter}>
+              <button>Add</button>
+            </div>
+          </li>
+        </ul>
       </div>
+      {/* </div> */}
     </>
   );
 };
 
-export default MemberListing;
+export default AddMembers;

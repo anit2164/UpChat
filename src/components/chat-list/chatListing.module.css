@@ -648,14 +648,58 @@
   position: relative;
   font-size: 14px;
 }
+/* .addMembersPopup .membersAreaHeader {
+  justify-content: space-between;
+} */
 .membersAreaHeader svg {
   margin-right: 12px;
 }
+.membersAreaHeader > div {
+  display: flex;
+  align-items: center;
+}
+.chatWindowBack {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  cursor: pointer;
+}
+.chatWindowBack svg {
+  margin-right: 0 !important;
+}
+
 .membersMenuMain .chatWindowClose {
   position: absolute;
   right: 5px;
   top: 5px;
 }
+
+.membersAreaSearch {
+  position: relative;
+  padding: 8px 16px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(5, 5, 5, 0.06);
+}
+.membersAreaSearch svg {
+  position: absolute;
+  left: 30px;
+  top: 52%;
+  transform: translateY(-50%);
+}
+
+.memberListing {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.membersAreaSearch input[type="search"] {
+  border: 1px solid #ebebeb;
+  padding: 9px;
+  padding-left: 33px;
+  width: 100%;
+  border-radius: 8px;
+}
+
 .membersArea {
   display: flex;
   align-items: center;
@@ -691,6 +735,7 @@
   font-size: 14px;
   font-weight: 400;
   margin-left: 12px;
+  cursor: pointer;
 }
 
 .membersAreaFooter {
@@ -728,4 +773,30 @@
   text-align: center;
   background: orange;
   margin-right: 8px;
+}
+
+.addMembersAreaFooter {
+  padding: 16px;
+  display: flex;
+  justify-content: end;
+  border-top: 1px solid #f2f2f2;
+}
+
+.addMembersAreaFooter button {
+  background: #ffd233;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  border: none;
+  color: #232323;
+  width: 86px;
+  height: 43px;
+  cursor: pointer;
+}
+.noChatFound {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
 }

@@ -178,7 +178,7 @@ const Tile = ({
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                <div className={TileStyle.unreadNum}>5</div>
+                {/* <div className={TileStyle.unreadNum}>5</div> */}
                 <Dropdown
                   className={TileStyle.dotMenuMain}
                   menu={{

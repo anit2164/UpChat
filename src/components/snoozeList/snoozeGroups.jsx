@@ -17,7 +17,7 @@ import ChatListing from "../chat-list/chatListing";
 
 firebase.initializeApp(firebaseConfig);
 
-const SnoozeGroupDetails = ({ data, LastSnoozeGroups,setData }) => {
+const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
   const items = [
@@ -153,7 +153,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups,setData }) => {
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                <div className={SnoozeGroupsStyle.unreadNum}>5</div>
+                {/* <div className={SnoozeGroupsStyle.unreadNum}>5</div> */}
                 <Dropdown
                   className={SnoozeGroupsStyle.dotMenuMain}
                   menu={{

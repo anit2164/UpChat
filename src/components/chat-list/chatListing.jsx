@@ -264,7 +264,7 @@ const ChatListing = ({
                   className={ChatListingStyles.closeIcon}
                   onClick={() => setSearch("")}
                 ></span>
-                <span className={ChatListingStyles.numberOfSearch}>
+                {/* <span className={ChatListingStyles.numberOfSearch}>
                   <span className={ChatListingStyles.arrowIcon}>
                     <ArrowIcon />
                   </span>
@@ -272,7 +272,7 @@ const ChatListing = ({
                   <span className={ChatListingStyles.arrowIconRight}>
                     <ArrowIcon />
                   </span>
-                </span>
+                </span> */}
               </div>
             </div>
 
@@ -325,12 +325,12 @@ const ChatListing = ({
                           </a>
                         </Dropdown>
                         {/* {listingChats?.length > 8 && ( */}
-                        <span
+                        {/* <span
                           className={ChatListingStyles.scrollToBottom}
                           onClick={scrollToBottom}
                         >
                           <ScrollToBottomSVG />
-                        </span>
+                        </span> */}
                         {/* )} */}
                       </div>
                       <div
@@ -389,7 +389,9 @@ const ChatListing = ({
                   </>
                 );
               })}
-              {filterData?.length === 0 && <p>No Chats Found</p>}
+              {filterData?.length === 0 && (
+                <p className={ChatListingStyles.noChatFound}>No Chats Found</p>
+              )}
 
               {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>

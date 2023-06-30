@@ -146,7 +146,7 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                <div className={PinChatDetailsStyle.unreadNum}>5</div>
+                {/* <div className={PinChatDetailsStyle.unreadNum}>5</div> */}
                 <Dropdown
                   className={PinChatDetailsStyle.dotMenuMain}
                   menu={{
