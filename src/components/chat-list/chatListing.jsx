@@ -108,6 +108,7 @@ const ChatListing = ({
   const bottomToTopRef = useRef(null);
   const arrawScroll = useRef(null);
 
+
   const [scrollDown, setScrollDown] = useState(false);
   const scrollToBottom = () => {
     bottomToTopRef.current?.scrollIntoView({
@@ -116,6 +117,8 @@ const ChatListing = ({
     });
     setScrollDown(false);
   };
+
+  let getSenderName="";
 
   const sendMessage = async () => {
     if (messageHandler) {
@@ -144,7 +147,16 @@ const ChatListing = ({
         const collectionRef = firestore.collection(
           `ChannelChatsMapping/${allChannelItem?.id}/chats`
         );
+       const getData = collectionRef.doc(allChannelItem?.id);
         await collectionRef.add(obj);
+       const d = await getData.get();
+        const dataArray = d?.docs?.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        console.log(dataArray,"dataArray");
+        localStorage.setItem("sendername","Shreyash Zinzuvadia");
+       getSenderName = localStorage.getItem("sendername")
         scrollToBottom();
         updateChannel(new Date());
         dispatch(sendMessageHandler(apiObj));
@@ -185,6 +197,7 @@ const ChatListing = ({
           await collectionRef.add(obj);
           updateChannel(new Date());
           dispatch(sendMessageHandler(apiObj));
+          localStorage.setItem("sendername","Shreyash Zinzuvadia");
         } catch (error) {
           console.error(error);
         }
@@ -373,7 +386,7 @@ const ChatListing = ({
                         )}
                       </div>
                       <div
-                        className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageLeft} `}
+                        className={` ${ChatListingStyles.channelMessageBox} ${getSenderName===item?.senderName? ChatListingStyles.channelMessageLeft:ChatListingStyles.channelMessageRight} `}
                       >
                         <p>{item?.text}</p>
                         <div className={ChatListingStyles.chatReaction}>
