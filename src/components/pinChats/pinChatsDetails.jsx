@@ -13,6 +13,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import ChatListing from "../chat-list/chatListing";
 import { filter } from "lodash";
+import moment from "moment";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -41,6 +42,20 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
   const filterData = data?.filter((item) => {
     return item?.isPinned === true;
   });
+
+  let filterDate = filterData.sort(
+    (a, b) =>
+      moment(
+        new Date(b?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
+        "hh:mm A"
+      ) -
+      moment(
+        new Date(a?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
+        "hh:mm A"
+      )
+  );
+
+  console.log(filterDate, "filterDate");
 
   let tempObj;
 

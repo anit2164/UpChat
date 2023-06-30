@@ -14,6 +14,7 @@ import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import ChatListing from "../chat-list/chatListing";
+import moment from "moment";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -46,6 +47,11 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
   const filterData = data?.filter((item) => {
     return item?.isSnoozed === true;
   });
+
+  filterData.sort((a,b)=>moment(new Date(b?.lastMessageTime?.seconds * 1000)
+  .toLocaleTimeString(),"hh:mm A")
+   - moment(new Date(a?.lastMessageTime?.seconds * 1000)
+  .toLocaleTimeString(),"hh:mm A"))
 
   let moveToActiveObj;
 
