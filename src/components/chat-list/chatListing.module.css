@@ -688,7 +688,7 @@
 }
 
 .memberListing {
-  max-height: 200px;
+  max-height: 240px;
   overflow-y: auto;
 }
 
@@ -745,12 +745,49 @@
   border-top: 1px solid rgba(5, 5, 5, 0.06);
 }
 
-.noDataFound {
-  font-size: 12px;
-  font-weight: 400px;
-  font-family: "Montserrat", sans-serif;
-  margin-left: 32%;
+.memberListing .noDataFound {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  min-height: 120px;
+  font-size: 16px;
+  font-weight: 400;
 }
+.listingLabel {
+  padding: 8px 16px;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.radioWrapper {
+  position: relative;
+}
+.radioWrapper span {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #232323;
+  display: block;
+  border-radius: 30px;
+}
+.radioWrapper span::before {
+  content: "";
+  position: absolute;
+  background: #ffd233;
+  margin: 4px;
+}
+.radioWrapper input[type="radio"] {
+  position: absolute;
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  z-index: 9999;
+  opacity: 0.3;
+}
+.radioWrapper input[type="radio"]:checked + span {
+}
+
 /* Scroll to Bottom */
 .scrollToBottom {
   position: absolute;
@@ -763,13 +800,13 @@
   display: block;
 }
 .circle {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   /* font-size: 250px; */
   /* font-family: roboto, arial; */
   color: white;
-  line-height: 30px;
+  line-height: 24px;
   text-align: center;
   background: orange;
   margin-right: 8px;

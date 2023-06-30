@@ -213,6 +213,7 @@ const AddMembers = ({
               }}
             />
           </li>
+          <li className={ChatListingStyles.listingLabel}>Recommended</li>
           <li className={ChatListingStyles.memberListing}>
             {filterData?.map((item) => {
               return (
@@ -235,6 +236,10 @@ const AddMembers = ({
                     >
                       {item?.userType}
                     </span>
+                  </div>
+                  <div className={ChatListingStyles.radioWrapper}>
+                    <input type="radio" name="selectMember" />
+                    <span></span>
                   </div>
                 </div>
               );

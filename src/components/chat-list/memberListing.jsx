@@ -184,7 +184,7 @@ const MemberListing = (allChannelItem) => {
                   }}
                 ></span>
               </li>
-              <li>
+              <li className={ChatListingStyles.memberListing}>
                 {userDataList?.map((item) => {
                   return (
                     <>

@@ -12,6 +12,7 @@ import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import ChatListing from "../chat-list/chatListing";
+import { filter } from "lodash";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -100,7 +101,9 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
     pinnedChatsItem.lastMessageTime = date;
     try {
       const firestore = firebase.firestore();
-      const collectionRef = firestore.collection("channels");
+      const collectionRef = firestore
+        .collection("channels")
+        .orderBy("lastMessageTime", "dec");
       const snapshot = collectionRef.doc(pinnedChatsItem.id);
       await snapshot.set(pinnedChatsItem);
       let _data = await collectionRef.get();

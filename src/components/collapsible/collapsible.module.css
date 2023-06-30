@@ -1,20 +1,61 @@
-.container{
-    display: flex;
-    padding: 8px 16px;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 8px;
-    background: #F7F7F7;
-    border: 1px solid #CECCCC;
-    border-radius: 8px;
-    cursor: pointer;
+.container {
+  display: flex;
+  padding: 7px 16px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  background: #f7f7f7;
+  border-top: 1px solid #cecccc;
+  border-radius: 0 0 8px 8px;
+  cursor: pointer;
+}
+.container > div {
+  display: flex;
+  align-items: center;
 }
 
-.label{
-    font-family: 'Montserrat';
-    font-style: normal;
-    font-weight: 600;
-    font-size: 20px;
-    line-height: 28px;
-    color: #232323;
+.label {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px;
+  color: #232323;
+  margin-left: 8px;
+}
+
+.container.toggleClose {
+  border-radius: 8px;
+  border: none;
+}
+
+.toggleClose {
+  justify-content: space-between;
+  background: rgb(220, 231, 237);
+  background: linear-gradient(
+    90deg,
+    rgba(220, 231, 237, 0.36) 0%,
+    rgba(228, 138, 23, 0.36) 100%
+  );
+}
+.toggleClose .unreadNum {
+  min-width: 20px;
+  height: 20px;
+  border-radius: 30px;
+  background-color: #dd332b;
+  font-size: 12px;
+  text-align: center;
+  line-height: 20px;
+  color: #fff;
+}
+.toggleClose .fiChevronLeft {
+  margin-left: 14px;
+  transform: rotate(180deg);
+}
+
+.container .toggleCloseRight {
+  display: none;
+}
+.toggleClose .toggleCloseRight {
+  display: flex;
 }
