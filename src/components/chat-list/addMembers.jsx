@@ -1,16 +1,11 @@
 import ChatListingStyles from "./chatListing.module.css";
-import { Dropdown, Space } from "antd";
-import { ReactComponent as InfoIcon } from "@SVG/fiInfo.svg";
-import { ReactComponent as FiUsersSVG } from "@SVG/fiUsers.svg";
 import { ReactComponent as FiUserPlusSVG } from "@SVG/fiUserPlus.svg";
-import { ReactComponent as FiShareSVG } from "@SVG/fiShare.svg";
 import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addMemberListingHandler } from "@/redux_toolkit/slices/addMemberListing";
-
 import { ReactComponent as FiChevronLeftSVG } from "@SVG/fiChevronLeft.svg";
 import { ReactComponent as SearchSVG } from "@SVG/search.svg";
 
@@ -23,8 +18,9 @@ const AddMembers = ({
   setHideMemberModel,
 }) => {
   const [userDataList, setUserDataList] = useState();
-  // const [hideMemberModel, setHideMemberModel] = useState(false);
   const [search, setSearch] = useState("");
+  const [showUserName, setUserName] = useState([]);
+
   const dispatch = useDispatch();
   const addMemberListingdata = useSelector((state) => state?.addMemberListing);
 
@@ -53,137 +49,9 @@ const AddMembers = ({
     dispatch(addMemberListingHandler());
   }, []);
 
-  console.log(addMemberListingdata?.data?.details, "addMemberListingdata");
-  //   const membersDropdown = [
-  //     {
-  //       key: "0",
-  //       label: (
-  //         <div className={ChatListingStyles.membersMenuMain}>
-  //           6 Members
-  //           <span className={ChatListingStyles.chatWindowClose}></span>
-  //         </div>
-  //       ),
-  //       icon: <FiUsersSVG />,
-  //     },
-  //     {
-  //       type: "divider",
-  //     },
-  //     {
-  //       key: "1",
-  //       label: (
-  //         <div className={ChatListingStyles.membersArea}>
-  //           <div className={ChatListingStyles.membersAreaLeft}>
-  //             <img
-  //               className={ChatListingStyles.profileAvtar}
-  //               src="https://i.pravatar.cc/40"
-  //               width="24"
-  //               height="24"
-  //             />
-  //             <div className={ChatListingStyles.profileName}>Prachi Porwal</div>
-  //             <span
-  //               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
-  //             >
-  //               Sales Consultant
-  //             </span>
-  //           </div>
-  //           <span className={ChatListingStyles.removeLink}>Remove</span>
-  //         </div>
-  //       ),
-  //     },
-  //     {
-  //       key: "2",
-  //       label: (
-  //         <div className={ChatListingStyles.membersArea}>
-  //           <div className={ChatListingStyles.membersAreaLeft}>
-  //             <img
-  //               className={ChatListingStyles.profileAvtar}
-  //               src="https://i.pravatar.cc/40"
-  //               width="24"
-  //               height="24"
-  //             />
-  //             <div className={ChatListingStyles.profileName}>Majid Ali</div>
-  //             <span
-  //               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.deliveryTeam} `}
-  //             >
-  //               Delivery Team
-  //             </span>
-  //           </div>
-  //           <span className={ChatListingStyles.removeLink}>Remove</span>
-  //         </div>
-  //       ),
-  //     },
-  //     {
-  //       key: "3",
-  //       label: (
-  //         <div className={ChatListingStyles.membersArea}>
-  //           <div className={ChatListingStyles.membersAreaLeft}>
-  //             <img
-  //               className={ChatListingStyles.profileAvtar}
-  //               src="https://i.pravatar.cc/40"
-  //               width="24"
-  //               height="24"
-  //             />
-  //             <div className={ChatListingStyles.profileName}>Darshan Modi</div>
-  //             <span
-  //               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
-  //             >
-  //               COE Team
-  //             </span>
-  //           </div>
-  //         </div>
-  //       ),
-  //     },
-  //     {
-  //       key: "4",
-  //       label: (
-  //         <div className={ChatListingStyles.membersArea}>
-  //           <div className={ChatListingStyles.membersAreaLeft}>
-  //             <img
-  //               className={ChatListingStyles.profileAvtar}
-  //               src="https://i.pravatar.cc/40"
-  //               width="24"
-  //               height="24"
-  //             />
-  //             <div className={ChatListingStyles.profileName}>Bhuvan Desai</div>
-  //           </div>
-  //           <span className={ChatListingStyles.removeLink}>Leave Chat</span>
-  //         </div>
-  //       ),
-  //     },
-  //     {
-  //       type: "divider",
-  //     },
-  //     {
-  //       label: (
-  //         <div className={ChatListingStyles.membersArea}>
-  //           <div className={ChatListingStyles.membersAreaLeft}>
-  //             <FiUserPlusSVG />
-  //             <div className={ChatListingStyles.addMembers}>Add Members</div>
-  //           </div>
-  //           <span>
-  //             <FiShareSVG />
-  //           </span>
-  //         </div>
-  //       ),
-  //     },
-  //   ];
-
-  // const filterData = addMemberListingdata?.data?.details?.filter((item) => {
-  //   return (
-  //     item?.userName?.toLowerCase()?.includes(search?.toLowerCase()) ||
-  //     item?.userID?.toLowerCase()?.includes(search?.toLowerCase())
-  //   );
-  // });
-
-  // const filterData = data?.filter((item) => {
-  //   return item?.isPinned === true;
-  // });
-
   const filterData = addMemberListingdata?.data?.details?.filter((item) => {
     return item?.userName?.toLowerCase()?.includes(search?.toLowerCase());
   });
-
-  const [showUserName, setUserName] = useState([]);
 
   const userNameList = (e, item) => {
     if (e.target.checked) {
@@ -197,8 +65,6 @@ const AddMembers = ({
       );
     }
   };
-
-  // const [items, setItems] = useState();
 
   const removeSelectedMember = (item) => {
     console.log(item, "iteteett");
@@ -239,7 +105,13 @@ const AddMembers = ({
               }}
             />
           </li>
-          <li className={ChatListingStyles.listingLabel}>Recommended</li>
+          {search ? (
+            <li
+              className={ChatListingStyles.listingLabel}
+            >{`Results for "${search}"`}</li>
+          ) : (
+            <li className={ChatListingStyles.listingLabel}>Recommended</li>
+          )}
           <li className={ChatListingStyles.memberListing}>
             {filterData?.map((item) => {
               return (
@@ -271,8 +143,12 @@ const AddMembers = ({
                 </div>
               );
             })}
+            {filterData?.length === 0 && (
+              <span className={ChatListingStyles.noDataFound}>
+                No Members Found
+              </span>
+            )}
           </li>
-          {filterData?.length === 0 && <p>No Members Found</p>}
 
           <li>
             <div className={ChatListingStyles.addedMember}>
