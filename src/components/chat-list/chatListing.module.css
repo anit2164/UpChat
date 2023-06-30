@@ -774,8 +774,12 @@
 .radioWrapper span::before {
   content: "";
   position: absolute;
-  background: #ffd233;
-  margin: 4px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 11px;
+  height: 11px;
+  border-radius: 20px;
 }
 .radioWrapper input[type="radio"] {
   position: absolute;
@@ -783,9 +787,10 @@
   width: 18px;
   height: 18px;
   z-index: 9999;
-  opacity: 0.3;
+  opacity: 0;
 }
-.radioWrapper input[type="radio"]:checked + span {
+.radioWrapper input[type="radio"]:checked + span:before {
+  background: #ffd233;
 }
 
 /* Scroll to Bottom */
@@ -829,6 +834,10 @@
   width: 86px;
   height: 43px;
   cursor: pointer;
+}
+.addMembersAreaFooter button:disabled {
+  background: #dcdcdc;
+  cursor: not-allowed;
 }
 
 .noChatFound {
