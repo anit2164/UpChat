@@ -5,9 +5,7 @@ import Collapse from '@Components/collapsible/collapsible.components';
 import Header from '@Components/header/header.components';
 import UpTabs from '@/components/upTabs/upTabs.components';
 
-import { Tooltip } from 'antd';
-
-import { DownOutlined, UserOutlined } from '@ant-design/icons';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import { Dropdown, Space } from 'antd';
 
@@ -195,8 +193,96 @@ const Layout = () => {
 			/>
 		</main>
 
+		{/* Channel Library Starts */}
+		<div className={` ${LayoutStyle.channelWindow} ${LayoutStyle.channelLibraryWindow} `}>
+			<div className={LayoutStyle.channelWindowHeader}>
+				<div className={LayoutStyle.channelHeaderLeft}>
+					<div className={` ${LayoutStyle.chatInitialThumb} ${LayoutStyle.blueThumb} `}>AN</div>
+					<div className={LayoutStyle.channelName}>Senior Backend... | Andela | HR170523201242</div>
+				</div>
+				<div className={LayoutStyle.channelHeaderRight}>
+					<Dropdown className={` ${LayoutStyle.dotMenuMain} ${LayoutStyle.dotMenuhz} `}  placement="bottomRight" menu={{
+						items: channelMainDropdown,
+						}}
+						trigger={['click']}>
+						<a onClick={(e) => e.preventDefault()}>
+							<Space>
+								<span className={LayoutStyle.dotMenu}></span>
+							</Space>
+						</a>
+					</Dropdown>
+					<span  className={LayoutStyle.chatWindowClose}></span>
+				</div>
+			</div>
+
+			<div className={LayoutStyle.channelLibraryHeader}>
+				<div className={LayoutStyle.channelStatusLeft}>
+					<FiBookOpenSVG width="20" />
+					Channel Library
+				</div>
+				<div className={LayoutStyle.channelStatusRight}>
+					<FiChevronLeftSVG width="14" height="14" />
+				</div>
+			</div>
+
+			<div className={LayoutStyle.channelWindowInner}>
+				<Tabs className={LayoutStyle.channelLibTabs}>
+					<TabList>
+						<Tab>Images</Tab>
+						<Tab>Documents</Tab>
+						<Tab>Videos</Tab>
+						<Tab>Links</Tab>
+					</TabList>
+
+					<TabPanel className={LayoutStyle.tabContent}>
+						<div className={LayoutStyle.contentGrid}>
+							<ul>
+								<li className={LayoutStyle.dividerText}>Last Week</li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li className={LayoutStyle.dividerText}>Last Week</li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
+							</ul>
+						</div>
+					</TabPanel>
+					<TabPanel>
+						Documents
+					</TabPanel>
+					<TabPanel>
+						Videos
+					</TabPanel>
+					<TabPanel>
+						Links
+					</TabPanel>
+				</Tabs>
+			</div>
+
+			<div className={LayoutStyle.channelLibraryFooterWrap}>
+				<div className={LayoutStyle.channelLibraryFooter}>
+					24 Photos, 16 Documents, 8 Videos, 6 Links
+				</div>
+			</div>
+		</div>
+		{/* Channel Library Ends */}
+
 		{/* Bookmarked Messages Starts */}
-		<div className={` ${LayoutStyle.channelWindow} ${LayoutStyle.bookmarkChannelWindow} `}>
+		{/* <div className={` ${LayoutStyle.channelWindow} ${LayoutStyle.bookmarkChannelWindow} `}>
 			<div className={LayoutStyle.channelWindowHeader}>
 				<div className={LayoutStyle.channelHeaderLeft}>
 					<div className={` ${LayoutStyle.chatInitialThumb} ${LayoutStyle.blueThumb} `}>AN</div>
@@ -287,7 +373,7 @@ const Layout = () => {
 					2 Bookmarked Message
 				</div>
 			</div>
-		</div>
+		</div> */}
 		{/* Bookmarked Messages Ends */}
 
 		<div className={` ${LayoutStyle.channelWindow} ${LayoutStyle.channelWindowTwo} `}>
