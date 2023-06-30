@@ -51,6 +51,7 @@ const ChatListing = ({
   const [smileIcon, setSmileIcon] = useState(false);
   const [chatMapKey, setChatMapKey] = useState();
   const [search, setSearch] = useState("");
+  const [senderClass, setSenderClass] = useState(false);
 
   const channelMainDropdown = [
     {
@@ -101,17 +102,21 @@ const ChatListing = ({
     },
   ];
   const bottomToTopRef = useRef(null);
+  const arrawScroll = useRef(null);
 
+  const [scrollDown, setScrollDown] = useState(false);
   const scrollToBottom = () => {
     bottomToTopRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "end",
     });
+    setScrollDown(false);
   };
 
   const sendMessage = async () => {
     if (messageHandler) {
       setMessageHandler("");
+      setSenderClass(true);
       try {
         let obj = {
           date: new Date(),
@@ -149,6 +154,7 @@ const ChatListing = ({
     if (e.key === "Enter") {
       if (messageHandler) {
         setMessageHandler("");
+        setSenderClass(true);
         try {
           let obj = {
             date: new Date(),
@@ -197,6 +203,19 @@ const ChatListing = ({
   const filterData = listingChats?.filter((item) => {
     return item?.text?.toLowerCase()?.includes(search?.toLowerCase());
   });
+
+  const handleScroll = () => {
+    const divElement = arrawScroll.current;
+    const isScrolledToBottom =
+      divElement?.scrollHeight - divElement?.scrollTop ===
+      divElement?.clientHeight;
+    // scrollToBottom();
+    if (isScrolledToBottom) {
+      setScrollDown(true);
+    } else {
+      setScrollDown(false);
+    }
+  };
 
   return (
     <>
@@ -248,7 +267,11 @@ const ChatListing = ({
             </div>
           </div>
           <MemberListing allChannelItem={allChannelItem} />
-          <div className={ChatListingStyles.channelWindowInner}>
+          <div
+            className={ChatListingStyles.channelWindowInner}
+            ref={arrawScroll}
+            onScroll={handleScroll}
+          >
             <div className={ChatListingStyles.searchInChatWrapper}>
               <div className={ChatListingStyles.searchInChatInner}>
                 <SearchIcon className={ChatListingStyles.searchIcon} />
