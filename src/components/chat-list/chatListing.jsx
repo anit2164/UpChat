@@ -42,7 +42,11 @@ const ChatListing = ({
   showPinnedChatsList,
   showSnoozeChatsList,
   updateChannel,
+  setShowList,
+  setShowPinnedChatsList,
+  setShowSnoozeChatsList,
 }) => {
+  
   const dispatch = useDispatch();
   const sendMessageData = useSelector((state) => state?.sendMessage);
 
@@ -216,6 +220,15 @@ const ChatListing = ({
       setScrollDown(false);
     }
   };
+  const closeModal = () =>{
+    if(showChat){
+      setShowList(!showChat)
+    }else if (showPinnedChatsList){
+      setShowPinnedChatsList(!showPinnedChatsList)
+    }else if (showSnoozeChatsList){
+      setShowSnoozeChatsList(!showSnoozeChatsList)
+    }
+  }
 
   return (
     <>
@@ -263,7 +276,7 @@ const ChatListing = ({
                   </Space>
                 </a>
               </Dropdown>
-              <span className={ChatListingStyles.chatWindowClose}></span>
+              <span className={ChatListingStyles.chatWindowClose} onClick = {closeModal}></span>
             </div>
           </div>
           <MemberListing allChannelItem={allChannelItem} />

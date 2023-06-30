@@ -178,6 +178,7 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
           listingChats={listingChats}
           allChannelItem={pinnedChatsItem}
           updateChannel={updateChannel}
+          setShowPinnedChatsList={setShowPinnedChatsList}
         />
       )}
     </>

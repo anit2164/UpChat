@@ -185,7 +185,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
           listingChats={listingChats}
           allChannelItem={allChannelItem}
           updateChannel={updateChannel}
-          // setData = {setData}
+          setShowSnoozeChatsList={setShowSnoozeChatsList}
         />
       )}
     </>

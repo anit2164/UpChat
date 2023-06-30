@@ -210,6 +210,7 @@ const Tile = ({
           listingChats={listingChats}
           allChannelItem={allChannelItem}
           updateChannel={updateChannel}
+          setShowList={setShowList}
         />
       )}
     </>
