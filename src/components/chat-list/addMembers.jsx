@@ -183,11 +183,20 @@ const AddMembers = ({
     return item?.userName?.toLowerCase()?.includes(search?.toLowerCase());
   });
 
+  const [showUserName, setUserName] = useState([]);
+
+  const userNameList = (e, item) => {
+    if (e.target.checked) {
+      setUserName([...showUserName, item]);
+    } else {
+      setUserName(showUserName.filter((showUserName) => showUserName !== item));
+    }
+  };
+  console.log(showUserName, "showUserName");
+
   return (
     <>
-      <div
-        className={` ${ChatListingStyles.channelWindowStatus} ${ChatListingStyles.addMembersPopup} `}
-      >
+      <div className={ChatListingStyles.addMembersPopup}>
         <ul className={ChatListingStyles.membersMenuMain}>
           <li className={ChatListingStyles.membersAreaHeader}>
             <FiUserPlusSVG />
@@ -225,7 +234,9 @@ const AddMembers = ({
                               width="24"
                               height="24"
                             /> */}
-                    <span className={ChatListingStyles.circle}>
+                    <span
+                      className={` ${ChatListingStyles.circle} ${ChatListingStyles.blueThumb} `}
+                    >
                       {item?.userIntial}
                     </span>
                     <div className={ChatListingStyles.profileName}>
@@ -237,8 +248,13 @@ const AddMembers = ({
                       {item?.userType}
                     </span>
                   </div>
-                  <div className={ChatListingStyles.radioWrapper}>
-                    <input type="radio" name="selectMember" />
+                  <div className={ChatListingStyles.checkboxWrapper}>
+                    <input
+                      type="checkbox"
+                      name="selectMember"
+                      // value={item?.userName}
+                      onChange={(e) => userNameList(e, item?.userName)}
+                    />
                     <span></span>
                   </div>
                 </div>
@@ -246,6 +262,19 @@ const AddMembers = ({
             })}
           </li>
           {filterData?.length === 0 && <p>No Members Found</p>}
+
+          <li>
+            <div className={ChatListingStyles.addedMember}>
+              {showUserName?.map((item) => {
+                return (
+                  <span>
+                    {item}
+                    <span className={ChatListingStyles.removeMember}></span>
+                  </span>
+                );
+              })}
+            </div>
+          </li>
 
           <li>
             <div className={ChatListingStyles.addMembersAreaFooter}>
