@@ -201,6 +201,7 @@ const ChatListing = ({
       showSnoozeChatsList === true
     ) {
       scrollToBottom();
+      setScrollDown(false);
     }
   }, [showChat, listingChats]);
 
@@ -210,11 +211,13 @@ const ChatListing = ({
 
   const handleScroll = () => {
     const divElement = arrawScroll.current;
-    const isScrolledToBottom =
-      divElement?.scrollHeight - divElement?.scrollTop ===
-      divElement?.clientHeight;
+    // const isScrolledToBottom =
+    //   divElement?.scrollHeight - divElement?.scrollTop ===
+    //   divElement?.clientHeight;
     // scrollToBottom();
-    if (isScrolledToBottom) {
+  
+    
+    if (divElement?.scrollHeight - divElement?.scrollTop -divElement?.clientHeight < filterData?.length  ) {
       setScrollDown(true);
     } else {
       setScrollDown(false);
@@ -360,14 +363,14 @@ const ChatListing = ({
                             </Space>
                           </a>
                         </Dropdown>
-                        {/* {listingChats?.length > 8 && ( */}
-                        {/* <span
+                        {!scrollDown&&(
+                        <span
                           className={ChatListingStyles.scrollToBottom}
                           onClick={scrollToBottom}
                         >
                           <ScrollToBottomSVG />
-                        </span> */}
-                        {/* )} */}
+                        </span>
+                        )}
                       </div>
                       <div
                         className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageLeft} `}
@@ -660,7 +663,6 @@ const ChatListing = ({
           </div>
         </div>
       )}
-      {/* <Tile date={date} /> */}
     </>
   );
 };
