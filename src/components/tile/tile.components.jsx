@@ -11,6 +11,7 @@ import "firebase/compat/firestore";
 import { ChannelMenu } from "@/constants/application";
 import { ReactComponent as ViewHRDetailsSVG } from "@SVG/viewHrDetails.svg";
 import ChatListing from "../chat-list/chatListing";
+import moment from "moment/moment";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -104,6 +105,13 @@ const Tile = ({
   const filterData = data?.filter((item) => {
     return item?.isPinned === false && item?.isSnoozed === false;
   });
+
+  filterData.sort((a,b)=>moment(new Date(b?.lastMessageTime?.seconds * 1000)
+  .toLocaleTimeString(),"hh:mm A")
+   - moment(new Date(a?.lastMessageTime?.seconds * 1000)
+  .toLocaleTimeString(),"hh:mm A"))
+
+  console.log(filterData,"filter123");
 
   const [showChat, setShowList] = useState(false);
   const [listingChats, setListingChats] = useState([]);
