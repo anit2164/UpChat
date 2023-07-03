@@ -248,6 +248,7 @@ const MemberListing = (allChannelItem) => {
               showAddMemberModel={showAddMemberModel}
               setShowAddMemberModel={setShowAddMemberModel}
               setHideMemberModel={setHideMemberModel}
+              allChannelItem={allChannelItem}
             />
           )}
         </div>

@@ -17,33 +17,34 @@ const AddMembers = ({
   setShowAddMemberModel,
   setHideMemberModel,
 }) => {
-  const [userDataList, setUserDataList] = useState();
+  console.log(allChannelItem, "allChannelItemallChannelItem");
+  // const [userDataList, setUserDataList] = useState();
   const [search, setSearch] = useState("");
   const [showUserName, setUserName] = useState([]);
 
   const dispatch = useDispatch();
   const addMemberListingdata = useSelector((state) => state?.addMemberListing);
 
-  useEffect(() => {
-    try {
-      const firestore = firebase.firestore();
-      const unsubscribe = firestore
-        .collection(
-          `ChannelUserMapping/${allChannelItem?.allChannelItem?.id}/user`
-        )
-        .onSnapshot((snapshot) => {
-          const userData = snapshot.docs.map((doc) => doc.data());
-          setUserDataList(userData);
-        });
+  // useEffect(() => {
+  //   try {
+  //     const firestore = firebase.firestore();
+  //     const unsubscribe = firestore
+  //       .collection(
+  //         `ChannelUserMapping/${allChannelItem?.allChannelItem?.id}/user`
+  //       )
+  //       .onSnapshot((snapshot) => {
+  //         const userData = snapshot.docs.map((doc) => doc.data());
+  //         setUserDataList(userData);
+  //       });
 
-      return () => {
-        // Unsubscribe from Firestore snapshot listener when component unmounts
-        unsubscribe();
-      };
-    } catch (error) {
-      console.error(error);
-    }
-  }, [allChannelItem]);
+  //     return () => {
+  //       // Unsubscribe from Firestore snapshot listener when component unmounts
+  //       unsubscribe();
+  //     };
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, [allChannelItem]);
 
   useEffect(() => {
     dispatch(addMemberListingHandler());
@@ -54,6 +55,7 @@ const AddMembers = ({
   });
 
   const userNameList = (e, item) => {
+    console.log(item, "item");
     if (e.target.checked) {
       setUserName([...showUserName, `${item?.userName} (${item?.userID})`]);
     } else {
@@ -74,6 +76,29 @@ const AddMembers = ({
       //   itemInfo === item ? { ...itemInfo, checked: false } : item
       // );
       // setUserName(updatedItems);
+    }
+  };
+
+  const addMembers = async () => {
+    try {
+      let tempObj = {
+        channelID: allChannelItem?.allChannelItem?.enc_channelID,
+        photoURL: "",
+        userDesignation: "Sales Consultant",
+        userEmpId: "UP1234",
+        userInitial: "SZ",
+        userName: "Shreyash Test",
+      };
+      const firestore = firebase.firestore();
+      const collectionRef = firestore.collection(
+        `ChannelUserMapping/${allChannelItem?.allChannelItem?.enc_channelID}/user`
+      );
+      console.log(tempObj, "temoObj");
+      await collectionRef.add(tempObj);
+      setShowAddMemberModel(!showAddMemberModel);
+      setHideMemberModel(true);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -169,7 +194,10 @@ const AddMembers = ({
 
           <li>
             <div className={ChatListingStyles.addMembersAreaFooter}>
-              <button disabled={showUserName.length === 0 ? true : false}>
+              <button
+                disabled={showUserName.length === 0 ? true : false}
+                onClick={() => addMembers()}
+              >
                 Add
               </button>
             </div>
