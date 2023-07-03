@@ -40,6 +40,13 @@ import { ReactComponent as FiFolderPlusSVG } from '@SVG/fiFolderPlus.svg';
 import { ReactComponent as ScrollToBottomSVG } from '@SVG/scrollToBottom.svg';
 import { ReactComponent as FiChevronLeftSVG } from '@SVG/fiChevronLeft.svg';
 
+import { ReactComponent as FiVideoSVG } from '@SVG/fiVideo.svg';
+import { ReactComponent as FiIconPDF } from '@SVG/fiIconPDF.svg';
+import { ReactComponent as FiIconWord } from '@SVG/fiIconWord.svg';
+import { ReactComponent as FiDownloadSVG } from '@SVG/fiDownload.svg';
+import { ReactComponent as FiLinkSVG } from '@SVG/fiLink.svg';
+import { ReactComponent as FiExternalLinkSVG } from '@SVG/fiExternalLink.svg';
+
 const Layout = () => {
 	const [toggle, setToggle] = useState(false);
 
@@ -246,7 +253,7 @@ const Layout = () => {
 								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
 								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
 								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
-								<li className={LayoutStyle.dividerText}>Last Week</li>
+								<li className={LayoutStyle.dividerText}>April, 2023</li>
 								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
 								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
 								<li><img src="https://i.pravatar.cc/95" width="95" height="95" /></li>
@@ -261,14 +268,356 @@ const Layout = () => {
 							</ul>
 						</div>
 					</TabPanel>
-					<TabPanel>
-						Documents
+					<TabPanel className={LayoutStyle.tabContent}>
+						<div className={LayoutStyle.assetGrid}>
+							<ul>
+								<li className={LayoutStyle.dividerText}>April, 2023</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela x Uplers</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Interview Window Schedule</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconWord />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela Talent Briefing</div>
+											<span>3 pages</span><span>DOC</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela x Uplers</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Interview Window Schedule</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconWord />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela Talent Briefing</div>
+											<span>3 pages</span><span>DOC</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela x Uplers</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Interview Window Schedule</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconWord />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela Talent Briefing</div>
+											<span>3 pages</span><span>DOC</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela x Uplers</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Interview Window Schedule</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconWord />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela Talent Briefing</div>
+											<span>3 pages</span><span>DOC</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela x Uplers</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Interview Window Schedule</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconWord />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela Talent Briefing</div>
+											<span>3 pages</span><span>DOC</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela x Uplers</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconPDF />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Interview Window Schedule</div>
+											<span>1 page</span><span>PDF</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<FiIconWord />
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela Talent Briefing</div>
+											<span>3 pages</span><span>DOC</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<FiDownloadSVG width="14" />
+										<span className={LayoutStyle.textUnderline}>Download</span>
+									</div>
+								</li>
+							</ul>
+						</div>
 					</TabPanel>
-					<TabPanel>
-						Videos
+					<TabPanel className={LayoutStyle.tabContent}>
+						<div className={LayoutStyle.contentGrid}>
+							<ul>
+								<li className={LayoutStyle.dividerText}>Last Week</li>
+								<li className={LayoutStyle.videoGrid}>
+									<img src="https://i.pravatar.cc/95" width="95" height="95" />
+									<span>
+										<FiVideoSVG />
+										02:21
+									</span>
+								</li>
+								<li className={LayoutStyle.videoGrid}>
+									<img src="https://i.pravatar.cc/95" width="95" height="95" />
+									<span>
+										<FiVideoSVG />
+										05:20
+									</span>
+								</li>
+								<li className={LayoutStyle.videoGrid}>
+									<img src="https://i.pravatar.cc/95" width="95" height="95" />
+									<span>
+										<FiVideoSVG />
+										01:00
+									</span>
+								</li>
+								<li className={LayoutStyle.videoGrid}>
+									<img src="https://i.pravatar.cc/95" width="95" height="95" />
+									<span>
+										<FiVideoSVG />
+										03:15
+									</span>
+								</li>
+								<li className={LayoutStyle.dividerText}>April, 2023</li>
+								<li className={LayoutStyle.videoGrid}>
+									<img src="https://i.pravatar.cc/95" width="95" height="95" />
+									<span>
+										<FiVideoSVG />
+										02:10
+									</span>
+								</li>
+								<li className={LayoutStyle.videoGrid}>
+									<img src="https://i.pravatar.cc/95" width="95" height="95" />
+									<span>
+										<FiVideoSVG />
+										04:16
+									</span>
+								</li>
+								<li className={LayoutStyle.videoGrid}>
+									<img src="https://i.pravatar.cc/95" width="95" height="95" />
+									<span>
+										<FiVideoSVG />
+										00:21
+									</span>
+								</li>
+								<li className={LayoutStyle.videoGrid}>
+									<img src="https://i.pravatar.cc/95" width="95" height="95" />
+									<span>
+										<FiVideoSVG />
+										01:00
+									</span>
+								</li>
+							</ul>
+						</div>
 					</TabPanel>
-					<TabPanel>
-						Links
+					<TabPanel className={LayoutStyle.tabContent}>
+						<div className={LayoutStyle.assetGrid}>
+							<ul>
+								<li className={LayoutStyle.dividerText}>April, 2023</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<span className={LayoutStyle.iconLink}><FiLinkSVG width="13" /></span>
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Zeux Innovation Linkedin</div>
+											<span>https://www.linkedin.com/company</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<span className={LayoutStyle.iconCopy}><FiCopySVG width="13" /></span>
+										<span className={LayoutStyle.buttonExLink}><FiExternalLinkSVG width="14" />Open Link</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<span className={LayoutStyle.iconLink}><FiLinkSVG width="13" /></span>
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela Website</div>
+											<span>https://www.linkedin.com/company</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<span className={LayoutStyle.iconCopy}><FiCopySVG width="13" /></span>
+										<span className={LayoutStyle.buttonExLink}><FiExternalLinkSVG width="14" />Open Link</span>
+									</div>
+								</li>
+								<li>
+									<div className={LayoutStyle.gridContentLeft}>
+										<span className={LayoutStyle.iconLink}><FiLinkSVG width="13" /></span>
+										<div className={LayoutStyle.assetDetails}>
+											<div className={LayoutStyle.assetName}>Andela Signeasy</div>
+											<span>https://www.linkedin.com/company</span>
+										</div>
+									</div>
+									<div className={LayoutStyle.gridContentRight}>
+										<span className={LayoutStyle.iconCopy}><FiCopySVG width="13" /></span>
+										<span className={LayoutStyle.buttonExLink}><FiExternalLinkSVG width="14" />Open Link</span>
+									</div>
+								</li>
+							</ul>
+						</div>
 					</TabPanel>
 				</Tabs>
 			</div>
