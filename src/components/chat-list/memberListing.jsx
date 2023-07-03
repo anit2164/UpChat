@@ -156,6 +156,19 @@ const MemberListing = (allChannelItem) => {
   //     },
   //   ];
 
+  const getRandomColor = () => {
+    const colors = [
+      ChatListingStyles.blueThumb,
+      ChatListingStyles.darkRedThumb,
+      ChatListingStyles.greenThumb,
+      ChatListingStyles.yellowThumb,
+      ChatListingStyles.orangeThumb,
+      ChatListingStyles.skyBlueThumb,
+    ];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
+
   return (
     <>
       <div className={ChatListingStyles.channelWindowStatus}>
@@ -196,7 +209,11 @@ const MemberListing = (allChannelItem) => {
                             width="24"
                             height="24"
                           /> */}
-                          <span className={ChatListingStyles.circle}>
+                          <span
+                            className={` ${
+                              ChatListingStyles.circle
+                            } ${getRandomColor()} `}
+                          >
                             {item?.userInitial}
                           </span>
                           <div className={ChatListingStyles.profileName}>

@@ -134,6 +134,19 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
     }
   };
 
+  const getRandomColor = () => {
+    const colors = [
+      SnoozeGroupsStyle.blueThumb,
+      SnoozeGroupsStyle.darkRedThumb,
+      SnoozeGroupsStyle.greenThumb,
+      SnoozeGroupsStyle.yellowThumb,
+      SnoozeGroupsStyle.orangeThumb,
+      SnoozeGroupsStyle.skyBlueThumb,
+    ];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
+
   return (
     <>
       <div className={SnoozeGroupsStyle.chatWrapper}>
@@ -147,7 +160,9 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
                 onClick={() => snoozeChatsDetails(item)}
               >
                 <div
-                  className={` ${SnoozeGroupsStyle.chatInitialThumb} ${SnoozeGroupsStyle.blueThumb} `}
+                  className={` ${
+                    SnoozeGroupsStyle.chatInitialThumb
+                  } ${getRandomColor()} `}
                 >
                   {item?.companyInitial}
                 </div>

@@ -132,6 +132,19 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
     }
   };
 
+  const getRandomColor = () => {
+    const colors = [
+      PinChatDetailsStyle.blueThumb,
+      PinChatDetailsStyle.darkRedThumb,
+      PinChatDetailsStyle.greenThumb,
+      PinChatDetailsStyle.yellowThumb,
+      PinChatDetailsStyle.orangeThumb,
+      PinChatDetailsStyle.skyBlueThumb,
+    ];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
+
   return (
     <>
       <div className={PinChatDetailsStyle.chatWrapper}>
@@ -145,7 +158,9 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
                 onClick={() => pinnedChatsDetails(item)}
               >
                 <div
-                  className={` ${PinChatDetailsStyle.chatInitialThumb} ${PinChatDetailsStyle.blueThumb} `}
+                  className={` ${
+                    PinChatDetailsStyle.chatInitialThumb
+                  } ${getRandomColor()} `}
                 >
                   {item?.companyInitial}
                 </div>

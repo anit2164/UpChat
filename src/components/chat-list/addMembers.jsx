@@ -81,12 +81,15 @@ const AddMembers = ({
 
   const removeSelectedMember = (item, i) => {
     if (showUserName) {
-      const tempData = listData.map((item, index) => {
-        return index == i ? { ...item, isChecked: false } : item;
+      const removeMember = listData.findIndex((itemData, index) => {
+        return itemData.userEmpId == item.userEmpId;
       });
-      setListData(tempData);
-      const filterData = tempData.filter((item) => item.isChecked == true);
-      setUserName(filterData);
+      const removeData = listData.map((item, index) => {
+        return index === removeMember ? { ...item, isChecked: false } : item;
+      });
+      setListData(removeData);
+      // const filterData = tempData.filter((item) => item.isChecked == true);
+      setUserName(showUserName.filter((showUserName) => showUserName !== item));
     }
   };
 
@@ -109,6 +112,19 @@ const AddMembers = ({
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const getRandomColor = () => {
+    const colors = [
+      ChatListingStyles.blueThumb,
+      ChatListingStyles.darkRedThumb,
+      ChatListingStyles.greenThumb,
+      ChatListingStyles.yellowThumb,
+      ChatListingStyles.orangeThumb,
+      ChatListingStyles.skyBlueThumb,
+    ];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
   };
 
   return (
@@ -153,7 +169,10 @@ const AddMembers = ({
                 <div className={ChatListingStyles.membersArea}>
                   <div className={ChatListingStyles.membersAreaLeft}>
                     <span
-                      className={` ${ChatListingStyles.circle} ${ChatListingStyles.blueThumb} `}
+                      className={` ${
+                        ChatListingStyles.circle
+                      } ${getRandomColor()} `}
+                      // style={{ backgroundColor: getRandomColor() }}
                     >
                       {item?.userInitial}
                     </span>

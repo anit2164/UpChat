@@ -161,6 +161,20 @@ const Tile = ({
       console.error(error);
     }
   };
+
+  const getRandomColor = () => {
+    const colors = [
+      TileStyle.blueThumb,
+      TileStyle.darkRedThumb,
+      TileStyle.greenThumb,
+      TileStyle.yellowThumb,
+      TileStyle.orangeThumb,
+      TileStyle.skyBlueThumb,
+    ];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
+
   return (
     <>
       <div className={TileStyle.chatWrapper}>
@@ -172,7 +186,9 @@ const Tile = ({
                 onClick={() => showChatList(item)}
               >
                 <div
-                  className={` ${TileStyle.chatInitialThumb} ${TileStyle.blueThumb} `}
+                  className={` ${
+                    TileStyle.chatInitialThumb
+                  } ${getRandomColor()} `}
                 >
                   {item?.companyInitial}
                 </div>
