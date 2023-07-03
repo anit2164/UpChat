@@ -46,7 +46,6 @@ const ChatListing = ({
   setShowPinnedChatsList,
   setShowSnoozeChatsList,
 }) => {
-  
   const dispatch = useDispatch();
   const sendMessageData = useSelector((state) => state?.sendMessage);
 
@@ -108,7 +107,6 @@ const ChatListing = ({
   const bottomToTopRef = useRef(null);
   const arrawScroll = useRef(null);
 
-
   const [scrollDown, setScrollDown] = useState(false);
   const scrollToBottom = () => {
     bottomToTopRef.current?.scrollIntoView({
@@ -118,7 +116,7 @@ const ChatListing = ({
     setScrollDown(false);
   };
 
-  let getSenderName="";
+  let getSenderName = "";
 
   const sendMessage = async () => {
     if (messageHandler) {
@@ -147,16 +145,16 @@ const ChatListing = ({
         const collectionRef = firestore.collection(
           `ChannelChatsMapping/${allChannelItem?.id}/chats`
         );
-       const getData = collectionRef.doc(allChannelItem?.id);
+        const getData = collectionRef.doc(allChannelItem?.id);
         await collectionRef.add(obj);
-       const d = await getData.get();
+        const d = await getData.get();
         const dataArray = d?.docs?.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-        console.log(dataArray,"dataArray");
-        localStorage.setItem("sendername","Shreyash Zinzuvadia");
-       getSenderName = localStorage.getItem("sendername")
+        console.log(dataArray, "dataArray");
+        localStorage.setItem("sendername", "Shreyash Zinzuvadia");
+        getSenderName = localStorage.getItem("sendername");
         scrollToBottom();
         updateChannel(new Date());
         dispatch(sendMessageHandler(apiObj));
@@ -197,7 +195,7 @@ const ChatListing = ({
           await collectionRef.add(obj);
           updateChannel(new Date());
           dispatch(sendMessageHandler(apiObj));
-          localStorage.setItem("sendername","Shreyash Zinzuvadia");
+          localStorage.setItem("sendername", "Shreyash Zinzuvadia");
         } catch (error) {
           console.error(error);
         }
@@ -228,23 +226,27 @@ const ChatListing = ({
     //   divElement?.scrollHeight - divElement?.scrollTop ===
     //   divElement?.clientHeight;
     // scrollToBottom();
-  
-    
-    if (divElement?.scrollHeight - divElement?.scrollTop -divElement?.clientHeight < filterData?.length  ) {
+
+    if (
+      divElement?.scrollHeight -
+        divElement?.scrollTop -
+        divElement?.clientHeight <
+      filterData?.length
+    ) {
       setScrollDown(true);
     } else {
       setScrollDown(false);
     }
   };
-  const closeModal = () =>{
-    if(showChat){
-      setShowList(!showChat)
-    }else if (showPinnedChatsList){
-      setShowPinnedChatsList(!showPinnedChatsList)
-    }else if (showSnoozeChatsList){
-      setShowSnoozeChatsList(!showSnoozeChatsList)
+  const closeModal = () => {
+    if (showChat) {
+      setShowList(!showChat);
+    } else if (showPinnedChatsList) {
+      setShowPinnedChatsList(!showPinnedChatsList);
+    } else if (showSnoozeChatsList) {
+      setShowSnoozeChatsList(!showSnoozeChatsList);
     }
-  }
+  };
 
   return (
     <>
@@ -292,7 +294,10 @@ const ChatListing = ({
                   </Space>
                 </a>
               </Dropdown>
-              <span className={ChatListingStyles.chatWindowClose} onClick = {closeModal}></span>
+              <span
+                className={ChatListingStyles.chatWindowClose}
+                onClick={closeModal}
+              ></span>
             </div>
           </div>
           <MemberListing allChannelItem={allChannelItem} />
@@ -312,10 +317,13 @@ const ChatListing = ({
                     setSearch(e.target.value);
                   }}
                 />
-                <span
-                  className={ChatListingStyles.closeIcon}
-                  onClick={() => setSearch("")}
-                ></span>
+                {search?.length !== 0 && (
+                  <span
+                    className={ChatListingStyles.closeIcon}
+                    onClick={() => setSearch("")}
+                  ></span>
+                )}
+
                 {/* <span className={ChatListingStyles.numberOfSearch}>
                   <span className={ChatListingStyles.arrowIcon}>
                     <ArrowIcon />
@@ -376,17 +384,21 @@ const ChatListing = ({
                             </Space>
                           </a>
                         </Dropdown>
-                        {!scrollDown&&(
-                        <span
-                          className={ChatListingStyles.scrollToBottom}
-                          onClick={scrollToBottom}
-                        >
-                          <ScrollToBottomSVG />
-                        </span>
+                        {!scrollDown && (
+                          <span
+                            className={ChatListingStyles.scrollToBottom}
+                            onClick={scrollToBottom}
+                          >
+                            <ScrollToBottomSVG />
+                          </span>
                         )}
                       </div>
                       <div
-                        className={` ${ChatListingStyles.channelMessageBox} ${getSenderName===item?.senderName? ChatListingStyles.channelMessageLeft:ChatListingStyles.channelMessageRight} `}
+                        className={` ${ChatListingStyles.channelMessageBox} ${
+                          getSenderName === item?.senderName
+                            ? ChatListingStyles.channelMessageLeft
+                            : ChatListingStyles.channelMessageRight
+                        } `}
                       >
                         <p>{item?.text}</p>
                         <div className={ChatListingStyles.chatReaction}>
