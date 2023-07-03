@@ -20,6 +20,8 @@ const AddMembers = ({
   console.log(allChannelItem, "allChannelItemallChannelItem");
   const [search, setSearch] = useState("");
   const [showUserName, setUserName] = useState([]);
+  let channelInfoId = allChannelItem.allChannelItem.enc_channelID;
+  const [channelIds, setChannelIds] = useState("");
 
   const dispatch = useDispatch();
   const addMemberListingdata = useSelector((state) => state?.addMemberListing);
@@ -28,46 +30,79 @@ const AddMembers = ({
     dispatch(addMemberListingHandler());
   }, []);
 
-  const filterData = addMemberListingdata?.data?.details?.filter((item) => {
-    return item?.userName?.toLowerCase()?.includes(search?.toLowerCase());
-  });
+  useEffect(() => {
+    setChannelIds(allChannelItem?.allChannelItem?.enc_channelID);
+  }, [allChannelItem]);
 
-  const userNameList = (e, item) => {
-    if (e.target.checked) {
-      setUserName([...showUserName, item]);
+  const [listData, setListData] = useState([]);
+  const [sortedData, setSortedData] = useState([]);
+
+  const handleChange = (e) => {
+    if (e) {
+      const filterData = sortedData?.filter((item) => {
+        return item?.userName?.toLowerCase()?.includes(e?.toLowerCase());
+      });
+      setSearch(e);
+      setListData(filterData);
     } else {
-      setUserName(showUserName.filter((showUserName) => showUserName !== item));
+      setSearch(e);
+      setListData(sortedData);
     }
   };
 
-  const removeSelectedMember = (item) => {
-    console.log(item, "iteteett");
-    if (showUserName) {
-      setUserName(showUserName.filter((showUserName) => showUserName !== item));
-      // const updatedItems = item?.map((itemInfo) =>
-      //   itemInfo === item ? { ...itemInfo, checked: false } : item
-      // );
-      // setUserName(updatedItems);
+  useEffect(() => {
+    if (addMemberListingdata) {
+      const filterData = addMemberListingdata?.data?.details?.filter((item) => {
+        const newObj = { ...item, isChecked: false };
+        return newObj;
+      });
+      setListData(filterData);
+      setSortedData(filterData);
+    }
+  }, [addMemberListingdata?.data?.details]);
+
+  const userNameList = (e, item, i) => {
+    if (e.target.checked) {
+      const tempData = listData.map((item, index) => {
+        return index == i ? { ...item, isChecked: true } : item;
+      });
+      setListData(tempData);
+      const filterData = tempData.filter((item) => item.isChecked == true);
+      setUserName(filterData);
+    } else {
+      const tempData = listData.map((item, index) => {
+        return index == i ? { ...item, isChecked: false } : item;
+      });
+      setListData(tempData);
+      const filterData = tempData.filter((item) => item.isChecked == true);
+      setUserName(filterData);
     }
   };
-  console.log(showUserName, "showUserName");
+
+  const removeSelectedMember = (item, i) => {
+    if (showUserName) {
+      const tempData = listData.map((item, index) => {
+        return index == i ? { ...item, isChecked: false } : item;
+      });
+      setListData(tempData);
+      const filterData = tempData.filter((item) => item.isChecked == true);
+      setUserName(filterData);
+    }
+  };
 
   const addMembers = async () => {
+    let tempObj;
     try {
-      // let tempObj = {
-      //   channelID: allChannelItem?.allChannelItem?.enc_channelID,
-      //   photoURL: "",
-      //   userDesignation: "Sales Consultant",
-      //   userEmpId: "UP1234",
-      //   userInitial: "SZ",
-      //   userName: "Shreyash Test",
-      // };
       const firestore = firebase.firestore();
       const collectionRef = firestore.collection(
         `ChannelUserMapping/${allChannelItem?.allChannelItem?.enc_channelID}/user`
       );
       for (let i = 0; i < showUserName.length; i++) {
-        await collectionRef.add(showUserName);
+        tempObj = showUserName[i];
+        delete showUserName[i].isChecked;
+        tempObj.channelID = allChannelItem.allChannelItem.enc_channelID;
+        console.log(tempObj, "tempObj");
+        await collectionRef.add(tempObj);
       }
       setShowAddMemberModel(!showAddMemberModel);
       setHideMemberModel(true);
@@ -100,7 +135,7 @@ const AddMembers = ({
               placeholder="Search Name, Employee ID or Email."
               value={search}
               onChange={(e) => {
-                setSearch(e.target.value);
+                handleChange(e.target.value);
               }}
             />
           </li>
@@ -112,22 +147,23 @@ const AddMembers = ({
             <li className={ChatListingStyles.listingLabel}>Recommended</li>
           )}
           <li className={ChatListingStyles.memberListing}>
-            {filterData?.map((item) => {
+            {listData?.map((item, index) => {
+              console.log(item, "itemData123");
               return (
                 <div className={ChatListingStyles.membersArea}>
                   <div className={ChatListingStyles.membersAreaLeft}>
                     <span
                       className={` ${ChatListingStyles.circle} ${ChatListingStyles.blueThumb} `}
                     >
-                      {item?.userIntial}
+                      {item?.userInitial}
                     </span>
                     <div className={ChatListingStyles.profileName}>
-                      {item?.userName}({item?.userID})
+                      {item?.userName}({item?.userEmpId})
                     </div>
                     <span
                       className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
                     >
-                      {item?.userType}
+                      {item?.userDesignation}
                     </span>
                   </div>
                   <div className={ChatListingStyles.checkboxWrapper}>
@@ -135,14 +171,15 @@ const AddMembers = ({
                       type="checkbox"
                       name="selectMember"
                       // value={item?.userName}
-                      onChange={(e) => userNameList(e, item)}
+                      checked={item?.isChecked}
+                      onChange={(e) => userNameList(e, item, index)}
                     />
                     <span></span>
                   </div>
                 </div>
               );
             })}
-            {filterData?.length === 0 && (
+            {listData?.length === 0 && (
               <span className={ChatListingStyles.noDataFound}>
                 No Members Found
               </span>
@@ -151,13 +188,13 @@ const AddMembers = ({
 
           <li>
             <div className={ChatListingStyles.addedMember}>
-              {showUserName?.map((item) => {
+              {showUserName?.map((item, index) => {
                 return (
                   <span>
-                    {`${item?.userName}(${item?.userID})`}
+                    {`${item?.userName}(${item?.userEmpId})`}
                     <span
                       className={ChatListingStyles.removeMember}
-                      onClick={() => removeSelectedMember(item)}
+                      onClick={() => removeSelectedMember(item, index)}
                     ></span>
                   </span>
                 );
