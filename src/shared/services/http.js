@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = "http://3.218.6.134:9082";
 
 const getHeader = () => {
-  let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMDAyMiIsIkxvZ2luVXNlcklkIjoiMiIsIkxvZ2luVXNlclR5cGVJZCI6IjIiLCJuYmYiOjE2ODgwMzcyNjIsImV4cCI6MTY4ODA3MzI2MiwiaWF0IjoxNjg4MDM3MjYyfQ.aAGCFivc1Xtys_9ZAz1hfxJ17FrzjxV1Or04TVE-b0w"
+  let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMDAyMiIsIkxvZ2luVXNlcklkIjoiMiIsIkxvZ2luVXNlclR5cGVJZCI6IjIiLCJuYmYiOjE2ODgzNjI5NzQsImV4cCI6MTY4ODM5ODk3NCwiaWF0IjoxNjg4MzYyOTc0fQ.x1TYthhywB6lhNgd6hH1ragd5ITaqTYTRpOH-5Ucx8A"
   let tokenData = localStorage.setItem("token", token)
   let user = localStorage.getItem("token");
   return user && { Authorization: user };
