@@ -18,33 +18,12 @@ const AddMembers = ({
   setHideMemberModel,
 }) => {
   console.log(allChannelItem, "allChannelItemallChannelItem");
-  // const [userDataList, setUserDataList] = useState();
   const [search, setSearch] = useState("");
   const [showUserName, setUserName] = useState([]);
 
+
   const dispatch = useDispatch();
   const addMemberListingdata = useSelector((state) => state?.addMemberListing);
-
-  // useEffect(() => {
-  //   try {
-  //     const firestore = firebase.firestore();
-  //     const unsubscribe = firestore
-  //       .collection(
-  //         `ChannelUserMapping/${allChannelItem?.allChannelItem?.id}/user`
-  //       )
-  //       .onSnapshot((snapshot) => {
-  //         const userData = snapshot.docs.map((doc) => doc.data());
-  //         setUserDataList(userData);
-  //       });
-
-  //     return () => {
-  //       // Unsubscribe from Firestore snapshot listener when component unmounts
-  //       unsubscribe();
-  //     };
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, [allChannelItem]);
 
   useEffect(() => {
     dispatch(addMemberListingHandler());
@@ -55,19 +34,18 @@ const AddMembers = ({
   });
 
   const userNameList = (e, item) => {
-    console.log(item, "item");
     if (e.target.checked) {
-      setUserName([...showUserName, `${item?.userName} (${item?.userID})`]);
+      setUserName([...showUserName, item]);
     } else {
       setUserName(
         showUserName.filter(
           (showUserName) =>
-            showUserName !== `${item?.userName} (${item?.userID})`
-        )
-      );
-    }
+          showUserName !== item
+          )
+          );
+        }
   };
-
+ 
   const removeSelectedMember = (item) => {
     console.log(item, "iteteett");
     if (showUserName) {
@@ -78,6 +56,7 @@ const AddMembers = ({
       // setUserName(updatedItems);
     }
   };
+  console.log(showUserName,"showUserName");
 
   const addMembers = async () => {
     try {
@@ -178,10 +157,9 @@ const AddMembers = ({
           <li>
             <div className={ChatListingStyles.addedMember}>
               {showUserName?.map((item) => {
-                console.log(item, "dsdsdsdsdsaaa");
                 return (
                   <span>
-                    {item}
+                    {`${item?.userName}(${item?.userID})`}
                     <span
                       className={ChatListingStyles.removeMember}
                       onClick={() => removeSelectedMember(item)}
