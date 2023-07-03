@@ -169,7 +169,9 @@ const AddMembers = ({
 
           <li>
             <div className={ChatListingStyles.addMembersAreaFooter}>
-              <button>Add</button>
+              <button disabled={showUserName.length === 0 ? true : false}>
+                Add
+              </button>
             </div>
           </li>
         </ul>
