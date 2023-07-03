@@ -21,7 +21,6 @@ const AddMembers = ({
   const [search, setSearch] = useState("");
   const [showUserName, setUserName] = useState([]);
 
-
   const dispatch = useDispatch();
   const addMemberListingdata = useSelector((state) => state?.addMemberListing);
 
@@ -37,15 +36,10 @@ const AddMembers = ({
     if (e.target.checked) {
       setUserName([...showUserName, item]);
     } else {
-      setUserName(
-        showUserName.filter(
-          (showUserName) =>
-          showUserName !== item
-          )
-          );
-        }
+      setUserName(showUserName.filter((showUserName) => showUserName !== item));
+    }
   };
- 
+
   const removeSelectedMember = (item) => {
     console.log(item, "iteteett");
     if (showUserName) {
@@ -56,24 +50,25 @@ const AddMembers = ({
       // setUserName(updatedItems);
     }
   };
-  console.log(showUserName,"showUserName");
+  console.log(showUserName, "showUserName");
 
   const addMembers = async () => {
     try {
-      let tempObj = {
-        channelID: allChannelItem?.allChannelItem?.enc_channelID,
-        photoURL: "",
-        userDesignation: "Sales Consultant",
-        userEmpId: "UP1234",
-        userInitial: "SZ",
-        userName: "Shreyash Test",
-      };
+      // let tempObj = {
+      //   channelID: allChannelItem?.allChannelItem?.enc_channelID,
+      //   photoURL: "",
+      //   userDesignation: "Sales Consultant",
+      //   userEmpId: "UP1234",
+      //   userInitial: "SZ",
+      //   userName: "Shreyash Test",
+      // };
       const firestore = firebase.firestore();
       const collectionRef = firestore.collection(
         `ChannelUserMapping/${allChannelItem?.allChannelItem?.enc_channelID}/user`
       );
-      console.log(tempObj, "temoObj");
-      await collectionRef.add(tempObj);
+      for (let i = 0; i < showUserName.length; i++) {
+        await collectionRef.add(showUserName);
+      }
       setShowAddMemberModel(!showAddMemberModel);
       setHideMemberModel(true);
     } catch (error) {
