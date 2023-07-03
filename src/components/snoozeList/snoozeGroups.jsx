@@ -48,10 +48,17 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
     return item?.isSnoozed === true;
   });
 
-  filterData.sort((a,b)=>moment(new Date(b?.lastMessageTime?.seconds * 1000)
-  .toLocaleTimeString(),"hh:mm A")
-   - moment(new Date(a?.lastMessageTime?.seconds * 1000)
-  .toLocaleTimeString(),"hh:mm A"))
+  filterData.sort(
+    (a, b) =>
+      moment(
+        new Date(b?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
+        "hh:mm"
+      ) -
+      moment(
+        new Date(a?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
+        "hh:mm"
+      )
+  );
 
   let moveToActiveObj;
 

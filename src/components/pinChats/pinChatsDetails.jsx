@@ -47,11 +47,11 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
     (a, b) =>
       moment(
         new Date(b?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
-        "hh:mm A"
+        "hh:mm"
       ) -
       moment(
         new Date(a?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
-        "hh:mm A"
+        "hh:mm"
       )
   );
 
