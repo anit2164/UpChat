@@ -892,3 +892,27 @@
   transform: translate(-50%, -50%);
   font-size: 20px;
 }
+
+.shareButton {
+  cursor: pointer;
+}
+.linkLabelMain {
+  padding: 11px 16px;
+  font-size: 14px;
+  line-height: 26px;
+  font-weight: 400;
+}
+.linkLabelMain p {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+.linkLabel {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  text-decoration: underline;
+}
+.linkLabel svg {
+  max-width: 16px;
+  margin-right: 8px;
+}

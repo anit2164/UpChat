@@ -9,6 +9,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { useEffect, useState } from "react";
 import AddMembers from "./addMembers";
+import ShareInvite from "./shareInvite";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -16,6 +17,7 @@ const MemberListing = (allChannelItem) => {
   const [userDataList, setUserDataList] = useState();
   const [hideMemberModel, setHideMemberModel] = useState(false);
   const [showAddMemberModel, setShowAddMemberModel] = useState(false);
+  const [showInvite, setShowInvite] = useState(false);
 
   useEffect(() => {
     setHideMemberModel(false);
@@ -164,7 +166,13 @@ const MemberListing = (allChannelItem) => {
                       Add Members
                     </div>
                   </div>
-                  <span>
+                  <span
+                    className={ChatListingStyles.shareButton}
+                    onClick={() => {
+                      setShowInvite(!showInvite);
+                      setHideMemberModel(false);
+                    }}
+                  >
                     <FiShareSVG />
                   </span>
                 </div>
@@ -178,6 +186,15 @@ const MemberListing = (allChannelItem) => {
               setHideMemberModel={setHideMemberModel}
               allChannelItem={allChannelItem}
               userDataList={userDataList}
+            />
+          )}
+          {showInvite && (
+            <ShareInvite
+              showAddMemberModel={showAddMemberModel}
+              showInvite={showInvite}
+              setShowAddMemberModel={setShowAddMemberModel}
+              setShowInvite={setShowInvite}
+              setHideMemberModel={setHideMemberModel}
             />
           )}
         </div>
