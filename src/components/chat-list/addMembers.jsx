@@ -16,8 +16,8 @@ const AddMembers = ({
   showAddMemberModel,
   setShowAddMemberModel,
   setHideMemberModel,
+  userDataList,
 }) => {
-  console.log(allChannelItem, "allChannelItemallChannelItem");
   const [search, setSearch] = useState("");
   const [showUserName, setUserName] = useState([]);
   let channelInfoId = allChannelItem.allChannelItem.enc_channelID;
@@ -126,6 +126,29 @@ const AddMembers = ({
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   };
+
+  //compare two objects
+
+  // useEffect(() => {
+  //   var array1 = listData;
+  //   var array2 = userDataList;
+
+  //   const properties = ["userEmpId"];
+
+  //   const result = array1
+  //     .filter(
+  //       (object1) =>
+  //         !array2.some((object2) => object1.userEmpId === object2.userEmpId)
+  //     ) // requires unique id
+  //     .map((item) =>
+  //       properties.reduce((newObject, name) => {
+  //         newObject[name] = item[name];
+  //         return newObject;
+  //       }, {})
+  //     );
+
+  //   console.log(JSON.stringify(result, null, 4), "datatattata");
+  // }, [listData, userDataList]);
 
   return (
     <>

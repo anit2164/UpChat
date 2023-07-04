@@ -29,10 +29,12 @@ const MemberListing = (allChannelItem) => {
           `ChannelUserMapping/${allChannelItem?.allChannelItem?.id}/user`
         )
         .onSnapshot((snapshot) => {
-          const userData = snapshot.docs.map((doc) => doc.data());
+          const userData = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
           setUserDataList(userData);
         });
-
       return () => {
         // Unsubscribe from Firestore snapshot listener when component unmounts
         unsubscribe();
@@ -41,120 +43,6 @@ const MemberListing = (allChannelItem) => {
       console.error(error);
     }
   }, [allChannelItem]);
-
-  //   const membersDropdown = [
-  //     {
-  //       key: "0",
-  //       label: (
-  //         <div className={ChatListingStyles.membersMenuMain}>
-  //           6 Members
-  //           <span className={ChatListingStyles.chatWindowClose}></span>
-  //         </div>
-  //       ),
-  //       icon: <FiUsersSVG />,
-  //     },
-  //     {
-  //       type: "divider",
-  //     },
-  //     {
-  //       key: "1",
-  //       label: (
-  //         <div className={ChatListingStyles.membersArea}>
-  //           <div className={ChatListingStyles.membersAreaLeft}>
-  //             <img
-  //               className={ChatListingStyles.profileAvtar}
-  //               src="https://i.pravatar.cc/40"
-  //               width="24"
-  //               height="24"
-  //             />
-  //             <div className={ChatListingStyles.profileName}>Prachi Porwal</div>
-  //             <span
-  //               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
-  //             >
-  //               Sales Consultant
-  //             </span>
-  //           </div>
-  //           <span className={ChatListingStyles.removeLink}>Remove</span>
-  //         </div>
-  //       ),
-  //     },
-  //     {
-  //       key: "2",
-  //       label: (
-  //         <div className={ChatListingStyles.membersArea}>
-  //           <div className={ChatListingStyles.membersAreaLeft}>
-  //             <img
-  //               className={ChatListingStyles.profileAvtar}
-  //               src="https://i.pravatar.cc/40"
-  //               width="24"
-  //               height="24"
-  //             />
-  //             <div className={ChatListingStyles.profileName}>Majid Ali</div>
-  //             <span
-  //               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.deliveryTeam} `}
-  //             >
-  //               Delivery Team
-  //             </span>
-  //           </div>
-  //           <span className={ChatListingStyles.removeLink}>Remove</span>
-  //         </div>
-  //       ),
-  //     },
-  //     {
-  //       key: "3",
-  //       label: (
-  //         <div className={ChatListingStyles.membersArea}>
-  //           <div className={ChatListingStyles.membersAreaLeft}>
-  //             <img
-  //               className={ChatListingStyles.profileAvtar}
-  //               src="https://i.pravatar.cc/40"
-  //               width="24"
-  //               height="24"
-  //             />
-  //             <div className={ChatListingStyles.profileName}>Darshan Modi</div>
-  //             <span
-  //               className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
-  //             >
-  //               COE Team
-  //             </span>
-  //           </div>
-  //         </div>
-  //       ),
-  //     },
-  //     {
-  //       key: "4",
-  //       label: (
-  //         <div className={ChatListingStyles.membersArea}>
-  //           <div className={ChatListingStyles.membersAreaLeft}>
-  //             <img
-  //               className={ChatListingStyles.profileAvtar}
-  //               src="https://i.pravatar.cc/40"
-  //               width="24"
-  //               height="24"
-  //             />
-  //             <div className={ChatListingStyles.profileName}>Bhuvan Desai</div>
-  //           </div>
-  //           <span className={ChatListingStyles.removeLink}>Leave Chat</span>
-  //         </div>
-  //       ),
-  //     },
-  //     {
-  //       type: "divider",
-  //     },
-  //     {
-  //       label: (
-  //         <div className={ChatListingStyles.membersArea}>
-  //           <div className={ChatListingStyles.membersAreaLeft}>
-  //             <FiUserPlusSVG />
-  //             <div className={ChatListingStyles.addMembers}>Add Members</div>
-  //           </div>
-  //           <span>
-  //             <FiShareSVG />
-  //           </span>
-  //         </div>
-  //       ),
-  //     },
-  //   ];
 
   const getRandomColor = () => {
     const colors = [
@@ -167,6 +55,24 @@ const MemberListing = (allChannelItem) => {
     ];
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
+  };
+
+  const removerMember = async (id) => {
+    try {
+      const firestore = firebase.firestore();
+      const collectionRef = firestore.collection(
+        `ChannelUserMapping/${allChannelItem?.allChannelItem?.id}/user`
+      );
+      const snapshot = collectionRef.doc(id);
+      await snapshot.delete();
+      let _data = await collectionRef.get();
+      const dataArray = _data?.docs?.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -225,7 +131,12 @@ const MemberListing = (allChannelItem) => {
                             {item?.userDesignation}
                           </span>
                         </div>
-                        <span className={ChatListingStyles.removeLink}>
+                        <span
+                          className={ChatListingStyles.removeLink}
+                          onClick={() => {
+                            removerMember(item?.id);
+                          }}
+                        >
                           Remove
                         </span>
                       </div>
@@ -266,6 +177,7 @@ const MemberListing = (allChannelItem) => {
               setShowAddMemberModel={setShowAddMemberModel}
               setHideMemberModel={setHideMemberModel}
               allChannelItem={allChannelItem}
+              userDataList={userDataList}
             />
           )}
         </div>
