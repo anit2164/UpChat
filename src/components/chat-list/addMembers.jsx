@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMemberListingHandler } from "@/redux_toolkit/slices/addMemberListing";
 import { ReactComponent as FiChevronLeftSVG } from "@SVG/fiChevronLeft.svg";
 import { ReactComponent as SearchSVG } from "@SVG/search.svg";
+import { result } from "lodash";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -56,21 +57,47 @@ const AddMembers = ({
         const newObj = { ...item, isChecked: false };
         return newObj;
       });
-      setListData(filterData);
-      setSortedData(filterData);
+
+      var array1 = filterData;
+      var array2 = userDataList;
+
+      const properties = [
+        "userEmpId",
+        "channelID",
+        "photoURL",
+        "userDesignation",
+        "userInitial",
+        "userName",
+      ];
+
+      if (filterData?.length > 0 && addMemberListingdata?.data?.details) {
+        const result = array1
+          .filter(
+            (object1) =>
+              !array2.some((object2) => object1.userEmpId === object2.userEmpId)
+          )
+          .map((item) =>
+            properties.reduce((newObject, name) => {
+              newObject[name] = item[name];
+              return newObject;
+            }, {})
+          );
+        setListData(result);
+        setSortedData(result);
+      }
     }
   }, [addMemberListingdata?.data?.details]);
 
   const userNameList = (e, item, i) => {
     if (e.target.checked) {
-      const tempData = listData.map((item, index) => {
+      const tempData = listData?.map((item, index) => {
         return index == i ? { ...item, isChecked: true } : item;
       });
       setListData(tempData);
       const filterData = tempData.filter((item) => item.isChecked == true);
       setUserName(filterData);
     } else {
-      const tempData = listData.map((item, index) => {
+      const tempData = listData?.map((item, index) => {
         return index == i ? { ...item, isChecked: false } : item;
       });
       setListData(tempData);
@@ -84,7 +111,7 @@ const AddMembers = ({
       const removeMember = listData.findIndex((itemData, index) => {
         return itemData.userEmpId == item.userEmpId;
       });
-      const removeData = listData.map((item, index) => {
+      const removeData = listData?.map((item, index) => {
         return index === removeMember ? { ...item, isChecked: false } : item;
       });
       setListData(removeData);
@@ -104,7 +131,6 @@ const AddMembers = ({
         tempObj = showUserName[i];
         delete showUserName[i].isChecked;
         tempObj.channelID = allChannelItem.allChannelItem.enc_channelID;
-        console.log(tempObj, "tempObj");
         await collectionRef.add(tempObj);
       }
       setShowAddMemberModel(!showAddMemberModel);
@@ -129,26 +155,34 @@ const AddMembers = ({
 
   //compare two objects
 
-  // useEffect(() => {
-  //   var array1 = listData;
-  //   var array2 = userDataList;
+  useEffect(() => {
+    var array1 = listData;
+    var array2 = userDataList;
 
-  //   const properties = ["userEmpId"];
+    const properties = [
+      "userEmpId",
+      "channelID",
+      "photoURL",
+      "userDesignation",
+      "userInitial",
+      "userName",
+    ];
 
-  //   const result = array1
-  //     .filter(
-  //       (object1) =>
-  //         !array2.some((object2) => object1.userEmpId === object2.userEmpId)
-  //     ) // requires unique id
-  //     .map((item) =>
-  //       properties.reduce((newObject, name) => {
-  //         newObject[name] = item[name];
-  //         return newObject;
-  //       }, {})
-  //     );
-
-  //   console.log(JSON.stringify(result, null, 4), "datatattata");
-  // }, [listData, userDataList]);
+    if (listData?.length > 0 && addMemberListingdata?.data?.details) {
+      const result = array1
+        .filter(
+          (object1) =>
+            !array2.some((object2) => object1.userEmpId === object2.userEmpId)
+        )
+        .map((item) =>
+          properties.reduce((newObject, name) => {
+            newObject[name] = item[name];
+            return newObject;
+          }, {})
+        );
+      setListData(result);
+    }
+  }, [addMemberListingdata]);
 
   return (
     <>
@@ -187,7 +221,6 @@ const AddMembers = ({
           )}
           <li className={ChatListingStyles.memberListing}>
             {listData?.map((item, index) => {
-              console.log(item, "itemData123");
               return (
                 <div className={ChatListingStyles.membersArea}>
                   <div className={ChatListingStyles.membersAreaLeft}>
