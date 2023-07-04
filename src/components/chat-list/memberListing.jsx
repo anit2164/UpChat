@@ -23,6 +23,9 @@ const MemberListing = (allChannelItem) => {
     setHideMemberModel(false);
   }, [allChannelItem]);
 
+  localStorage.setItem("LoginUserName", "Bhuvan UTS AM qa");
+  const loginUser = localStorage.getItem("LoginUserName");
+
   useEffect(() => {
     try {
       const firestore = firebase.firestore();
@@ -139,7 +142,9 @@ const MemberListing = (allChannelItem) => {
                             removerMember(item?.id);
                           }}
                         >
-                          Remove
+                          {item?.userName === loginUser
+                            ? "Leave Chat"
+                            : "Remove"}
                         </span>
                       </div>
                     </>
