@@ -22,6 +22,9 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
   const [activeUser, setActiveUser] = useState(false);
+  const [showSnoozeChatsList, setShowSnoozeChatsList] = useState(false);
+  const [listingChats, setListingChats] = useState([]);
+  const [allChannelItem, setAllChannelItem] = useState();
 
   const items = [
     {
@@ -29,11 +32,6 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
       key: ChannelMenu.VIEW_HR_DETAILS,
       icon: <ViewHRDetailsSVG />,
     },
-    // {
-    //   label: ChannelMenu.CHANNEL_LIBRARY,
-    //   key: ChannelMenu.CHANNEL_LIBRARY,
-    //   icon: <ChannelLibrarySVG />,
-    // },
     {
       label: ChannelMenu.MOVE_TO_ACTIVE,
       key: ChannelMenu.MOVE_TO_ACTIVE,
@@ -87,10 +85,6 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
     [LastSnoozeGroups]
   );
 
-  const [showSnoozeChatsList, setShowSnoozeChatsList] = useState(false);
-  const [listingChats, setListingChats] = useState([]);
-  const [allChannelItem, setAllChannelItem] = useState();
-
   const snoozeChatsDetails = (item) => {
     setActiveUser(true);
     setAllChannelItem(item);
@@ -104,9 +98,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
           const messagesData = snapshot.docs.map((doc) => doc.data());
           setListingChats(messagesData);
         });
-
       return () => {
-        // Unsubscribe from Firestore snapshot listener when component unmounts
         unsubscribe();
       };
     } catch (error) {

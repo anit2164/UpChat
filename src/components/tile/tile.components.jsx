@@ -11,7 +11,6 @@ import "firebase/compat/firestore";
 import { ChannelMenu } from "@/constants/application";
 import { ReactComponent as ViewHRDetailsSVG } from "@SVG/viewHrDetails.svg";
 import ChatListing from "../chat-list/chatListing";
-import moment from "moment/moment";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -68,7 +67,6 @@ const Tile = ({
 
         setDataNew(dataArray);
         setTempArr(dataArray);
-        // LastPinnedGroups();
         LastSnoozeGroups();
       } catch (error) {
         console.error(error);
@@ -86,11 +84,6 @@ const Tile = ({
       key: ChannelMenu.VIEW_HR_DETAILS,
       icon: <ViewHRDetailsSVG />,
     },
-    // {
-    //   label: ChannelMenu.CHANNEL_LIBRARY,
-    //   key: ChannelMenu.CHANNEL_LIBRARY,
-    //   icon: <ChannelLibrarySVG />,
-    // },
     {
       label: ChannelMenu.SNOOZE,
       key: ChannelMenu.SNOOZE,
@@ -133,7 +126,6 @@ const Tile = ({
         });
 
       return () => {
-        // Unsubscribe from Firestore snapshot listener when component unmounts
         unsubscribe();
       };
     } catch (error) {
@@ -176,7 +168,6 @@ const Tile = ({
     <>
       <div className={TileStyle.chatWrapper}>
         {filterData?.map((item) => {
-          console.log(item, "item");
           return (
             <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}>
               <div

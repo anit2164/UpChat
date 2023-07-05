@@ -8,8 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMemberListingHandler } from "@/redux_toolkit/slices/addMemberListing";
 import { ReactComponent as FiChevronLeftSVG } from "@SVG/fiChevronLeft.svg";
 import { ReactComponent as SearchSVG } from "@SVG/search.svg";
-import { result } from "lodash";
-
 firebase.initializeApp(firebaseConfig);
 
 const AddMembers = ({
@@ -21,8 +19,9 @@ const AddMembers = ({
 }) => {
   const [search, setSearch] = useState("");
   const [showUserName, setUserName] = useState([]);
-  let channelInfoId = allChannelItem.allChannelItem.enc_channelID;
   const [channelIds, setChannelIds] = useState("");
+  const [listData, setListData] = useState([]);
+  const [sortedData, setSortedData] = useState([]);
 
   const dispatch = useDispatch();
   const addMemberListingdata = useSelector((state) => state?.addMemberListing);
@@ -34,9 +33,6 @@ const AddMembers = ({
   useEffect(() => {
     setChannelIds(allChannelItem?.allChannelItem?.enc_channelID);
   }, [allChannelItem]);
-
-  const [listData, setListData] = useState([]);
-  const [sortedData, setSortedData] = useState([]);
 
   const handleChange = (e) => {
     if (e) {
@@ -115,7 +111,6 @@ const AddMembers = ({
         return index === removeMember ? { ...item, isChecked: false } : item;
       });
       setListData(removeData);
-      // const filterData = tempData.filter((item) => item.isChecked == true);
       setUserName(showUserName.filter((showUserName) => showUserName !== item));
     }
   };
@@ -152,8 +147,6 @@ const AddMembers = ({
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   };
-
-  //compare two objects
 
   useEffect(() => {
     var array1 = listData;

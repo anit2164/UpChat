@@ -49,7 +49,6 @@ const ChatListing = ({
   setActiveUser,
 }) => {
   const dispatch = useDispatch();
-  const sendMessageData = useSelector((state) => state?.sendMessage);
 
   const [toggle, setToggle] = useState(false);
   const [messageHandler, setMessageHandler] = useState("");
@@ -57,6 +56,9 @@ const ChatListing = ({
   const [chatMapKey, setChatMapKey] = useState();
   const [search, setSearch] = useState("");
   const [senderClass, setSenderClass] = useState(false);
+  const [memberRead, setMemberRead] = useState([]);
+
+  let lastChatMessage;
 
   const channelMainDropdown = [
     {
@@ -125,11 +127,29 @@ const ChatListing = ({
     timeZone: "Asia/Kolkata",
   });
 
-  // Convert the IST time to hours, minutes, AM/PM
   const [time, period] = currentTimeIST.split(" ");
   const [hours, minutes] = time.split(":");
-  const formattedHours = parseInt(hours, 10) % 12 || 12; // Convert to 12-hour format
+  const formattedHours = parseInt(hours, 10) % 12 || 12;
   const formattedTime = `${formattedHours}:${minutes} ${period.toUpperCase()}`;
+
+  const createCollection = async () => {
+    try {
+      const firestore = firebase.firestore();
+      // const collectionRef = firestore.collection(
+      //   `ChannelChatsMapping/${allChannelItem?.id}/chats/${lastChatMessage?.[0]?.enc_chatID}/user_chats/`
+      // );
+      const collectionRef = firestore.collection(
+        `ChannelChatsMapping/tP60NOOkoxCU2EGvTIzN/chats/4I3fJROcnuxvhsh3jh8Q/user_chats`
+      );
+      await collectionRef.add({
+        enc_channelID: allChannelItem?.id,
+        isRead: true,
+        userEmpID: "",
+      });
+    } catch (error) {
+      console.error("Error creating collection:", error);
+    }
+  };
 
   const sendMessage = async () => {
     if (messageHandler) {
@@ -139,7 +159,7 @@ const ChatListing = ({
         let obj = {
           date: formattedTime,
           documentUrl: "",
-          enc_chatID: allChannelItem?.enc_channelID,
+          enc_chatID: "",
           hrID: allChannelItem?.hrID,
           isActivity: false,
           senderEmpID: "",
@@ -149,6 +169,10 @@ const ChatListing = ({
           senderDesignation: "",
           senderName: "Shreyash Zinzuvadia",
           talentName: "",
+          Replied: "",
+          isRepliedTo: "",
+          msgRepliedId: "",
+          remark: "",
         };
         let apiObj = {
           id: allChannelItem?.hrID,
@@ -158,9 +182,10 @@ const ChatListing = ({
         const collectionRef = firestore.collection(
           `ChannelChatsMapping/${allChannelItem?.id}/chats`
         );
-        const getData = collectionRef.doc(allChannelItem?.id);
+
         await collectionRef.add(obj);
-        const d = await getData.get();
+        const d = await collectionRef.get();
+
         const dataArray = d?.docs?.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -168,11 +193,8 @@ const ChatListing = ({
         localStorage.setItem("sendername", "Shreyash Zinzuvadia");
         getSenderName = localStorage.getItem("sendername");
         scrollToBottom();
-        // const activeRef = firestore.collection(
-        //   `ChannelChatsMapping/${allChannelItem?.id}/chats/123/user_chats/`
-        // );
-
         updateChannel(new Date());
+        createCollection();
         dispatch(sendMessageHandler(apiObj));
       } catch (error) {
         console.error(error);
@@ -189,7 +211,7 @@ const ChatListing = ({
           let obj = {
             date: formattedTime,
             documentUrl: "",
-            enc_chatID: allChannelItem?.enc_channelID,
+            enc_chatID: "",
             hrID: allChannelItem?.hrID,
             isActivity: false,
             senderEmpID: "",
@@ -199,6 +221,10 @@ const ChatListing = ({
             senderDesignation: "",
             senderName: "Shreyash Zinzuvadia",
             talentName: "",
+            Replied: "",
+            isRepliedTo: "",
+            msgRepliedId: "",
+            remark: "",
           };
           let apiObj = {
             id: allChannelItem?.hrID,
@@ -208,16 +234,24 @@ const ChatListing = ({
           const collectionRef = firestore.collection(
             `ChannelChatsMapping/${allChannelItem?.id}/chats`
           );
+
           await collectionRef.add(obj);
-          updateChannel(new Date());
-          dispatch(sendMessageHandler(apiObj));
+          const d = await collectionRef.get();
+
+          const dataArray = d?.docs?.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
           localStorage.setItem("sendername", "Shreyash Zinzuvadia");
+          getSenderName = localStorage.getItem("sendername");
+          scrollToBottom();
+          updateChannel(new Date());
+          createCollection();
+          dispatch(sendMessageHandler(apiObj));
         } catch (error) {
           console.error(error);
         }
       }
-
-      scrollToBottom();
     }
   };
 
@@ -235,6 +269,10 @@ const ChatListing = ({
   const filterData = listingChats?.filter((item) => {
     return item?.text?.toLowerCase()?.includes(search?.toLowerCase());
   });
+
+  if (filterData) {
+    lastChatMessage = filterData.slice(-1);
+  }
 
   const handleScroll = () => {
     const divElement = arrawScroll.current;
@@ -353,7 +391,6 @@ const ChatListing = ({
               id="content"
             >
               {filterData?.map((item, key) => {
-                console.log(item, "item");
                 return (
                   <>
                     <div
@@ -368,7 +405,6 @@ const ChatListing = ({
                           height="30"
                         />
                         <div className={ChatListingStyles.profileName}>
-                          {/* Prachi Porwal */}
                           {item?.senderName}
                         </div>
                         <span

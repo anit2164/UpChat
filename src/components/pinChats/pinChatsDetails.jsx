@@ -5,15 +5,12 @@ import { ReactComponent as BriefcaseSVG } from "@SVG/briefcase.svg";
 import { ReactComponent as PinSVG } from "@SVG/pin.svg";
 import { ReactComponent as ChannelLibrarySVG } from "@SVG/channelLibrary.svg";
 import { ReactComponent as LeaveSVG } from "@SVG/leave.svg";
-// import { ReactComponent as SnoozeSVG } from "@SVG/snooze.svg";
 import { ReactComponent as ViewHRDetailsSVG } from "@SVG/viewHrDetails.svg";
 import { ChannelMenu } from "@/constants/application";
 import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import ChatListing from "../chat-list/chatListing";
-import { filter } from "lodash";
-import moment from "moment";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -99,7 +96,6 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
         });
 
       return () => {
-        // Unsubscribe from Firestore snapshot listener when component unmounts
         unsubscribe();
       };
     } catch (error) {

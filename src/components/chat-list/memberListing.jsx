@@ -41,7 +41,6 @@ const MemberListing = (allChannelItem) => {
           setUserDataList(userData);
         });
       return () => {
-        // Unsubscribe from Firestore snapshot listener when component unmounts
         unsubscribe();
       };
     } catch (error) {
