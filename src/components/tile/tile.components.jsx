@@ -24,6 +24,7 @@ const Tile = ({
 }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
+  const [activeUser, setActiveUser] = useState(false);
 
   let tempObj;
   let snoozeObj;
@@ -108,14 +109,9 @@ const Tile = ({
 
   filterData.sort(
     (a, b) =>
-      moment(
-        new Date(b?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
-        "hh:mm"
-      ) -
-      moment(
-        new Date(a?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
-        "hh:mm"
-      )
+      // moment(new Date(b?.lastMessageTime).toLocaleTimeString(), "hh:mm") -
+      // moment(new Date(a?.lastMessageTime).toLocaleTimeString(), "hh:mm")
+      b?.lastMessageTime - a?.lastMessageTime
   );
 
   const [showChat, setShowList] = useState(false);
@@ -123,6 +119,7 @@ const Tile = ({
   const [allChannelItem, setAllChannelItem] = useState();
 
   const showChatList = async (item) => {
+    setActiveUser(true);
     setAllChannelItem(item);
     setShowList(true);
     try {
@@ -179,6 +176,7 @@ const Tile = ({
     <>
       <div className={TileStyle.chatWrapper}>
         {filterData?.map((item) => {
+          console.log(item, "item");
           return (
             <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}>
               <div
@@ -240,6 +238,8 @@ const Tile = ({
           allChannelItem={allChannelItem}
           updateChannel={updateChannel}
           setShowList={setShowList}
+          activeUser={activeUser}
+          setActiveUser={setActiveUser}
         />
       )}
     </>

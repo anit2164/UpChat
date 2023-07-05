@@ -21,6 +21,8 @@ firebase.initializeApp(firebaseConfig);
 const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
+  const [activeUser, setActiveUser] = useState(false);
+
   const items = [
     {
       label: ChannelMenu.VIEW_HR_DETAILS,
@@ -50,14 +52,9 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
 
   filterData.sort(
     (a, b) =>
-      moment(
-        new Date(b?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
-        "hh:mm"
-      ) -
-      moment(
-        new Date(a?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
-        "hh:mm"
-      )
+      // moment(new Date(b?.lastMessageTime).toLocaleTimeString(), "hh:mm") -
+      // moment(new Date(a?.lastMessageTime).toLocaleTimeString(), "hh:mm")
+      b?.lastMessageTime - a?.lastMessageTime
   );
 
   let moveToActiveObj;
@@ -95,6 +92,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
   const [allChannelItem, setAllChannelItem] = useState();
 
   const snoozeChatsDetails = (item) => {
+    setActiveUser(true);
     setAllChannelItem(item);
     setShowSnoozeChatsList(true);
     try {
@@ -214,6 +212,8 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
           allChannelItem={allChannelItem}
           updateChannel={updateChannel}
           setShowSnoozeChatsList={setShowSnoozeChatsList}
+          activeUser={activeUser}
+          setActiveUser={setActiveUser}
         />
       )}
     </>

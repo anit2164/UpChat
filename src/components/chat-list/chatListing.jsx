@@ -45,6 +45,8 @@ const ChatListing = ({
   setShowList,
   setShowPinnedChatsList,
   setShowSnoozeChatsList,
+  activeUser,
+  setActiveUser,
 }) => {
   const dispatch = useDispatch();
   const sendMessageData = useSelector((state) => state?.sendMessage);
@@ -118,13 +120,24 @@ const ChatListing = ({
 
   let getSenderName = "";
 
+  const currentDate = new Date();
+  const currentTimeIST = currentDate.toLocaleTimeString("en-IN", {
+    timeZone: "Asia/Kolkata",
+  });
+
+  // Convert the IST time to hours, minutes, AM/PM
+  const [time, period] = currentTimeIST.split(" ");
+  const [hours, minutes] = time.split(":");
+  const formattedHours = parseInt(hours, 10) % 12 || 12; // Convert to 12-hour format
+  const formattedTime = `${formattedHours}:${minutes} ${period.toUpperCase()}`;
+
   const sendMessage = async () => {
     if (messageHandler) {
       setMessageHandler("");
       setSenderClass(true);
       try {
         let obj = {
-          date: new Date(),
+          date: formattedTime,
           documentUrl: "",
           enc_chatID: allChannelItem?.enc_channelID,
           hrID: allChannelItem?.hrID,
@@ -152,10 +165,13 @@ const ChatListing = ({
           id: doc.id,
           ...doc.data(),
         }));
-        console.log(dataArray, "dataArray");
         localStorage.setItem("sendername", "Shreyash Zinzuvadia");
         getSenderName = localStorage.getItem("sendername");
         scrollToBottom();
+        // const activeRef = firestore.collection(
+        //   `ChannelChatsMapping/${allChannelItem?.id}/chats/123/user_chats/`
+        // );
+
         updateChannel(new Date());
         dispatch(sendMessageHandler(apiObj));
       } catch (error) {
@@ -171,7 +187,7 @@ const ChatListing = ({
         setSenderClass(true);
         try {
           let obj = {
-            date: new Date(),
+            date: formattedTime,
             documentUrl: "",
             enc_chatID: allChannelItem?.enc_channelID,
             hrID: allChannelItem?.hrID,
@@ -222,11 +238,6 @@ const ChatListing = ({
 
   const handleScroll = () => {
     const divElement = arrawScroll.current;
-    // const isScrolledToBottom =
-    //   divElement?.scrollHeight - divElement?.scrollTop ===
-    //   divElement?.clientHeight;
-    // scrollToBottom();
-
     if (
       divElement?.scrollHeight -
         divElement?.scrollTop -
@@ -269,6 +280,7 @@ const ChatListing = ({
         >
           <div className={ChatListingStyles.channelWindowHeader}>
             <div className={ChatListingStyles.channelHeaderLeft}>
+              {activeUser === true ? "Online" : "Offline"}
               <div
                 className={` ${ChatListingStyles.chatInitialThumb} ${ChatListingStyles.blueThumb} `}
               >
@@ -341,6 +353,7 @@ const ChatListing = ({
               id="content"
             >
               {filterData?.map((item, key) => {
+                console.log(item, "item");
                 return (
                   <>
                     <div
@@ -364,9 +377,14 @@ const ChatListing = ({
                           {item?.senderDesignation}
                         </span>
                         <span className={ChatListingStyles.timeStamp}>
-                          {new Date(item?.date?.seconds * 1000)
-                            .toLocaleTimeString()
-                            .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
+                          {item?.date?.seconds
+                            ? new Date(item?.date?.seconds * 1000)
+                                .toLocaleTimeString()
+                                .replace(
+                                  /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                  "$1$3"
+                                )
+                            : item?.date}
                         </span>
                         <Dropdown
                           className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}

@@ -20,6 +20,7 @@ firebase.initializeApp(firebaseConfig);
 const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
+  const [activeUser, setActiveUser] = useState(false);
 
   const items = [
     {
@@ -43,19 +44,12 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
     return item?.isPinned === true;
   });
 
-  let filterDate = filterData.sort(
+  filterData.sort(
     (a, b) =>
-      moment(
-        new Date(b?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
-        "hh:mm"
-      ) -
-      moment(
-        new Date(a?.lastMessageTime?.seconds * 1000).toLocaleTimeString(),
-        "hh:mm"
-      )
+      // moment(new Date(b?.lastMessageTime).toLocaleTimeString(), "hh:mm") -
+      // moment(new Date(a?.lastMessageTime).toLocaleTimeString(), "hh:mm")
+      b?.lastMessageTime - a?.lastMessageTime
   );
-
-  console.log(filterDate, "filterDate");
 
   let tempObj;
 
@@ -91,6 +85,7 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
   const [pinnedChatsItem, setPinnedChatsItem] = useState();
 
   const pinnedChatsDetails = (item) => {
+    setActiveUser(true);
     setPinnedChatsItem(item);
     setShowPinnedChatsList(true);
     try {
@@ -212,6 +207,8 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
           allChannelItem={pinnedChatsItem}
           updateChannel={updateChannel}
           setShowPinnedChatsList={setShowPinnedChatsList}
+          activeUser={activeUser}
+          setActiveUser={setActiveUser}
         />
       )}
     </>
