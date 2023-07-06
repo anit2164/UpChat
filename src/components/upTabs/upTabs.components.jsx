@@ -81,7 +81,7 @@ const UpTabs = () => {
         <Tabs>
           <TabList>
             <Tab>Active HRs</Tab>
-            <Tab>Snooze HRs {filterData?.length}</Tab>
+            <Tab>Snooze HRs @{filterData?.length}</Tab>
           </TabList>
 
           <TabPanel>

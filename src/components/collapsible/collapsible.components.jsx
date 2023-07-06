@@ -34,11 +34,11 @@ const Collapse = ({ setToggle, toggle }) => {
 
     fetchData();
   }, []);
-
+  console.log(toggle, "toggle");
   return (
     <div
       className={` ${CollapseStyle.container} ${
-        showClass ? CollapseStyle.toggleClose : ""
+        !toggle ? CollapseStyle.toggleClose : ""
       } `}
       onClick={() => {
         setToggle(!toggle);
