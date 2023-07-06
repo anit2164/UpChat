@@ -349,7 +349,7 @@ const ChatListing = ({
         >
           <div className={ChatListingStyles.channelWindowHeader}>
             <div className={ChatListingStyles.channelHeaderLeft}>
-              {activeUser === true ? "Online" : "Offline"}
+              {/* {activeUser === true ? "Online" : "Offline"} */}
               <div
                 className={` ${ChatListingStyles.chatInitialThumb} ${ChatListingStyles.blueThumb} `}
               >
