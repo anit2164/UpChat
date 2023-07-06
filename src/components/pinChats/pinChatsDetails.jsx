@@ -18,6 +18,7 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
   const [activeUser, setActiveUser] = useState(false);
+  const [updateData, setUpdateData] = useState([]);
 
   const items = [
     {
@@ -36,12 +37,17 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
       icon: <LeaveSVG />,
     },
   ];
+  useEffect(() => {
+    const filterData = data?.filter((item) => {
+      return item?.isPinned === true;
+    });
+    let filterDataNew = filterData?.map((val) => {
+      return { ...val, color: getRandomColor() };
+    });
+    setUpdateData(filterDataNew);
+  }, [data]);
 
-  const filterData = data?.filter((item) => {
-    return item?.isPinned === true;
-  });
-
-  filterData.sort(
+  updateData?.sort(
     (a, b) =>
       // moment(new Date(b?.lastMessageTime).toLocaleTimeString(), "hh:mm") -
       // moment(new Date(a?.lastMessageTime).toLocaleTimeString(), "hh:mm")
@@ -82,24 +88,26 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
   const [pinnedChatsItem, setPinnedChatsItem] = useState();
 
   const pinnedChatsDetails = (item) => {
-    setActiveUser(true);
-    setPinnedChatsItem(item);
-    setShowPinnedChatsList(true);
-    try {
-      const firestore = firebase.firestore();
-      const unsubscribe = firestore
-        .collection(`ChannelChatsMapping/${item?.id}/chats`)
-        .orderBy("date", "asc")
-        .onSnapshot((snapshot) => {
-          const messagesData = snapshot.docs.map((doc) => doc.data());
-          setListingChats(messagesData);
-        });
+    if (item?.id !== pinnedChatsItem?.id) {
+      setActiveUser(true);
+      setPinnedChatsItem(item);
+      setShowPinnedChatsList(true);
+      try {
+        const firestore = firebase.firestore();
+        const unsubscribe = firestore
+          .collection(`ChannelChatsMapping/${item?.id}/chats`)
+          .orderBy("date", "asc")
+          .onSnapshot((snapshot) => {
+            const messagesData = snapshot.docs.map((doc) => doc.data());
+            setListingChats(messagesData);
+          });
 
-      return () => {
-        unsubscribe();
-      };
-    } catch (error) {
-      console.error(error);
+        return () => {
+          unsubscribe();
+        };
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -139,7 +147,7 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
   return (
     <>
       <div className={PinChatDetailsStyle.chatWrapper}>
-        {filterData?.map((item) => {
+        {updateData?.map((item) => {
           return (
             <div
               className={`${PinChatDetailsStyle.chatItem} ${PinChatDetailsStyle.unreadMsg}`}
@@ -149,9 +157,7 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
                 onClick={() => pinnedChatsDetails(item)}
               >
                 <div
-                  className={` ${
-                    PinChatDetailsStyle.chatInitialThumb
-                  } ${getRandomColor()} `}
+                  className={` ${PinChatDetailsStyle.chatInitialThumb} ${item?.color} `}
                 >
                   {item?.companyInitial}
                 </div>
@@ -191,7 +197,7 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
             </div>
           );
         })}
-        {filterData?.length === 0 && (
+        {updateData?.length === 0 && (
           <span className={PinChatDetailsStyle.noDataFound}>No data found</span>
         )}
       </div>
@@ -204,6 +210,7 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
           updateChannel={updateChannel}
           setShowPinnedChatsList={setShowPinnedChatsList}
           activeUser={activeUser}
+          setPinnedChatsItem={setPinnedChatsItem}
           setActiveUser={setActiveUser}
         />
       )}

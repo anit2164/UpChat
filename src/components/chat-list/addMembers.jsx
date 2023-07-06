@@ -78,8 +78,11 @@ const AddMembers = ({
               return newObject;
             }, {})
           );
-        setListData(result);
-        setSortedData(result);
+        let addMemberColor = result?.map((val) => {
+          return { ...val, color: getRandomColor() };
+        });
+        setListData(addMemberColor);
+        setSortedData(addMemberColor);
       }
     }
   }, [addMemberListingdata?.data?.details]);
@@ -148,34 +151,34 @@ const AddMembers = ({
     return colors[randomIndex];
   };
 
-  useEffect(() => {
-    var array1 = listData;
-    var array2 = userDataList;
+  // useEffect(() => {
+  //   var array1 = listData;
+  //   var array2 = userDataList;
 
-    const properties = [
-      "userEmpId",
-      "channelID",
-      "photoURL",
-      "userDesignation",
-      "userInitial",
-      "userName",
-    ];
+  //   const properties = [
+  //     "userEmpId",
+  //     "channelID",
+  //     "photoURL",
+  //     "userDesignation",
+  //     "userInitial",
+  //     "userName",
+  //   ];
 
-    if (listData?.length > 0 && addMemberListingdata?.data?.details) {
-      const result = array1
-        .filter(
-          (object1) =>
-            !array2.some((object2) => object1.userEmpId === object2.userEmpId)
-        )
-        .map((item) =>
-          properties.reduce((newObject, name) => {
-            newObject[name] = item[name];
-            return newObject;
-          }, {})
-        );
-      setListData(result);
-    }
-  }, [addMemberListingdata]);
+  //   if (listData?.length > 0 && addMemberListingdata?.data?.details) {
+  //     const result = array1
+  //       .filter(
+  //         (object1) =>
+  //           !array2.some((object2) => object1.userEmpId === object2.userEmpId)
+  //       )
+  //       .map((item) =>
+  //         properties.reduce((newObject, name) => {
+  //           newObject[name] = item[name];
+  //           return newObject;
+  //         }, {})
+  //       );
+  //     setListData(result);
+  //   }
+  // }, [addMemberListingdata]);
 
   return (
     <>
@@ -218,9 +221,7 @@ const AddMembers = ({
                 <div className={ChatListingStyles.membersArea}>
                   <div className={ChatListingStyles.membersAreaLeft}>
                     <span
-                      className={` ${
-                        ChatListingStyles.circle
-                      } ${getRandomColor()} `}
+                      className={` ${ChatListingStyles.circle} ${item?.color} `}
                       // style={{ backgroundColor: getRandomColor() }}
                     >
                       {item?.userInitial}

@@ -38,6 +38,7 @@ const MemberListing = (allChannelItem) => {
             id: doc.id,
             ...doc.data(),
           }));
+
           setUserDataList(userData);
         });
       return () => {

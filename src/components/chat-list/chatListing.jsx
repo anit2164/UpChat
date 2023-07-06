@@ -47,6 +47,8 @@ const ChatListing = ({
   setShowSnoozeChatsList,
   activeUser,
   setActiveUser,
+  setAllChannelItem,
+  setPinnedChatsItem,
 }) => {
   const dispatch = useDispatch();
 
@@ -290,10 +292,13 @@ const ChatListing = ({
   const closeModal = () => {
     if (showChat) {
       setShowList(!showChat);
+      setAllChannelItem();
     } else if (showPinnedChatsList) {
       setShowPinnedChatsList(!showPinnedChatsList);
+      setPinnedChatsItem();
     } else if (showSnoozeChatsList) {
       setShowSnoozeChatsList(!showSnoozeChatsList);
+      setAllChannelItem();
     }
   };
 
@@ -438,7 +443,7 @@ const ChatListing = ({
                             </Space>
                           </a>
                         </Dropdown>
-                        {!scrollDown && (
+                        {!scrollDown && filterData?.length > 3 && (
                           <span
                             className={ChatListingStyles.scrollToBottom}
                             onClick={scrollToBottom}

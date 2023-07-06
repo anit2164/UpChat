@@ -25,6 +25,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
   const [showSnoozeChatsList, setShowSnoozeChatsList] = useState(false);
   const [listingChats, setListingChats] = useState([]);
   const [allChannelItem, setAllChannelItem] = useState();
+  const [updateData, setUpdateData] = useState([]);
 
   const items = [
     {
@@ -44,11 +45,17 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
     },
   ];
 
-  const filterData = data?.filter((item) => {
-    return item?.isSnoozed === true;
-  });
+  useEffect(() => {
+    const filterData = data?.filter((item) => {
+      return item?.isSnoozed === true;
+    });
+    let filterDataNew = filterData?.map((val) => {
+      return { ...val, color: getRandomColor() };
+    });
+    setUpdateData(filterDataNew);
+  }, [data]);
 
-  filterData.sort(
+  updateData?.sort(
     (a, b) =>
       // moment(new Date(b?.lastMessageTime).toLocaleTimeString(), "hh:mm") -
       // moment(new Date(a?.lastMessageTime).toLocaleTimeString(), "hh:mm")
@@ -86,23 +93,25 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
   );
 
   const snoozeChatsDetails = (item) => {
-    setActiveUser(true);
-    setAllChannelItem(item);
-    setShowSnoozeChatsList(true);
-    try {
-      const firestore = firebase.firestore();
-      const unsubscribe = firestore
-        .collection(`ChannelChatsMapping/${item?.id}/chats`)
-        .orderBy("date", "asc")
-        .onSnapshot((snapshot) => {
-          const messagesData = snapshot.docs.map((doc) => doc.data());
-          setListingChats(messagesData);
-        });
-      return () => {
-        unsubscribe();
-      };
-    } catch (error) {
-      console.error(error);
+    if (item?.id !== allChannelItem?.id) {
+      setActiveUser(true);
+      setAllChannelItem(item);
+      setShowSnoozeChatsList(true);
+      try {
+        const firestore = firebase.firestore();
+        const unsubscribe = firestore
+          .collection(`ChannelChatsMapping/${item?.id}/chats`)
+          .orderBy("date", "asc")
+          .onSnapshot((snapshot) => {
+            const messagesData = snapshot.docs.map((doc) => doc.data());
+            setListingChats(messagesData);
+          });
+        return () => {
+          unsubscribe();
+        };
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -140,7 +149,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
   return (
     <>
       <div className={SnoozeGroupsStyle.chatWrapper}>
-        {filterData?.map((item) => {
+        {updateData?.map((item) => {
           return (
             <div
               className={`${SnoozeGroupsStyle.chatItem} ${SnoozeGroupsStyle.unreadMsg}`}
@@ -150,9 +159,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
                 onClick={() => snoozeChatsDetails(item)}
               >
                 <div
-                  className={` ${
-                    SnoozeGroupsStyle.chatInitialThumb
-                  } ${getRandomColor()} `}
+                  className={` ${SnoozeGroupsStyle.chatInitialThumb} ${item?.color} `}
                 >
                   {item?.companyInitial}
                 </div>
@@ -192,7 +199,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
             </div>
           );
         })}
-        {filterData?.length === 0 && (
+        {updateData?.length === 0 && (
           <span className={SnoozeGroupsStyle.noDataFound}>No data found</span>
         )}
       </div>
@@ -206,6 +213,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
           setShowSnoozeChatsList={setShowSnoozeChatsList}
           activeUser={activeUser}
           setActiveUser={setActiveUser}
+          setAllChannelItem={setAllChannelItem}
         />
       )}
     </>

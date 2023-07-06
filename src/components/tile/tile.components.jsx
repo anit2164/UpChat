@@ -24,6 +24,7 @@ const Tile = ({
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
   const [activeUser, setActiveUser] = useState(false);
+  const [updateData, setUpdateData] = useState([]);
 
   let tempObj;
   let snoozeObj;
@@ -96,11 +97,30 @@ const Tile = ({
     },
   ];
 
-  const filterData = data?.filter((item) => {
-    return item?.isPinned === false && item?.isSnoozed === false;
-  });
+  const getRandomColor = () => {
+    const colors = [
+      TileStyle.blueThumb,
+      TileStyle.darkRedThumb,
+      TileStyle.greenThumb,
+      TileStyle.yellowThumb,
+      TileStyle.orangeThumb,
+      TileStyle.skyBlueThumb,
+    ];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
 
-  filterData.sort(
+  useEffect(() => {
+    const filterData = data?.filter((item) => {
+      return item?.isPinned === false && item?.isSnoozed === false;
+    });
+    let filterDataNew = filterData?.map((val) => {
+      return { ...val, color: getRandomColor() };
+    });
+    setUpdateData(filterDataNew);
+  }, [data]);
+
+  updateData?.sort(
     (a, b) =>
       // moment(new Date(b?.lastMessageTime).toLocaleTimeString(), "hh:mm") -
       // moment(new Date(a?.lastMessageTime).toLocaleTimeString(), "hh:mm")
@@ -112,24 +132,26 @@ const Tile = ({
   const [allChannelItem, setAllChannelItem] = useState();
 
   const showChatList = async (item) => {
-    setActiveUser(true);
-    setAllChannelItem(item);
-    setShowList(true);
-    try {
-      const firestore = firebase.firestore();
-      const unsubscribe = firestore
-        .collection(`ChannelChatsMapping/${item?.id}/chats`)
-        .orderBy("date", "asc")
-        .onSnapshot((snapshot) => {
-          const messagesData = snapshot.docs.map((doc) => doc.data());
-          setListingChats(messagesData);
-        });
+    if (item?.id !== allChannelItem?.id) {
+      setActiveUser(true);
+      setAllChannelItem(item);
+      setShowList(true);
+      try {
+        const firestore = firebase.firestore();
+        const unsubscribe = firestore
+          .collection(`ChannelChatsMapping/${item?.id}/chats`)
+          .orderBy("date", "asc")
+          .onSnapshot((snapshot) => {
+            const messagesData = snapshot.docs.map((doc) => doc.data());
+            setListingChats(messagesData);
+          });
 
-      return () => {
-        unsubscribe();
-      };
-    } catch (error) {
-      console.error(error);
+        return () => {
+          unsubscribe();
+        };
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -151,23 +173,10 @@ const Tile = ({
     }
   };
 
-  const getRandomColor = () => {
-    const colors = [
-      TileStyle.blueThumb,
-      TileStyle.darkRedThumb,
-      TileStyle.greenThumb,
-      TileStyle.yellowThumb,
-      TileStyle.orangeThumb,
-      TileStyle.skyBlueThumb,
-    ];
-    const randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
-  };
-
   return (
     <>
       <div className={TileStyle.chatWrapper}>
-        {filterData?.map((item) => {
+        {updateData?.map((item) => {
           return (
             <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}>
               <div
@@ -175,9 +184,7 @@ const Tile = ({
                 onClick={() => showChatList(item)}
               >
                 <div
-                  className={` ${
-                    TileStyle.chatInitialThumb
-                  } ${getRandomColor()} `}
+                  className={` ${TileStyle.chatInitialThumb} ${item?.color} `}
                 >
                   {item?.companyInitial}
                 </div>
@@ -217,7 +224,7 @@ const Tile = ({
             </div>
           );
         })}
-        {filterData?.length === 0 && (
+        {updateData?.length === 0 && (
           <span className={TileStyle.noDataFound}>No data found</span>
         )}
       </div>
@@ -227,6 +234,7 @@ const Tile = ({
           showChat={showChat}
           listingChats={listingChats}
           allChannelItem={allChannelItem}
+          setAllChannelItem={setAllChannelItem}
           updateChannel={updateChannel}
           setShowList={setShowList}
           activeUser={activeUser}
