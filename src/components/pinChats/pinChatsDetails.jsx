@@ -78,8 +78,11 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
       } catch (error) {
         console.error(error);
       }
-    } else if (value?.key === "Snooze") {
-      console.log("Snooze");
+    } else if (value?.key === "View HR Detail Page") {
+      window.open(
+        `http://3.218.6.134:9093/allhiringrequest/${item?.hrID}`,
+        "_blank"
+      );
     }
   }, []);
 

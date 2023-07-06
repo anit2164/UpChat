@@ -54,3 +54,15 @@ input:focus {
   width: 5px;
   height: 5px;
 }
+
+.numSnooze {
+  background-color: #1363df;
+  color: #fff;
+  height: 16px;
+  font-size: 12px;
+  line-height: 18px;
+  display: inline-block;
+  border-radius: 14px;
+  padding: 2px 6px;
+  margin-left: 4px;
+}

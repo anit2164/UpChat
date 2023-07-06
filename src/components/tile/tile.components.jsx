@@ -25,11 +25,15 @@ const Tile = ({
   const [tempArr, setTempArr] = useState([]);
   const [activeUser, setActiveUser] = useState(false);
   const [updateData, setUpdateData] = useState([]);
+  const [showChat, setShowList] = useState(false);
+  const [listingChats, setListingChats] = useState([]);
+  const [allChannelItem, setAllChannelItem] = useState();
 
   let tempObj;
   let snoozeObj;
 
   const channelDropdown = useCallback(async (value, item) => {
+    console.log(item, "itenmemememememme");
     if (value?.key === "PIN Channel") {
       tempObj = item;
       tempObj.isPinned = true;
@@ -72,6 +76,11 @@ const Tile = ({
       } catch (error) {
         console.error(error);
       }
+    } else if (value?.key === "View HR Detail Page") {
+      window.open(
+        `http://3.218.6.134:9093/allhiringrequest/${item?.hrID}`,
+        "_blank"
+      );
     }
   }, []);
   const items = [
@@ -127,10 +136,6 @@ const Tile = ({
       b?.lastMessageTime - a?.lastMessageTime
   );
 
-  const [showChat, setShowList] = useState(false);
-  const [listingChats, setListingChats] = useState([]);
-  const [allChannelItem, setAllChannelItem] = useState();
-
   const showChatList = async (item) => {
     if (item?.id !== allChannelItem?.id) {
       setActiveUser(true);
@@ -177,6 +182,7 @@ const Tile = ({
     <>
       <div className={TileStyle.chatWrapper}>
         {updateData?.map((item) => {
+          console.log(item, "ite,mmmm");
           return (
             <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}>
               <div
