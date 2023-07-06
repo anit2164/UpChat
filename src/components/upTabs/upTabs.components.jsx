@@ -71,13 +71,17 @@ const UpTabs = () => {
     }
   }, [search]);
 
+  const filterData = data?.filter((item) => {
+    return item?.isSnoozed === true;
+  });
+
   return (
     <>
       <div>
         <Tabs>
           <TabList>
             <Tab>Active HRs</Tab>
-            <Tab>Snooze HRs</Tab>
+            <Tab>Snooze HRs {filterData?.length}</Tab>
           </TabList>
 
           <TabPanel>

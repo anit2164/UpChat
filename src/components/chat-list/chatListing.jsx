@@ -59,6 +59,9 @@ const ChatListing = ({
   const [search, setSearch] = useState("");
   const [senderClass, setSenderClass] = useState(false);
   const [memberRead, setMemberRead] = useState([]);
+  const [userDataList, setUserDataList] = useState([]);
+
+  console.log(userDataList,"userDataList");
 
   let lastChatMessage;
 
@@ -141,13 +144,11 @@ const ChatListing = ({
       //   `ChannelChatsMapping/${allChannelItem?.id}/chats/${lastChatMessage?.[0]?.enc_chatID}/user_chats/`
       // );
       const collectionRef = firestore.collection(
-        `ChannelChatsMapping/tP60NOOkoxCU2EGvTIzN/chats/4I3fJROcnuxvhsh3jh8Q/user_chats`
+        `ChannelChatsMapping/RItjUCjQNuZLaiO81SQQ/chats/USy2LHJtdyXgoi71Z1fY/user_chats/`
       );
-      await collectionRef.add({
-        enc_channelID: allChannelItem?.id,
-        isRead: true,
-        userEmpID: "",
-      });
+      for(let i=0;i<userDataList.length;i++){
+        await collectionRef.add(userDataList[i]); 
+      }
     } catch (error) {
       console.error("Error creating collection:", error);
     }
@@ -301,6 +302,31 @@ const ChatListing = ({
       setAllChannelItem();
     }
   };
+
+  useEffect(() => {
+    try {
+      const firestore = firebase.firestore();
+      const unsubscribe = firestore
+        .collection(
+          `ChannelUserMapping/${allChannelItem?.id}/user`
+        )
+        .onSnapshot((snapshot) => {
+          const userData = snapshot.docs.map((doc) => ({
+            // id: doc.id,
+            // ...doc.data(),
+            enc_channelID:allChannelItem?.id,
+            isRead:false,
+            userEmpID:doc.id
+          }));
+          setUserDataList(userData);
+        });
+      return () => {
+        unsubscribe();
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  }, [allChannelItem]);
 
   return (
     <>
