@@ -140,7 +140,6 @@ const ChatListing = ({
 
   const date = new Date();
   const formattedTime = date.toUTCString();
-  console.log(formattedTime, "formattedTime");
 
   const createCollection = async () => {
     try {
@@ -459,7 +458,6 @@ const ChatListing = ({
               id="content"
             >
               {filterData?.map((item, key) => {
-                console.log(item, "chatitem");
                 return (
                   <>
                     <div
