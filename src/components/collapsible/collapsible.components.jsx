@@ -34,7 +34,6 @@ const Collapse = ({ setToggle, toggle }) => {
 
     fetchData();
   }, []);
-  console.log(toggle, "toggle");
   return (
     <div
       className={` ${CollapseStyle.container} ${

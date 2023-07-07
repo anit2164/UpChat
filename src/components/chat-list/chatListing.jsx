@@ -61,7 +61,6 @@ const ChatListing = ({
   const [memberRead, setMemberRead] = useState([]);
   const [userDataList, setUserDataList] = useState([]);
 
-  console.log(userDataList,"userDataList");
 
   let lastChatMessage;
 
