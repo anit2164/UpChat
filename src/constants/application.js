@@ -6,5 +6,10 @@ export class ChannelMenu {
     static SNOOZE = "Snooze"
     static LEAVE = "Leave"
     static MOVE_TO_ACTIVE = "Move To Active"
+    static CHANNEL_LIBRARY = "Channel Library"
+    static BOOKMARKS = "Bookmarks"
+    static SEARCH_IN_CHAT = "Search in chat"
+    static REPLY = "Reply"
+    static COPY = "Copy"
 }
 Object.freeze(ChannelMenu)

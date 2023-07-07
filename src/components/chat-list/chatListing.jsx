@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { sendMessageHandler } from "@/redux_toolkit/slices/sendMessage";
 import MemberListing from "./memberListing";
 import { ReactComponent as ScrollToBottomSVG } from "@SVG/scrollToBottom.svg";
+import { ChannelMenu } from "@/constants/application";
 // import Tile from "../tile/tile.components";
 
 firebase.initializeApp(firebaseConfig);
@@ -51,7 +52,6 @@ const ChatListing = ({
   setPinnedChatsItem,
 }) => {
   const dispatch = useDispatch();
-
   const [toggle, setToggle] = useState(false);
   const [messageHandler, setMessageHandler] = useState("");
   const [smileIcon, setSmileIcon] = useState(false);
@@ -60,63 +60,63 @@ const ChatListing = ({
   const [senderClass, setSenderClass] = useState(false);
   const [memberRead, setMemberRead] = useState([]);
   const [userDataList, setUserDataList] = useState([]);
+  const [scrollDown, setScrollDown] = useState(false);
+  const [searchInChat, setSearchInChat] = useState(false);
 
-  console.log(userDataList,"userDataList");
+  const bottomToTopRef = useRef(null);
+  const arrawScroll = useRef(null);
 
   let lastChatMessage;
 
   const channelMainDropdown = [
     {
-      label: "Search in chat",
-      key: "0",
+      label: ChannelMenu.SEARCH_IN_CHAT,
+      key: ChannelMenu.SEARCH_IN_CHAT,
       icon: <SearchIcon />,
     },
     {
-      label: "Bookmarks",
-      key: "1",
+      label: ChannelMenu.BOOKMARKS,
+      key: ChannelMenu.BOOKMARKS,
       icon: <BookmarkIconDark />,
     },
     {
-      label: "Channel Library",
-      key: "2",
+      label: ChannelMenu.CHANNEL_LIBRARY,
+      key: ChannelMenu.CHANNEL_LIBRARY,
       icon: <FiBookOpenSVG />,
     },
     {
-      label: "View HR Detail Page",
-      key: "3",
+      label: ChannelMenu.VIEW_HR_DETAILS,
+      key: ChannelMenu.VIEW_HR_DETAILS,
       icon: <FiFilmSVG />,
     },
     {
       type: "divider",
     },
     {
-      label: "Snooze Channel",
-      key: "4",
+      label: ChannelMenu.SNOOZE,
+      key: ChannelMenu.SNOOZE,
       icon: <FiVolumeMuteSVG />,
     },
   ];
 
   const chatDropdown = [
     {
-      label: "Reply",
-      key: "0",
+      label: ChannelMenu.REPLY,
+      key: ChannelMenu.REPLY,
       icon: <FiReplySVG />,
     },
     {
-      label: "Copy",
-      key: "1",
+      label: ChannelMenu.COPY,
+      key: ChannelMenu.COPY,
       icon: <FiCopySVG />,
     },
     {
-      label: "Bookmark",
-      key: "2",
+      label: ChannelMenu.BOOKMARKS,
+      key: ChannelMenu.BOOKMARKS,
       icon: <FiBookmarkOutlinedSVG />,
     },
   ];
-  const bottomToTopRef = useRef(null);
-  const arrawScroll = useRef(null);
 
-  const [scrollDown, setScrollDown] = useState(false);
   const scrollToBottom = () => {
     bottomToTopRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -132,10 +132,15 @@ const ChatListing = ({
     timeZone: "Asia/Kolkata",
   });
 
-  const [time, period] = currentTimeIST.split(" ");
-  const [hours, minutes] = time.split(":");
-  const formattedHours = parseInt(hours, 10) % 12 || 12;
-  const formattedTime = `${formattedHours}:${minutes} ${period.toUpperCase()}`;
+  // const [time, period] = currentTimeIST.split(" ");
+  // const [hours, minutes] = time.split(":");
+  // const formattedHours = parseInt(hours, 10) % 12 || 12;
+  // const formattedTime = `${formattedHours}:${minutes} ${period.toUpperCase()}`;
+  // console.log(formattedTime, "formattedTime");
+
+  const date = new Date();
+  const formattedTime = date.toUTCString();
+  console.log(formattedTime, "formattedTime");
 
   const createCollection = async () => {
     try {
@@ -146,13 +151,25 @@ const ChatListing = ({
       const collectionRef = firestore.collection(
         `ChannelChatsMapping/RItjUCjQNuZLaiO81SQQ/chats/USy2LHJtdyXgoi71Z1fY/user_chats/`
       );
-      for(let i=0;i<userDataList.length;i++){
-        await collectionRef.add(userDataList[i]); 
+      for (let i = 0; i < userDataList.length; i++) {
+        await collectionRef.add(userDataList[i]);
       }
     } catch (error) {
       console.error("Error creating collection:", error);
     }
   };
+
+  // const dateTime = new Date();
+  // const year = dateTime.getFullYear();
+  // const month = String(dateTime.getMonth() + 1).padStart(2, "0");
+  // const day = String(dateTime.getDate()).padStart(2, "0");
+  // const hours = String(dateTime.getHours()).padStart(2, "0");
+  // const minutes = String(dateTime.getMinutes()).padStart(2, "0");
+  // const seconds = String(dateTime.getSeconds()).padStart(2, "0");
+
+  // const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+  // console.log(formattedDateTime, "formattedDateTime");
 
   const sendMessage = async () => {
     if (messageHandler) {
@@ -160,7 +177,7 @@ const ChatListing = ({
       setSenderClass(true);
       try {
         let obj = {
-          date: formattedTime,
+          date: new Date(),
           documentUrl: "",
           enc_chatID: "",
           hrID: allChannelItem?.hrID,
@@ -197,7 +214,7 @@ const ChatListing = ({
         getSenderName = localStorage.getItem("sendername");
         scrollToBottom();
         updateChannel(new Date());
-        createCollection();
+        // createCollection();
         dispatch(sendMessageHandler(apiObj));
       } catch (error) {
         console.error(error);
@@ -212,7 +229,7 @@ const ChatListing = ({
         setSenderClass(true);
         try {
           let obj = {
-            date: formattedTime,
+            date: new Date(),
             documentUrl: "",
             enc_chatID: "",
             hrID: allChannelItem?.hrID,
@@ -249,7 +266,7 @@ const ChatListing = ({
           getSenderName = localStorage.getItem("sendername");
           scrollToBottom();
           updateChannel(new Date());
-          createCollection();
+          // createCollection();
           dispatch(sendMessageHandler(apiObj));
         } catch (error) {
           console.error(error);
@@ -307,16 +324,14 @@ const ChatListing = ({
     try {
       const firestore = firebase.firestore();
       const unsubscribe = firestore
-        .collection(
-          `ChannelUserMapping/${allChannelItem?.id}/user`
-        )
+        .collection(`ChannelUserMapping/${allChannelItem?.id}/user`)
         .onSnapshot((snapshot) => {
           const userData = snapshot.docs.map((doc) => ({
             // id: doc.id,
             // ...doc.data(),
-            enc_channelID:allChannelItem?.id,
-            isRead:false,
-            userEmpID:doc.id
+            enc_channelID: allChannelItem?.id,
+            isRead: false,
+            userEmpID: doc.id,
           }));
           setUserDataList(userData);
         });
@@ -327,6 +342,18 @@ const ChatListing = ({
       console.error(error);
     }
   }, [allChannelItem]);
+
+  const chatListDropdown = (value) => {
+    if (value.key === ChannelMenu.VIEW_HR_DETAILS) {
+      window.open(
+        `http://3.218.6.134:9093/allhiringrequest/${allChannelItem?.hrID}`,
+        "_blank"
+      );
+    }
+    if (value.key === ChannelMenu.SEARCH_IN_CHAT) {
+      setSearchInChat(true);
+    }
+  };
 
   return (
     <>
@@ -366,6 +393,9 @@ const ChatListing = ({
                 placement="bottomRight"
                 menu={{
                   items: channelMainDropdown,
+                  onClick: (value) => {
+                    chatListDropdown(value);
+                  },
                 }}
                 trigger={["click"]}
               >
@@ -387,25 +417,34 @@ const ChatListing = ({
             ref={arrawScroll}
             onScroll={handleScroll}
           >
-            <div className={ChatListingStyles.searchInChatWrapper}>
-              <div className={ChatListingStyles.searchInChatInner}>
-                <SearchIcon className={ChatListingStyles.searchIcon} />
-                <input
-                  type="text"
-                  placeholder="Search in chat"
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                  }}
-                />
-                {search?.length !== 0 && (
-                  <span
-                    className={ChatListingStyles.closeIcon}
-                    onClick={() => setSearch("")}
-                  ></span>
-                )}
+            {searchInChat === true && (
+              <div className={ChatListingStyles.searchInChatWrapper}>
+                <div className={ChatListingStyles.searchInChatInner}>
+                  <>
+                    <SearchIcon className={ChatListingStyles.searchIcon} />
+                    <input
+                      type="text"
+                      placeholder="Search in chat"
+                      value={search}
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                      }}
+                    />
+                    {search?.length !== 0 && (
+                      <span
+                        className={ChatListingStyles.closeIcon}
+                        onClick={() => {
+                          setSearch("");
+                          setSearchInChat(false);
+                        }}
+                      ></span>
+                    )}
+                  </>
+                </div>
+              </div>
+            )}
 
-                {/* <span className={ChatListingStyles.numberOfSearch}>
+            {/* <span className={ChatListingStyles.numberOfSearch}>
                   <span className={ChatListingStyles.arrowIcon}>
                     <ArrowIcon />
                   </span>
@@ -414,14 +453,13 @@ const ChatListing = ({
                     <ArrowIcon />
                   </span>
                 </span> */}
-              </div>
-            </div>
 
             <div
               className={ChatListingStyles.channelWindowMessages}
               id="content"
             >
               {filterData?.map((item, key) => {
+                console.log(item, "chatitem");
                 return (
                   <>
                     <div
@@ -469,7 +507,7 @@ const ChatListing = ({
                             </Space>
                           </a>
                         </Dropdown>
-                        {!scrollDown && filterData?.length > 3 && (
+                        {!scrollDown && filterData?.length > 5 && (
                           <span
                             className={ChatListingStyles.scrollToBottom}
                             onClick={scrollToBottom}

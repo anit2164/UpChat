@@ -19,6 +19,9 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
   const [tempArr, setTempArr] = useState([]);
   const [activeUser, setActiveUser] = useState(false);
   const [updateData, setUpdateData] = useState([]);
+  const [showPinnedChatsList, setShowPinnedChatsList] = useState(false);
+  const [listingChats, setListingChats] = useState([]);
+  const [pinnedChatsItem, setPinnedChatsItem] = useState();
 
   const items = [
     {
@@ -86,10 +89,6 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
     }
   }, []);
 
-  const [showPinnedChatsList, setShowPinnedChatsList] = useState(false);
-  const [listingChats, setListingChats] = useState([]);
-  const [pinnedChatsItem, setPinnedChatsItem] = useState();
-
   const pinnedChatsDetails = (item) => {
     if (item?.id !== pinnedChatsItem?.id) {
       setActiveUser(true);
@@ -118,9 +117,7 @@ const PinChatDetails = ({ data, LastPinnedGroups, setData }) => {
     pinnedChatsItem.lastMessageTime = date;
     try {
       const firestore = firebase.firestore();
-      const collectionRef = firestore
-        .collection("channels")
-        .orderBy("lastMessageTime", "dec");
+      const collectionRef = firestore.collection("channels");
       const snapshot = collectionRef.doc(pinnedChatsItem.id);
       await snapshot.set(pinnedChatsItem);
       let _data = await collectionRef.get();

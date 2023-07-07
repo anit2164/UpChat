@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_URL = "http://3.218.6.134:9082";
+const API_URL = "http://3.218.6.134:9096";
+// const API_URL = "http://3.218.6.134:9096";
+
 
 const getHeader = () => {
   let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMDAyMiIsIkxvZ2luVXNlcklkIjoiMiIsIkxvZ2luVXNlclR5cGVJZCI6IjIiLCJuYmYiOjE2ODg1MzgwNDUsImV4cCI6MTY4ODU3NDA0NSwiaWF0IjoxNjg4NTM4MDQ1fQ.KKXxpKrOfBDPVUg8a3GzEZRrFbvtl6DP-Jn8usdtMMg"

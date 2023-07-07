@@ -145,7 +145,7 @@ const Tile = ({
         const firestore = firebase.firestore();
         const unsubscribe = firestore
           .collection(`ChannelChatsMapping/${item?.id}/chats`)
-          .orderBy("date", "asc")
+          .orderBy("date", "desc")
           .onSnapshot((snapshot) => {
             const messagesData = snapshot.docs.map((doc) => doc.data());
             setListingChats(messagesData);

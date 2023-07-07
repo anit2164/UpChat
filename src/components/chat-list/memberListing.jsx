@@ -14,7 +14,6 @@ import ShareInvite from "./shareInvite";
 firebase.initializeApp(firebaseConfig);
 
 const MemberListing = (allChannelItem) => {
-  console.log(allChannelItem,"allChannelItem")
   const [userDataList, setUserDataList] = useState();
   const [hideMemberModel, setHideMemberModel] = useState(false);
   const [showAddMemberModel, setShowAddMemberModel] = useState(false);
@@ -76,6 +75,7 @@ const MemberListing = (allChannelItem) => {
         id: doc.id,
         ...doc.data(),
       }));
+      setHideMemberModel(true);
     } catch (error) {
       console.error(error);
     }

@@ -8,6 +8,8 @@
   border-top: 1px solid #cecccc;
   border-radius: 0 0 8px 8px;
   cursor: pointer;
+  background-image: url(../../assets/images/frost-background.png);
+  background-repeat: no-repeat;
 }
 .container > div {
   display: flex;
