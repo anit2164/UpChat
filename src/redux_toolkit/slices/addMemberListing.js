@@ -16,7 +16,6 @@ const addMemberSlice = createSlice({
             state.isLoading = false;
         },
         addMemberListingInfoSuccess(state, action) {
-            console.log(action.payload, "action.payload");
             state.isLoading = true;
             state.data = action.payload;
             state.message = "";

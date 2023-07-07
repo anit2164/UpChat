@@ -33,7 +33,6 @@ const Tile = ({
   let snoozeObj;
 
   const channelDropdown = useCallback(async (value, item) => {
-    console.log(item, "itenmemememememme");
     if (value?.key === "PIN Channel") {
       tempObj = item;
       tempObj.isPinned = true;
@@ -182,7 +181,6 @@ const Tile = ({
     <>
       <div className={TileStyle.chatWrapper}>
         {updateData?.map((item) => {
-          console.log(item, "ite,mmmm");
           return (
             <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}>
               <div
