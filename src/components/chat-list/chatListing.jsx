@@ -458,8 +458,26 @@ const ChatListing = ({
               id="content"
             >
               {filterData?.map((item, key) => {
+            
+                
                 return (
                   <>
+                  {item?.isActivity===true?(
+                    <div className={ChatListingStyles.channelMessageMain} >
+ <div className={ChatListingStyles.systemGeneratedHeader}>
+ <span>{item?.text} | Action By: Harleen Kaur</span>
+ <span>05-06-2023 |  {item?.date?.seconds
+                            ? new Date(item?.date?.seconds * 1000)
+                                .toLocaleTimeString()
+                                .replace(
+                                  /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                  "$1$3"
+                                )
+                            : item?.date}</span>
+</div>
+</div>
+                  ):(
+
                     <div
                       className={ChatListingStyles.channelMessageMain}
                       ref={bottomToTopRef}
@@ -568,12 +586,47 @@ const ChatListing = ({
                         </div>
                       </div>
                     </div>
+                  )}
                     {/* <div className={ChatListingStyles.divider}>
                       <span>TODAY</span>
                     </div> */}
+                    {/* {item?.isActivity === true && (
+
+                    <div className={ChatListingStyles.systemGeneratedHeader}>
+                    <span>{item?.text} | Action By: Harleen Kaur</span>
+                    <span>05-06-2023 | 12:24 PM</span>
+                  </div>
+                    )} */}
                   </>
                 );
               })}
+              {/* <div
+                  className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} `}
+                >
+                  
+                  <div
+                    className={` ${ChatListingStyles.systemGeneratedInner} ${ChatListingStyles.systemGeneratedCollapsed} `}
+                  >
+                    <span>
+                      Note: Years of exp a) .NET Developer Sr: 4 -6 years b)
+                      Test Automation Engineer Sr: 3.5 - 6 years c) Android
+                      Developer: 3 - 5 years d) iOS Developer: 3 - 5 years Key
+                      Skills: a) .NET Developer Sr : .Net + .Net Core + C# +
+                      Typescript (Angular) b) Test Automation Engineer Sr:
+                      Automation Testing + BDD Framework Selenium with Java
+                      +Jenkins Budget: a) .NET Developer Sr:15-17 LPA b) Test
+                      Automation Engineer Sr: 15-17 LPA c) Android Developer:
+                      15-17 LPA d) iOS Developer: 15-17 LPA If we feel that a
+                      candidate is really good all he or she ticks all the boxes
+                      then we can consider 19LPA for them. Additional
+                      information Preference should be given to Bangalore
+                      candidates. Preference should be given to candidates with
+                      a lesser notice period. Avoid sourcing candidates from
+                      regions like Andhra Pradesh and Telangana.
+                    </span>
+                    <a href="javascript:void(0);">Read More</a>
+                  </div>
+                </div> */}
               {filterData?.length === 0 && (
                 <p className={ChatListingStyles.noChatFound}>No Chats Found</p>
               )}
