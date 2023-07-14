@@ -181,6 +181,7 @@ const Tile = ({
     <>
       <div className={TileStyle.chatWrapper}>
         {updateData?.map((item) => {
+          console.log(item,"item");
           return (
             <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}>
               <div

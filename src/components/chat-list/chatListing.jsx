@@ -77,7 +77,7 @@ const ChatListing = ({
     {
       label: ChannelMenu.BOOKMARKS,
       key: ChannelMenu.BOOKMARKS,
-      icon: <BookmarkIconDark />,
+      icon: <BookmarkIconDark width="16"/>,
     },
     {
       label: ChannelMenu.CHANNEL_LIBRARY,
@@ -89,31 +89,31 @@ const ChatListing = ({
       key: ChannelMenu.VIEW_HR_DETAILS,
       icon: <FiFilmSVG />,
     },
-    {
-      type: "divider",
-    },
-    {
-      label: ChannelMenu.SNOOZE,
-      key: ChannelMenu.SNOOZE,
-      icon: <FiVolumeMuteSVG />,
-    },
+    // {
+    //   type: "divider",
+    // },
+    // {
+    //   label: ChannelMenu.SNOOZE,
+    //   key: ChannelMenu.SNOOZE,
+    //   icon: <FiVolumeMuteSVG />,
+    // },
   ];
 
   const chatDropdown = [
     {
       label: ChannelMenu.REPLY,
       key: ChannelMenu.REPLY,
-      icon: <FiReplySVG />,
+      icon: <FiReplySVG width="16"/>,
     },
     {
       label: ChannelMenu.COPY,
       key: ChannelMenu.COPY,
-      icon: <FiCopySVG />,
+      icon: <FiCopySVG width="16"/>,
     },
     {
       label: ChannelMenu.BOOKMARKS,
       key: ChannelMenu.BOOKMARKS,
-      icon: <FiBookmarkOutlinedSVG />,
+      icon: <FiBookmarkOutlinedSVG width="16"/>,
     },
   ];
 
@@ -353,6 +353,14 @@ const ChatListing = ({
       setSearchInChat(true);
     }
   };
+
+  // const data = filterData?.slice(-1)[0]?.isActivity===true
+
+  // const dataKey = localStorage.setItem("keyData",filterData?.slice(-1)[0]?.hrID);
+
+  //   if(data && dataKey!==filterData?.slice(-1)[0]?.hrID){
+  //     updateChannel(filterData?.slice(-1)[0]?.date);
+  //   }
 
   return (
     <>
