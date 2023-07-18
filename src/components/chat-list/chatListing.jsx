@@ -77,7 +77,7 @@ const ChatListing = ({
     {
       label: ChannelMenu.BOOKMARKS,
       key: ChannelMenu.BOOKMARKS,
-      icon: <BookmarkIconDark width="16"/>,
+      icon: <BookmarkIconDark width="16" />,
     },
     {
       label: ChannelMenu.CHANNEL_LIBRARY,
@@ -85,7 +85,7 @@ const ChatListing = ({
       icon: <FiBookOpenSVG />,
     },
     {
-      label: ChannelMenu.VIEW_HR_DETAILS,
+      label: ChannelMenu.VIEW_HR_DETAILS, 
       key: ChannelMenu.VIEW_HR_DETAILS,
       icon: <FiFilmSVG />,
     },
@@ -103,17 +103,17 @@ const ChatListing = ({
     {
       label: ChannelMenu.REPLY,
       key: ChannelMenu.REPLY,
-      icon: <FiReplySVG width="16"/>,
+      icon: <FiReplySVG width="16" />,
     },
     {
       label: ChannelMenu.COPY,
       key: ChannelMenu.COPY,
-      icon: <FiCopySVG width="16"/>,
+      icon: <FiCopySVG width="16" />,
     },
     {
       label: ChannelMenu.BOOKMARKS,
       key: ChannelMenu.BOOKMARKS,
-      icon: <FiBookmarkOutlinedSVG width="16"/>,
+      icon: <FiBookmarkOutlinedSVG width="16" />,
     },
   ];
 
@@ -466,135 +466,143 @@ const ChatListing = ({
               id="content"
             >
               {filterData?.map((item, key) => {
-            
-                
                 return (
                   <>
-                  {item?.isActivity===true?(
-                    <div className={ChatListingStyles.channelMessageMain} >
- <div className={ChatListingStyles.systemGeneratedHeader}>
- <span>{item?.text} | Action By: Harleen Kaur</span>
- <span>05-06-2023 |  {item?.date?.seconds
-                            ? new Date(item?.date?.seconds * 1000)
-                                .toLocaleTimeString()
-                                .replace(
-                                  /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                  "$1$3"
-                                )
-                            : item?.date}</span>
-</div>
-</div>
-                  ):(
-
-                    <div
-                      className={ChatListingStyles.channelMessageMain}
-                      ref={bottomToTopRef}
-                    >
-                      <div className={ChatListingStyles.channelMessageInner}>
-                        <img
-                          className={ChatListingStyles.profileAvtar}
-                          src="https://i.pravatar.cc/40"
-                          width="30"
-                          height="30"
-                        />
-                        <div className={ChatListingStyles.profileName}>
-                          {item?.senderName}
-                        </div>
-                        <span
-                          className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
+                    {item?.isActivity === true ? (
+                      <div className={ChatListingStyles.channelMessageMain}>
+                        <div
+                          className={ChatListingStyles.systemGeneratedHeader}
                         >
-                          {item?.senderDesignation}
-                        </span>
-                        <span className={ChatListingStyles.timeStamp}>
-                          {item?.date?.seconds
-                            ? new Date(item?.date?.seconds * 1000)
-                                .toLocaleTimeString()
-                                .replace(
-                                  /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                  "$1$3"
-                                )
-                            : item?.date}
-                        </span>
-                        <Dropdown
-                          className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
-                          placement="bottomRight"
-                          menu={{
-                            items: chatDropdown,
-                          }}
-                          trigger={["click"]}
-                        >
-                          <a onClick={(e) => e.preventDefault()}>
-                            <Space>
-                              <span
-                                className={ChatListingStyles.dotMenu}
-                              ></span>
-                            </Space>
-                          </a>
-                        </Dropdown>
-                        {!scrollDown && filterData?.length > 5 && (
-                          <span
-                            className={ChatListingStyles.scrollToBottom}
-                            onClick={scrollToBottom}
-                          >
-                            <ScrollToBottomSVG />
+                          <span>{item?.text} | Action By: Harleen Kaur</span>
+                          <span>
+                            {new Date(0).setUTCSeconds(item?.date?.nenosecond)} |{" "}
+                            {item?.date?.seconds
+                              ? new Date(item?.date?.seconds * 1000)
+                                  .toLocaleTimeString()
+                                  .replace(
+                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                    "$1$3"
+                                  )
+                              : item?.date}
                           </span>
-                        )}
+                        </div>
                       </div>
+                    ) : (
                       <div
-                        className={` ${ChatListingStyles.channelMessageBox} ${
-                          getSenderName === item?.senderName
-                            ? ChatListingStyles.channelMessageLeft
-                            : ChatListingStyles.channelMessageRight
-                        } `}
+                        className={ChatListingStyles.channelMessageMain}
+                        ref={bottomToTopRef}
                       >
-                        <p>{item?.text}</p>
-                        <div className={ChatListingStyles.chatReaction}>
-                          <div className={ChatListingStyles.chatReactionInner}>
-                            {chatMapKey === key && smileIcon && (
-                              <div
-                                className={ChatListingStyles.chatReactionPopup}
-                              >
-                                <span>
-                                  <SmileIcon1 />
-                                </span>
-                                <span>
-                                  <SmileIcon2 />
-                                </span>
-                                <span>
-                                  <SmileIcon3 />
-                                </span>
-                                <span>
-                                  <SmileIcon4 />
-                                </span>
-                                <span>
-                                  <SmileIcon5 />
-                                </span>
-                                <span>
-                                  <SmileIcon6 />
-                                </span>
+                        <div className={ChatListingStyles.channelMessageInner}>
+                          <img
+                            className={ChatListingStyles.profileAvtar}
+                            src="https://i.pravatar.cc/40"
+                            width="30"
+                            height="30"
+                          />
+                          <div className={ChatListingStyles.profileName}>
+                            {item?.senderName}
+                          </div>
+                          <span
+                            className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
+                          >
+                            {item?.senderDesignation}
+                          </span>
+                          <span className={ChatListingStyles.timeStamp}>
+                            {item?.date?.seconds
+                              ? new Date(item?.date?.seconds * 1000)
+                                  .toLocaleTimeString()
+                                  .replace(
+                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                    "$1$3"
+                                  )
+                              : item?.date}
+                          </span>
+                          <Dropdown
+                            className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
+                            placement="bottomRight"
+                            menu={{
+                              items: chatDropdown,
+                            }}
+                            trigger={["click"]}
+                          >
+                            <a onClick={(e) => e.preventDefault()}>
+                              <Space>
                                 <span
-                                  className={ChatListingStyles.addNewEmoji}
+                                  className={ChatListingStyles.dotMenu}
                                 ></span>
-                              </div>
-                            )}
-                            <div
-                              className={ChatListingStyles.chatReactionCircle}
-                              onClick={() => {
-                                setSmileIcon(!smileIcon);
-                                setChatMapKey(key);
-                              }}
+                              </Space>
+                            </a>
+                          </Dropdown>
+                          {!scrollDown && filterData?.length > 5 && (
+                            <span
+                              className={ChatListingStyles.scrollToBottom}
+                              onClick={scrollToBottom}
                             >
-                              <span
-                                className={ChatListingStyles.chatReactionActive}
+                              <ScrollToBottomSVG />
+                            </span>
+                          )}
+                        </div>
+                        <div
+                          className={` ${ChatListingStyles.channelMessageBox} ${
+                            getSenderName === item?.senderName
+                              ? ChatListingStyles.channelMessageLeft
+                              : ChatListingStyles.channelMessageRight
+                          } `}
+                        >
+                          <p>{item?.text}</p>
+                          <div className={ChatListingStyles.chatReaction}>
+                            <div
+                              className={ChatListingStyles.chatReactionInner}
+                            >
+                              {chatMapKey === key && smileIcon && (
+                                <div
+                                  className={
+                                    ChatListingStyles.chatReactionPopup
+                                  }
+                                >
+                                  <span>
+                                    <SmileIcon1 />
+                                  </span>
+                                  <span>
+                                    <SmileIcon2 />
+                                  </span>
+                                  <span>
+                                    <SmileIcon3 />
+                                  </span>
+                                  <span>
+                                    <SmileIcon4 />
+                                  </span>
+                                  <span>
+                                    <SmileIcon5 />
+                                  </span>
+                                  <span>
+                                    <SmileIcon6 />
+                                  </span>
+                                  <span
+                                    className={ChatListingStyles.addNewEmoji}
+                                  ></span>
+                                </div>
+                              )}
+                              <div
+                                className={ChatListingStyles.chatReactionCircle}
+                                onClick={() => {
+                                  setSmileIcon(!smileIcon);
+                                  setChatMapKey(key);
+                                }}
                               >
-                                <SmileIcon />
-                              </span>
+                                <span
+                                  className={
+                                    ChatListingStyles.chatReactionActive
+                                  }
+                                >
+                                  <SmileIcon />
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                     {/* <div className={ChatListingStyles.divider}>
                       <span>TODAY</span>
                     </div> */}

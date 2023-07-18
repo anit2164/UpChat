@@ -32,6 +32,8 @@ const Tile = ({
   let tempObj;
   let snoozeObj;
 
+  console.log(allChannelItem,"allChannelItemallChannelItem");
+
   const channelDropdown = useCallback(async (value, item) => {
     if (value?.key === "PIN Channel") {
       tempObj = item;
@@ -176,6 +178,31 @@ const Tile = ({
       console.error(error);
     }
   };
+
+  // useEffect(() => {
+ 
+  //   try {
+  //     const firestore = firebase.firestore();
+  //     const unsubscribe = firestore
+  //       .collection(`ChannelUserMapping/
+  //       0EA007f0V3pfTN6Th6GB/user`).get()
+  //       .then((snapshot) => {
+  //         console.log(snapshot,"snapshot")
+  //       //  snapshot.forEach((doc) => {
+  //       //   console.log(doc,"docccc")
+  //       //     const user = doc.data();
+  //       //     console.log(user,"USER12345");
+  //       //   });
+  //       });
+     
+  //   } catch (error) {
+  //     console.error(error,"errororo");
+  //   }
+  // }, []);
+
+
+
+
 
   return (
     <>
