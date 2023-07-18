@@ -14,6 +14,7 @@ import SnoozeGroupDetails from "../snoozeList/snoozeGroups";
 
 firebase.initializeApp(firebaseConfig);
 
+
 const UpTabs = () => {
   const [title, setTitle] = useState("Add New Hiring Requests");
   const [search, setSearch] = useState("");
@@ -31,30 +32,83 @@ const UpTabs = () => {
     // setPinnedChannel(true);
   };
 
+  // useEffect(() => {
+  //   // Retrive Data
+  //   const fetchData = async () => {
+  //     try {
+  //       const firestore = firebase.firestore();
+  //       const collectionRef = firestore.collection("channels");
+  //       const snapshot = await collectionRef.get();
+
+  //       const dataArray = snapshot.docs.map((doc) => ({
+  //         id: doc.id,
+  //         ...doc.data(),
+  //       }));
+
+  //       setData(dataArray);
+  //       setTempArr(dataArray);
+  //       setPinnedChannel(false);
+  //       setSoonzeChannel(false);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [updatePinnedChannel, updateSoonzeChannel]);
+
+  const channelIdData = (tempArr) =>{
+    const firestore = firebase.firestore();
+    const collectionRef = firestore.collection("channels")
+    const queryPromises = [];
+    
+    while(tempArr?.length>0){
+  const batch = tempArr.splice(0, 30);
+  console.log(batch,"batch");
+  const query = collectionRef.where('enc_channelID', 'in', batch).get();
+  queryPromises.push(query);
+}
+
+Promise.all(queryPromises)
+  .then((querySnapshots) => {
+    const mergedResults = [];
+    querySnapshots.forEach((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        mergedResults.push(doc.data());
+        console.log(querySnapshot,"querySnapshot");
+      });
+    });
+    console.log(mergedResults,"mergedResults");
+    setData(mergedResults);
+    setTempArr(mergedResults);
+    setPinnedChannel(false);
+    setSoonzeChannel(false);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+  }
+
   useEffect(() => {
-    // Retrive Data
-    const fetchData = async () => {
-      try {
-        const firestore = firebase.firestore();
-        const collectionRef = firestore.collection("channels");
-        const snapshot = await collectionRef.get();
+    try {
+      // UP0131
+      const firestore = firebase.firestore();
+      let tempArr = [];
+      const unsubscribe = firestore
+        .collectionGroup(`user`).where("userEmpId","==","UP0131").get()
+        .then((snapshot) => {
+         snapshot.forEach((doc) => {
+            const user = doc.data();
+            tempArr.push(user?.channelID.toString())
+            console.log(user?.channelID,"user?.channelID");
+          });
+          channelIdData(tempArr);
+        });
+    } catch (error) {
+      console.error(error,"errororo");
+    }
+  }, []);
 
-        const dataArray = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setData(dataArray);
-        setTempArr(dataArray);
-        setPinnedChannel(false);
-        setSoonzeChannel(false);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, [updatePinnedChannel, updateSoonzeChannel]);
 
   useEffect(() => {
     if (search) {

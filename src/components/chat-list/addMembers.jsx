@@ -25,33 +25,33 @@ const AddMembers = ({
   const [listData, setListData] = useState([]);
   const [sortedData, setSortedData] = useState([]);
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const addMemberListingdata = useSelector((state) => state?.addMemberListing);
 
-  // useEffect(() => {
-  //   dispatch(addMemberListingHandler());
-  // }, []);
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-const response = await axios.get('http://3.218.6.134:9096/User/List', {
-  headers: {
-    Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMDAyMiIsIkxvZ2luVXNlcklkIjoiMiIsIkxvZ2luVXNlclR5cGVJZCI6IjEiLCJuYmYiOjE2ODk1OTU5NjQsImV4cCI6MTY4OTYzMTk2NCwiaWF0IjoxNjg5NTk1OTY0fQ.6zHpu_-QiSRZFsNZ0nUsll-Oy6ImZ9F_jjqpy3LQYPU",
-   "X-API-KEY":"QXBpS2V5TWlkZGxld2FyZQ==",
-   'Content-Type': 'application/json',
-  },
-  
-});
-setListData(response?.data?.details)
-console.log(response,"response")
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData(); // Call the function to make the API request
+    dispatch(addMemberListingHandler());
   }, []);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+// const response = await axios.get('http://3.218.6.134:9096/User/List', {
+//   headers: {
+//     Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlVQMDAyMiIsIkxvZ2luVXNlcklkIjoiMiIsIkxvZ2luVXNlclR5cGVJZCI6IjEiLCJuYmYiOjE2ODk1OTU5NjQsImV4cCI6MTY4OTYzMTk2NCwiaWF0IjoxNjg5NTk1OTY0fQ.6zHpu_-QiSRZFsNZ0nUsll-Oy6ImZ9F_jjqpy3LQYPU",
+//    "X-API-KEY":"QXBpS2V5TWlkZGxld2FyZQ==",
+//    'Content-Type': 'application/json',
+//   },
+  
+// });
+// setListData(response?.data?.details)
+// console.log(response,"response")
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     };
+
+//     fetchData(); // Call the function to make the API request
+//   }, []);
 
 
   useEffect(() => {
