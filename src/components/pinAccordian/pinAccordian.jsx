@@ -14,9 +14,9 @@ const PinAccordian = ({
   label,
   isCollapsible,
   search,
-  data,
+  setDataFalse,
   LastPinnedGroups,
-  setData,
+  dataFalse,
 }) => {
   const [showBody, setShowBody] = useState(true);
 
@@ -41,9 +41,9 @@ const PinAccordian = ({
       {showBody && (
         <PinChatDetails
           search={search}
-          data={data}
+          dataFalse={dataFalse}
           LastPinnedGroups={LastPinnedGroups}
-          setData={setData}
+          setDataFalse={setDataFalse}
         />
       )}
     </Fragment>

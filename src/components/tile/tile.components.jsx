@@ -32,26 +32,31 @@ const Tile = ({
   let tempObj;
   let snoozeObj;
 
-  console.log(allChannelItem,"allChannelItemallChannelItem");
 
   const channelDropdown = useCallback(async (value, item) => {
     if (value?.key === "PIN Channel") {
-      tempObj = item;
-      tempObj.isPinned = true;
+      // tempObj = item;
+      // tempObj.isPinned = true;
       try {
         const firestore = firebase.firestore();
-        const collectionRef = firestore.collection("channels");
-        const snapshot = collectionRef.doc(tempObj.id);
+        const collectionRef = firestore.collection("ChannelUserMapping").doc(item?.enc_channelID).collection("user").get().then((querySnapshot )=>{
+          querySnapshot.forEach((doc) => {
+            const user = doc.data();
+            user.isPinned = true;
+            doc.ref.set(user)
+          });
+        })
+         
+        // await querySnapshot.set(tempObj);
+        // console.log(snapshot,"snapshot");
 
-        await snapshot.set(tempObj);
+        // const dataArray = collectionRef?.docs?.map((doc) => ({
+        //   id: doc.id,
+        //   ...doc.data(),
+        // }));
 
-        const dataArray = snapshot?.docs?.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setDataNew(dataArray);
-        setTempArr(dataArray);
+        // setDataNew(dataArray);
+        // setTempArr(dataArray);
         LastPinnedGroups();
       } catch (error) {
         console.error(error);
@@ -121,10 +126,10 @@ const Tile = ({
   };
 
   useEffect(() => {
-    const filterData = data?.filter((item) => {
-      return item?.isPinned === false && item?.isSnoozed === false;
-    });
-    let filterDataNew = filterData?.map((val) => {
+    // const filterData = data?.filter((item) => {
+    //   return item?.isPinned === false;
+    // });
+    let filterDataNew = data?.map((val) => {
       return { ...val, color: getRandomColor() };
     });
     setUpdateData(filterDataNew);
@@ -138,20 +143,19 @@ const Tile = ({
   );
 
   const showChatList = async (item) => {
-    if (item?.id !== allChannelItem?.id) {
+    if (item?.enc_channelID !== allChannelItem?.enc_channelID) {
       setActiveUser(true);
       setAllChannelItem(item);
       setShowList(true);
       try {
         const firestore = firebase.firestore();
         const unsubscribe = firestore
-          .collection(`ChannelChatsMapping/${item?.id}/chats`)
+          .collection(`ChannelChatsMapping/${item?.enc_channelID}/chats`)
           .orderBy("date", "asc")
           .onSnapshot((snapshot) => {
             const messagesData = snapshot.docs.map((doc) => doc.data());
             setListingChats(messagesData);
           });
-
         return () => {
           unsubscribe();
         };
@@ -208,7 +212,6 @@ const Tile = ({
     <>
       <div className={TileStyle.chatWrapper}>
         {updateData?.map((item) => {
-          console.log(item,"item");
           return (
             <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}>
               <div

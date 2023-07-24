@@ -29,6 +29,7 @@ import { sendMessageHandler } from "@/redux_toolkit/slices/sendMessage";
 import MemberListing from "./memberListing";
 import { ReactComponent as ScrollToBottomSVG } from "@SVG/scrollToBottom.svg";
 import { ChannelMenu } from "@/constants/application";
+import moment from "moment";
 // import Tile from "../tile/tile.components";
 
 firebase.initializeApp(firebaseConfig);
@@ -85,7 +86,7 @@ const ChatListing = ({
       icon: <FiBookOpenSVG />,
     },
     {
-      label: ChannelMenu.VIEW_HR_DETAILS, 
+      label: ChannelMenu.VIEW_HR_DETAILS,
       key: ChannelMenu.VIEW_HR_DETAILS,
       icon: <FiFilmSVG />,
     },
@@ -141,14 +142,12 @@ const ChatListing = ({
   const date = new Date();
   const formattedTime = date.toUTCString();
 
-  const createCollection = async () => {
+
+  const createCollection = async (data) => {
     try {
       const firestore = firebase.firestore();
-      // const collectionRef = firestore.collection(
-      //   `ChannelChatsMapping/${allChannelItem?.id}/chats/${lastChatMessage?.[0]?.enc_chatID}/user_chats/`
-      // );
       const collectionRef = firestore.collection(
-        `ChannelChatsMapping/RItjUCjQNuZLaiO81SQQ/chats/USy2LHJtdyXgoi71Z1fY/user_chats/`
+        `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats/${data}/user_chats/`
       );
       for (let i = 0; i < userDataList.length; i++) {
         await collectionRef.add(userDataList[i]);
@@ -157,18 +156,6 @@ const ChatListing = ({
       console.error("Error creating collection:", error);
     }
   };
-
-  // const dateTime = new Date();
-  // const year = dateTime.getFullYear();
-  // const month = String(dateTime.getMonth() + 1).padStart(2, "0");
-  // const day = String(dateTime.getDate()).padStart(2, "0");
-  // const hours = String(dateTime.getHours()).padStart(2, "0");
-  // const minutes = String(dateTime.getMinutes()).padStart(2, "0");
-  // const seconds = String(dateTime.getSeconds()).padStart(2, "0");
-
-  // const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-  // console.log(formattedDateTime, "formattedDateTime");
 
   const sendMessage = async () => {
     if (messageHandler) {
@@ -199,11 +186,15 @@ const ChatListing = ({
         };
         const firestore = firebase.firestore();
         const collectionRef = firestore.collection(
-          `ChannelChatsMapping/${allChannelItem?.id}/chats`
+          `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
         );
 
-        await collectionRef.add(obj);
-        const d = await collectionRef.get();
+        const tempEnc_ID = await collectionRef.add(obj);
+        obj.enc_chatID = tempEnc_ID.id;
+        const snapshot = collectionRef.doc(tempEnc_ID.id);
+
+        await snapshot.set(obj);
+        await collectionRef.get()
 
         const dataArray = d?.docs?.map((doc) => ({
           id: doc.id,
@@ -213,7 +204,7 @@ const ChatListing = ({
         getSenderName = localStorage.getItem("sendername");
         scrollToBottom();
         updateChannel(new Date());
-        // createCollection();
+        createCollection(tempEnc_ID.id);
         dispatch(sendMessageHandler(apiObj));
       } catch (error) {
         console.error(error);
@@ -251,21 +242,27 @@ const ChatListing = ({
           };
           const firestore = firebase.firestore();
           const collectionRef = firestore.collection(
-            `ChannelChatsMapping/${allChannelItem?.id}/chats`
+            `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
           );
 
-          await collectionRef.add(obj);
-          const d = await collectionRef.get();
+          const tempEnc_ID = await collectionRef.add(obj);
+          obj.enc_chatID = tempEnc_ID.id;
+          const snapshot = collectionRef.doc(tempEnc_ID.id);
 
-          const dataArray = d?.docs?.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
+          await snapshot.set(obj);
+          await collectionRef.get();
+
+
+          // const dataArray = d?.docs?.map((doc) => ({
+          //   id: doc.id,
+          //   ...doc.data(),
+          // }));
+          // console.log(dataArray,"dataArraydataArray");
           localStorage.setItem("sendername", "Shreyash Zinzuvadia");
           getSenderName = localStorage.getItem("sendername");
           scrollToBottom();
           updateChannel(new Date());
-          // createCollection();
+          createCollection(tempEnc_ID.id);
           dispatch(sendMessageHandler(apiObj));
         } catch (error) {
           console.error(error);
@@ -323,15 +320,18 @@ const ChatListing = ({
     try {
       const firestore = firebase.firestore();
       const unsubscribe = firestore
-        .collection(`ChannelUserMapping/${allChannelItem?.id}/user`)
+        .collection(`ChannelUserMapping/${allChannelItem?.enc_channelID}/user`)
         .onSnapshot((snapshot) => {
-          const userData = snapshot.docs.map((doc) => ({
-            // id: doc.id,
-            // ...doc.data(),
-            enc_channelID: allChannelItem?.id,
-            isRead: false,
-            userEmpID: doc.id,
-          }));
+          const userData = snapshot.docs.map((doc) => {
+            const userEmpId = doc.get("userEmpId");
+            return {
+              id: doc.id,
+              enc_channelID: allChannelItem?.enc_channelID,
+              isRead: false,
+              userEmpID: userEmpId,
+              IsBookMark: false,
+            };
+          });
           setUserDataList(userData);
         });
       return () => {
@@ -450,7 +450,6 @@ const ChatListing = ({
                 </div>
               </div>
             )}
-
             {/* <span className={ChatListingStyles.numberOfSearch}>
                   <span className={ChatListingStyles.arrowIcon}>
                     <ArrowIcon />
@@ -460,7 +459,6 @@ const ChatListing = ({
                     <ArrowIcon />
                   </span>
                 </span> */}
-
             <div
               className={ChatListingStyles.channelWindowMessages}
               id="content"
@@ -475,7 +473,8 @@ const ChatListing = ({
                         >
                           <span>{item?.text} | Action By: Harleen Kaur</span>
                           <span>
-                            {new Date(0).setUTCSeconds(item?.date?.nenosecond)} |{" "}
+                            {moment(new Date(item?.date?.seconds).toString()).format("DD/MM/YYYY")}{" "}
+                            |{" "}
                             {item?.date?.seconds
                               ? new Date(item?.date?.seconds * 1000)
                                   .toLocaleTimeString()
@@ -603,16 +602,6 @@ const ChatListing = ({
                         </div>
                       </div>
                     )}
-                    {/* <div className={ChatListingStyles.divider}>
-                      <span>TODAY</span>
-                    </div> */}
-                    {/* {item?.isActivity === true && (
-
-                    <div className={ChatListingStyles.systemGeneratedHeader}>
-                    <span>{item?.text} | Action By: Harleen Kaur</span>
-                    <span>05-06-2023 | 12:24 PM</span>
-                  </div>
-                    )} */}
                   </>
                 );
               })}

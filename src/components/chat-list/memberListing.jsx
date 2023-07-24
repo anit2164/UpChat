@@ -31,7 +31,7 @@ const MemberListing = (allChannelItem) => {
       const firestore = firebase.firestore();
       const unsubscribe = firestore
         .collection(
-          `ChannelUserMapping/${allChannelItem?.allChannelItem?.id}/user`
+          `ChannelUserMapping/${allChannelItem?.allChannelItem?.enc_channelID}/user`
         )
         .onSnapshot((snapshot) => {
           const userData = snapshot.docs.map((doc) => ({
@@ -66,7 +66,7 @@ const MemberListing = (allChannelItem) => {
     try {
       const firestore = firebase.firestore();
       const collectionRef = firestore.collection(
-        `ChannelUserMapping/${allChannelItem?.allChannelItem?.id}/user`
+        `ChannelUserMapping/${allChannelItem?.allChannelItem?.enc_channelID}/user`
       );
       const snapshot = collectionRef.doc(id);
       await snapshot.delete();
@@ -85,7 +85,7 @@ const MemberListing = (allChannelItem) => {
     <>
       <div className={ChatListingStyles.channelWindowStatus}>
         <div className={ChatListingStyles.channelStatusLeft}>
-          HR Status: In Process
+          HR Status: {allChannelItem?.allChannelItem?.hrStatus}
         </div>
         <div className={ChatListingStyles.channelStatusRight}>
           <div className={ChatListingStyles.membersMenuMainHeader}>
