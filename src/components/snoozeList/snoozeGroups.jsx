@@ -127,7 +127,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }) => {
       const collectionRef = firestore.collection("channels");
       const snapshot = collectionRef.doc(allChannelItem.id);
       await snapshot.set(allChannelItem);
-      let _data = await collectionRef.get();
+      let _data = await collectionRef.limit(10).get();
       const dataArray = _data?.docs?.map((doc) => ({
         id: doc.id,
         ...doc.data(),

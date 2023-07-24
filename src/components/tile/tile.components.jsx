@@ -11,6 +11,7 @@ import "firebase/compat/firestore";
 import { ChannelMenu } from "@/constants/application";
 import { ReactComponent as ViewHRDetailsSVG } from "@SVG/viewHrDetails.svg";
 import ChatListing from "../chat-list/chatListing";
+import { forIn } from "lodash";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -34,8 +35,6 @@ const Tile = ({
   let tempObj;
   let snoozeObj;
 
-console.log(readCount,"readCount")
-
 
   const channelDropdown = useCallback(async (value, item) => {
     if (value?.key === "PIN Channel") {
@@ -43,7 +42,7 @@ console.log(readCount,"readCount")
       // tempObj.isPinned = true;
       try {
         const firestore = firebase.firestore();
-        const collectionRef = firestore.collection("ChannelUserMapping").doc(item?.enc_channelID).collection("user").get().then((querySnapshot )=>{
+        const collectionRef = firestore.collection("ChannelUserMapping").doc(item?.enc_channelID).collection("user").limit(10).get().then((querySnapshot )=>{
           querySnapshot.forEach((doc) => {
             const user = doc.data();
             user.isPinned = true;
@@ -128,17 +127,30 @@ console.log(readCount,"readCount")
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   };
+  console.log(readCount,"reactCounts");
+  console.log(updateData,"updateData");
 
+  
   useEffect(() => {
     // const filterData = data?.filter((item) => {
-    //   return item?.isPinned === false;
-    // });
-    let filterDataNew = data?.map((val) => {
-      return { ...val, color: getRandomColor() , read:readCount};
-    });
-    setUpdateData(filterDataNew);
-    console.log(filterDataNew,"filterDataNewfilterDataNew");
-  }, [data]);
+      //   return item?.isPinned === false;
+      // });
+      let filterDataNew = data?.map((val) => {
+        return { ...val, color: getRandomColor() };
+      });
+
+      const result = filterDataNew?.map(item=>{
+        const data2 = readCount.find(temp=>item.enc_channelID===temp.enc_ChannelIDCount);
+        if(data2){
+          item.readCount = data2.readCount;
+        }
+        return item;
+      })
+    
+      console.log(result,"resultresultresult");
+    setUpdateData(result);
+  }, [data,readCount]);
+
 
   updateData?.sort(
     (a, b) =>
@@ -187,6 +199,9 @@ console.log(readCount,"readCount")
   //     console.error(error);
   //   }
   // };
+
+
+
   const updateChannelDateTime = async (enc_channelID) => {
     allChannelItem.lastMessageTime = new Date();
     try {
@@ -194,7 +209,7 @@ console.log(readCount,"readCount")
       const collectionRef = firestore.collection("channels");
       const snapshot = collectionRef.doc(enc_channelID);
       await snapshot.set(allChannelItem);
-      let _data = await collectionRef.get();
+      let _data = await collectionRef.limit(10).get();
       const dataArray = _data?.docs?.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -204,6 +219,8 @@ console.log(readCount,"readCount")
       console.error(error);
     }
   };
+
+  
   
 
   // useEffect(() => {
@@ -251,7 +268,6 @@ console.log(readCount,"readCount")
 //   return 2
 // }
 
-// console.log(updateData,"updateData");
 
   return (
     <>
@@ -283,7 +299,7 @@ console.log(readCount,"readCount")
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                <div className={TileStyle.unreadNum}>{item?.read}</div>
+                <div className={TileStyle.unreadNum}>{item?.readCount}</div>
                 <Dropdown
                   className={TileStyle.dotMenuMain}
                   menu={{

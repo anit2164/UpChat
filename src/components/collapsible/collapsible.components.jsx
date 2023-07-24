@@ -19,7 +19,7 @@ const Collapse = ({ setToggle, toggle }) => {
       try {
         const firestore = firebase.firestore();
         const collectionRef = firestore.collection("channels");
-        const snapshot = await collectionRef.get();
+        const snapshot = await collectionRef.get().limit(5);
 
         const dataArray = snapshot.docs.map((doc) => ({
           id: doc.id,

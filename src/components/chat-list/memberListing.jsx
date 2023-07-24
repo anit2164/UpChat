@@ -70,7 +70,7 @@ const MemberListing = (allChannelItem) => {
       );
       const snapshot = collectionRef.doc(id);
       await snapshot.delete();
-      let _data = await collectionRef.get();
+      let _data = await collectionRef.limit(10).get();
       const dataArray = _data?.docs?.map((doc) => ({
         id: doc.id,
         ...doc.data(),

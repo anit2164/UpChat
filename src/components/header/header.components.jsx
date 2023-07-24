@@ -15,7 +15,7 @@ const Header = ({ setToggle }) => {
       try {
         const firestore = firebase.firestore();
         const collectionRef = firestore.collection("channels");
-        const snapshot = await collectionRef.get();
+        const snapshot = await collectionRef.limit(10).get();
 
         const dataArray = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -31,9 +31,6 @@ const Header = ({ setToggle }) => {
     fetchData();
   }, []);
 
-  myArray.forEach((num) => {
-    totalCount += num;
-  });
 
   return (
     <div className={HeaderStyle.container} onClick={() => setToggle(false)}>

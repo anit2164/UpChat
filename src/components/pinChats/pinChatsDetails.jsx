@@ -75,7 +75,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
         //   ...doc.data(),
         // }));
         const firestore = firebase.firestore();
-        const collectionRef = firestore.collection("ChannelUserMapping").doc(item?.enc_channelID).collection("user").get().then((querySnapshot )=>{
+        const collectionRef = firestore.collection("ChannelUserMapping").doc(item?.enc_channelID).collection("user").limit(10).get().then((querySnapshot )=>{
           querySnapshot.forEach((doc) => {
             const user = doc.data();
             user.isPinned = false;
@@ -146,7 +146,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
       const collectionRef = firestore.collection("channels");
       const snapshot = collectionRef.doc(enc_channelID);
       await snapshot.set(pinnedChatsItem);
-      let _data = await collectionRef.get();
+      let _data = await collectionRef.limit(10).get();
       const dataArray = _data?.docs?.map((doc) => ({
         id: doc.id,
         ...doc.data(),
