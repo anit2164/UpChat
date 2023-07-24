@@ -31,6 +31,10 @@ const Header = ({ setToggle }) => {
     fetchData();
   }, []);
 
+  myArray.forEach((num) => {
+    totalCount += num;
+  });
+
   return (
     <div className={HeaderStyle.container} onClick={() => setToggle(false)}>
       <div className={HeaderStyle.containerBody}>

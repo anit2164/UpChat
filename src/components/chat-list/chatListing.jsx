@@ -51,6 +51,7 @@ const ChatListing = ({
   setActiveUser,
   setAllChannelItem,
   setPinnedChatsItem,
+  updateChannelDateTime,
 }) => {
   const dispatch = useDispatch();
   const [toggle, setToggle] = useState(false);
@@ -203,7 +204,7 @@ const ChatListing = ({
         localStorage.setItem("sendername", "Shreyash Zinzuvadia");
         getSenderName = localStorage.getItem("sendername");
         scrollToBottom();
-        updateChannel(new Date());
+        updateChannelDateTime(allChannelItem?.enc_channelID);
         createCollection(tempEnc_ID.id);
         dispatch(sendMessageHandler(apiObj));
       } catch (error) {
@@ -261,7 +262,7 @@ const ChatListing = ({
           localStorage.setItem("sendername", "Shreyash Zinzuvadia");
           getSenderName = localStorage.getItem("sendername");
           scrollToBottom();
-          updateChannel(new Date());
+          updateChannelDateTime(allChannelItem?.enc_channelID);
           createCollection(tempEnc_ID.id);
           dispatch(sendMessageHandler(apiObj));
         } catch (error) {
@@ -361,6 +362,13 @@ const ChatListing = ({
   //   if(data && dataKey!==filterData?.slice(-1)[0]?.hrID){
   //     updateChannel(filterData?.slice(-1)[0]?.date);
   //   }
+  
+  const GFG_Fun1 = (time) => {
+    var utcSeconds = time;
+    var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+    const data = new Date(d.setUTCSeconds(utcSeconds));
+    return moment(data).format("DD-MM-YYYY");
+  };
 
   return (
     <>
@@ -473,7 +481,7 @@ const ChatListing = ({
                         >
                           <span>{item?.text} | Action By: Harleen Kaur</span>
                           <span>
-                            {moment(new Date(item?.date?.seconds).toString()).format("DD/MM/YYYY")}{" "}
+                            {GFG_Fun1(item?.date?.seconds)}{" "}
                             |{" "}
                             {item?.date?.seconds
                               ? new Date(item?.date?.seconds * 1000)

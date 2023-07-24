@@ -17,6 +17,7 @@ const Accordion = ({
   LastPinnedGroups,
   LastSnoozeGroups,
   setData,
+  readCount
 }) => {
   const [showBody, setShowBody] = useState(true);
 
@@ -45,6 +46,7 @@ const Accordion = ({
           LastPinnedGroups={LastPinnedGroups}
           LastSnoozeGroups={LastSnoozeGroups}
           setData={setData}
+          readCount={readCount}
         />
       )}
     </Fragment>

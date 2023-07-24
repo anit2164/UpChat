@@ -20,6 +20,7 @@ const Tile = ({
   LastPinnedGroups,
   LastSnoozeGroups,
   setData,
+  readCount
 }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
@@ -28,9 +29,12 @@ const Tile = ({
   const [showChat, setShowList] = useState(false);
   const [listingChats, setListingChats] = useState([]);
   const [allChannelItem, setAllChannelItem] = useState();
+  const [counting,setCounting] = useState("")
 
   let tempObj;
   let snoozeObj;
+
+console.log(readCount,"readCount")
 
 
   const channelDropdown = useCallback(async (value, item) => {
@@ -130,9 +134,10 @@ const Tile = ({
     //   return item?.isPinned === false;
     // });
     let filterDataNew = data?.map((val) => {
-      return { ...val, color: getRandomColor() };
+      return { ...val, color: getRandomColor() , read:readCount};
     });
     setUpdateData(filterDataNew);
+    console.log(filterDataNew,"filterDataNewfilterDataNew");
   }, [data]);
 
   updateData?.sort(
@@ -165,12 +170,29 @@ const Tile = ({
     }
   };
 
-  const updateChannel = async (date) => {
-    allChannelItem.lastMessageTime = date;
+  // const updateChannel = async (date) => {
+  //   allChannelItem.lastMessageTime = date;
+  //   try {
+  //     const firestore = firebase.firestore();
+  //     const collectionRef = firestore.collection("channels");
+  //     const snapshot = collectionRef.doc(allChannelItem.id);
+  //     await snapshot.set(allChannelItem);
+  //     let _data = await collectionRef.get();
+  //     const dataArray = _data?.docs?.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //     setData(dataArray);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  const updateChannelDateTime = async (enc_channelID) => {
+    allChannelItem.lastMessageTime = new Date();
     try {
       const firestore = firebase.firestore();
       const collectionRef = firestore.collection("channels");
-      const snapshot = collectionRef.doc(allChannelItem.id);
+      const snapshot = collectionRef.doc(enc_channelID);
       await snapshot.set(allChannelItem);
       let _data = await collectionRef.get();
       const dataArray = _data?.docs?.map((doc) => ({
@@ -182,6 +204,7 @@ const Tile = ({
       console.error(error);
     }
   };
+  
 
   // useEffect(() => {
  
@@ -205,8 +228,30 @@ const Tile = ({
   // }, []);
 
 
+// const tempID = async() =>{
 
+//   const firestore = firebase.firestore();
+//   // const readOrUnread = firestore.collection("user_chats").where("isRead","==",false).where("enc_channelID","==","0RX4qTqAQRGnZEeZF83p").where("userEmpID","==","ChatUser_Himani").get(); 
+//   const readOrUnread = firestore.collectionGroup("user_chats")
+//   const query =  readOrUnread.where("isRead","==",false).where("enc_channelID","==","dJUuo4xXKcQYc3hFcTET").where("userEmpID","==","up1322")
+//   const snapshot = await query.get();
+//   console.log(snapshot?.docs?.length,"snapshot");
+// }
 
+//   useEffect(()=>{
+//     tempID()
+//   },[])
+// const count = async (data) =>{
+//   console.log(data,"data")
+//   const firestore = firebase.firestore();
+//   const readOrUnread = firestore.collectionGroup("user_chats")
+//       const query =  readOrUnread.where("isRead","==",false).where("enc_channelID","==",data).where("userEmpID","==","up1322")
+//       const snapshot1 = await query.get();
+//       console.log(snapshot1,"snapshot1?.docs?.length")
+//   return 2
+// }
+
+// console.log(updateData,"updateData");
 
   return (
     <>
@@ -238,13 +283,13 @@ const Tile = ({
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                {/* <div className={TileStyle.unreadNum}>5</div> */}
+                <div className={TileStyle.unreadNum}>{item?.read}</div>
                 <Dropdown
                   className={TileStyle.dotMenuMain}
                   menu={{
                     items: items,
                     onClick: (value) => {
-                      channelDropdown(value, item);
+                      channelDropdown(value, item); 
                     },
                   }}
                   trigger={["click"]}
@@ -270,7 +315,8 @@ const Tile = ({
           listingChats={listingChats}
           allChannelItem={allChannelItem}
           setAllChannelItem={setAllChannelItem}
-          updateChannel={updateChannel}
+          // updateChannel={updateChannel}
+          updateChannelDateTime={updateChannelDateTime}
           setShowList={setShowList}
           activeUser={activeUser}
           setActiveUser={setActiveUser}

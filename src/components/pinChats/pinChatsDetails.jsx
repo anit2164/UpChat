@@ -121,12 +121,30 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     }
   };
 
-  const updateChannel = async (date) => {
-    pinnedChatsItem.lastMessageTime = date;
+  // const updateChannel = async (date) => {
+  //   pinnedChatsItem.lastMessageTime = date;
+  //   try {
+  //     const firestore = firebase.firestore();
+  //     const collectionRef = firestore.collection("channels");
+  //     const snapshot = collectionRef.doc(pinnedChatsItem.enc_channelID);
+  //     await snapshot.set(pinnedChatsItem);
+  //     let _data = await collectionRef.get();
+  //     const dataArray = _data?.docs?.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //     // setDataFalse(dataArray);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  const updateChannelDateTime = async (enc_channelID) => {
+    pinnedChatsItem.lastMessageTime = new Date();
     try {
       const firestore = firebase.firestore();
       const collectionRef = firestore.collection("channels");
-      const snapshot = collectionRef.doc(pinnedChatsItem.id);
+      const snapshot = collectionRef.doc(enc_channelID);
       await snapshot.set(pinnedChatsItem);
       let _data = await collectionRef.get();
       const dataArray = _data?.docs?.map((doc) => ({
@@ -151,6 +169,8 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   };
+
+
 
   return (
     <>
@@ -215,11 +235,12 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
           showPinnedChatsList={showPinnedChatsList}
           listingChats={listingChats}
           allChannelItem={pinnedChatsItem}
-          updateChannel={updateChannel}
+          // updateChannel={updateChannel}
           setShowPinnedChatsList={setShowPinnedChatsList}
           activeUser={activeUser}
           setPinnedChatsItem={setPinnedChatsItem}
           setActiveUser={setActiveUser}
+          updateChannelDateTime={updateChannelDateTime}
         />
       )}
     </>

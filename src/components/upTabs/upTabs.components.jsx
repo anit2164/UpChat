@@ -23,6 +23,7 @@ const UpTabs = () => {
   const [tempArrFalse, setTempArrFalse] = useState([]);
   const [updatePinnedChannel, setPinnedChannel] = useState(false);
   const [updateSoonzeChannel, setSoonzeChannel] = useState(false);
+  const [readCount, setReadCount] = useState([]);
 
   const LastPinnedGroups = () => {
     setPinnedChannel(true);
@@ -116,6 +117,15 @@ const UpTabs = () => {
       });
   };
 
+
+  const tempInfo = async(data)=>{
+    const firestore = firebase.firestore();
+    const readOrUnread = firestore.collectionGroup("user_chats")
+        const query =  readOrUnread.where("isRead","==",false).where("enc_channelID","==",data).where("userEmpID","==","up1322")
+        const snapshot1 = await query.get();
+        setReadCount(snapshot1?.docs?.length);
+  }
+
   useEffect(() => {
     try {
       // UP0131
@@ -131,10 +141,17 @@ const UpTabs = () => {
             const user = doc.data();
             tempArr.push(user?.channelID.toString());
           });
+         
+          for(let i=0;i<tempArr.length;i++){
+            tempInfo(tempArr[i])
+          }
           channelIdData(tempArr);
+         
           setPinnedChannel(false);
         setSoonzeChannel(false);
         });
+
+
     } catch (error) {
       console.error(error, "errororo");
     }
@@ -156,6 +173,7 @@ const UpTabs = () => {
             tempArr.push(user?.channelID.toString());
           });
           channelIdDataFalse(tempArr);
+          console.log(tempArr,"tempArrtempArr");
           setPinnedChannel(false);
         setSoonzeChannel(false);
         });
@@ -229,6 +247,7 @@ const UpTabs = () => {
                 LastPinnedGroups={LastPinnedGroups}
                 setData={setData}
                 LastSnoozeGroups={LastSnoozeGroups}
+                readCount={readCount}
               />
             </div>
           </TabPanel>
