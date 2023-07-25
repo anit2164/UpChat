@@ -376,7 +376,7 @@ const ChatListing = ({
         <main className={ChatListingStyles.main}>
           {toggle && (
             <>
-              <Header setToggle={setToggle} />
+              <Header setToggle={setToggle}/>
               <UpTabs />
             </>
           )}

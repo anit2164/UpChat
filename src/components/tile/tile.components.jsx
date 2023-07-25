@@ -127,8 +127,6 @@ const Tile = ({
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   };
-  console.log(readCount,"reactCounts");
-  console.log(updateData,"updateData");
 
   
   useEffect(() => {
@@ -136,20 +134,11 @@ const Tile = ({
       //   return item?.isPinned === false;
       // });
       let filterDataNew = data?.map((val) => {
-        return { ...val, color: getRandomColor() };
+        return val
       });
 
-      const result = filterDataNew?.map(item=>{
-        const data2 = readCount.find(temp=>item.enc_channelID===temp.enc_ChannelIDCount);
-        if(data2){
-          item.readCount = data2.readCount;
-        }
-        return item;
-      })
-    
-      console.log(result,"resultresultresult");
-    setUpdateData(result);
-  }, [data,readCount]);
+      setUpdateData(filterDataNew);
+  }, [data]);
 
 
   updateData?.sort(
@@ -200,8 +189,6 @@ const Tile = ({
   //   }
   // };
 
-
-
   const updateChannelDateTime = async (enc_channelID) => {
     allChannelItem.lastMessageTime = new Date();
     try {
@@ -219,9 +206,6 @@ const Tile = ({
       console.error(error);
     }
   };
-
-  
-  
 
   // useEffect(() => {
  
@@ -299,7 +283,10 @@ const Tile = ({
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
+                {item?.readCount!==0&&(
+
                 <div className={TileStyle.unreadNum}>{item?.readCount}</div>
+                )}
                 <Dropdown
                   className={TileStyle.dotMenuMain}
                   menu={{

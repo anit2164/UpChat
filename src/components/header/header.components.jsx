@@ -46,7 +46,7 @@ const Header = ({ setToggle }) => {
         <div className={HeaderStyle.title}>Bhuvan UTS AM qa </div>
       </div>
       <div className={HeaderStyle.titleRight}>
-        <span className={HeaderStyle.unreadNum}>{data?.length}</span>
+        {/* <span className={HeaderStyle.unreadNum}>2</span> */}
         <ArrowDownSVG />
       </div>
     </div>

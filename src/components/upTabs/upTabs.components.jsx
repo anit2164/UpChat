@@ -24,6 +24,8 @@ const UpTabs = () => {
   const [updatePinnedChannel, setPinnedChannel] = useState(false);
   const [updateSoonzeChannel, setSoonzeChannel] = useState(false);
   const [readCount, setReadCount] = useState([]);
+  const [totalCount,setTotalCount] = useState("")
+
 
   const LastPinnedGroups = () => {
     setPinnedChannel(true);
@@ -31,7 +33,6 @@ const UpTabs = () => {
 
   const LastSnoozeGroups = () => {
     setSoonzeChannel(true);
-    // setPinnedChannel(true);
   };
 
   // useEffect(() => {
@@ -124,7 +125,6 @@ const UpTabs = () => {
     const readOrUnread = firestore.collectionGroup("user_chats")
         const query =  readOrUnread.where("isRead","==",false).where("enc_channelID","==",data).where("userEmpID","==","ChatUser_Himani")
         const snapshot1 = await query.limit(5).get();
-        console.log(data,snapshot1?.docs?.length,"dtaatata")
   countArr.enc_ChannelIDCount=data
   countArr.readCount=snapshot1?.docs?.length
   tempCount.push(countArr)
@@ -208,6 +208,31 @@ const UpTabs = () => {
   const filterData = data?.filter((item) => {
     return item?.isSnoozed === true;
   });
+
+  useEffect(() => {
+      // let filterDataNew = data?.map((val) => {
+      //   return { ...val, color: getRandomColor() };
+      // });
+
+      const result = data?.map(item=>{
+        const data2 = readCount.find(temp=>item.enc_channelID===temp.enc_ChannelIDCount);
+        if(data2){
+          item.readCount = data2.readCount;
+        }
+        return item;
+      })
+    // setUpdateData(result);
+    setData(data);
+  }, [data,readCount]);
+
+
+  useEffect(() => {
+  const totalReadCount = data.reduce((total, item) => total + item.readCount, 0);
+  setTotalCount(totalReadCount)
+  console.log(totalReadCount,"totalReadCount")
+  // localStorage.setItem("totalReadCount",totalCount)
+}, [totalCount,data])
+
 
   return (
     <>
