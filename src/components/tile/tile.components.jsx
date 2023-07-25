@@ -22,6 +22,7 @@ const Tile = ({
   LastSnoozeGroups,
   setData,
   readCount,
+  channelIdData
 }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
@@ -34,6 +35,8 @@ const Tile = ({
 
   let tempObj;
   let snoozeObj;
+
+  
 
   const channelDropdown = useCallback(async (value, item) => {
     if (value?.key === "PIN Channel") {
@@ -193,6 +196,7 @@ const Tile = ({
           });
         }
 
+        
         return () => {
           unsubscribe();
         };

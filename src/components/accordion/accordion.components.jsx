@@ -17,7 +17,7 @@ const Accordion = ({
   LastPinnedGroups,
   LastSnoozeGroups,
   setData,
-  readCount
+  readCount,
 }) => {
   const [showBody, setShowBody] = useState(true);
 

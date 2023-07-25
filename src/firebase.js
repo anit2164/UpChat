@@ -1,11 +1,12 @@
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCvyIS6c-CWO7HozKcJyITgiROn4lC8F7g",
-  authDomain: "upchatanitdb.firebaseapp.com",
-  projectId: "upchatanitdb",
-  storageBucket: "upchatanitdb.appspot.com",
-  messagingSenderId: "662591011312",
-  appId: "1:662591011312:web:74d28c2234cef3ea7bc535",
-  measurementId: "G-JLBSP6WMDC"
+  apiKey: "AIzaSyDc_qC-hqXokHmpMZjtqw9NYHNh6VU9tDM",
+  authDomain: "testingproject1302.firebaseapp.com",
+  databaseURL: "https://testingproject1302-default-rtdb.firebaseio.com",
+  projectId: "testingproject1302",
+  storageBucket: "testingproject1302.appspot.com",
+  messagingSenderId: "1082221033937",
+  appId: "1:1082221033937:web:d48ccb53c56e35150588f0",
+  measurementId: "G-GEQ4RL74JZ"
 };
 export default firebaseConfig;

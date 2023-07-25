@@ -64,8 +64,9 @@ const UpTabs = () => {
     const collectionRef = firestore.collection("channels");
     const queryPromises = [];
 
+
     while (tempArr?.length > 0) {
-      const batch = tempArr.splice(0, 30);
+      const batch = tempArr?.splice(0, 30);
       const query = collectionRef
         .where("enc_channelID", "in", batch)
         .limit(10)
@@ -167,11 +168,10 @@ const UpTabs = () => {
     } catch (error) {
       console.error(error, "errororo");
     }
-  }, [updatePinnedChannel, updateSoonzeChannel]);
+  }, [updatePinnedChannel, updateSoonzeChannel,setData,data]);
 
   useEffect(() => {
     try {
-      // UP0131
       const firestore = firebase.firestore();
       let tempArr = [];
       const unsubscribe = firestore
@@ -192,7 +192,7 @@ const UpTabs = () => {
     } catch (error) {
       console.error(error, "errororo");
     }
-  }, [updatePinnedChannel, updateSoonzeChannel]);
+  }, [updatePinnedChannel, updateSoonzeChannel,setDataFalse,dataFalse]);
 
   useEffect(() => {
     if (search) {
