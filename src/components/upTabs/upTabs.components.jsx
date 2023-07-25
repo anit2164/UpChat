@@ -24,8 +24,7 @@ const UpTabs = () => {
   const [updatePinnedChannel, setPinnedChannel] = useState(false);
   const [updateSoonzeChannel, setSoonzeChannel] = useState(false);
   const [readCount, setReadCount] = useState([]);
-  const [totalCount,setTotalCount] = useState("")
-
+  const [totalCount, setTotalCount] = useState("");
 
   const LastPinnedGroups = () => {
     setPinnedChannel(true);
@@ -67,7 +66,10 @@ const UpTabs = () => {
 
     while (tempArr?.length > 0) {
       const batch = tempArr.splice(0, 30);
-      const query = collectionRef.where("enc_channelID", "in", batch).limit(10).get();
+      const query = collectionRef
+        .where("enc_channelID", "in", batch)
+        .limit(10)
+        .get();
       queryPromises.push(query);
     }
 
@@ -96,7 +98,10 @@ const UpTabs = () => {
 
     while (tempArr?.length > 0) {
       const batch = tempArr.splice(0, 30);
-      const query = collectionRef.where("enc_channelID", "in", batch).limit(10).get();
+      const query = collectionRef
+        .where("enc_channelID", "in", batch)
+        .limit(10)
+        .get();
       queryPromises.push(query);
     }
 
@@ -118,18 +123,21 @@ const UpTabs = () => {
       });
   };
 
-  let tempCount = []
-  const tempInfo = async(data)=>{
-    let countArr = {}
+  let tempCount = [];
+  const tempInfo = async (data) => {
+    let countArr = {};
     const firestore = firebase.firestore();
-    const readOrUnread = firestore.collectionGroup("user_chats")
-        const query =  readOrUnread.where("isRead","==",false).where("enc_channelID","==",data).where("userEmpID","==","ChatUser_Himani")
-        const snapshot1 = await query.limit(5).get();
-  countArr.enc_ChannelIDCount=data
-  countArr.readCount=snapshot1?.docs?.length
-  tempCount.push(countArr)
-        setReadCount(tempCount);
-      }
+    const readOrUnread = firestore.collectionGroup("user_chats");
+    const query = readOrUnread
+      .where("isRead", "==", false)
+      .where("enc_channelID", "==", data)
+      .where("userEmpID", "==", "UP3");
+    const snapshot1 = await query.limit(5).get();
+    countArr.enc_ChannelIDCount = data;
+    countArr.readCount = snapshot1?.docs?.length;
+    tempCount.push(countArr);
+    setReadCount(tempCount);
+  };
 
   useEffect(() => {
     try {
@@ -138,7 +146,7 @@ const UpTabs = () => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Jimit")
+        .where("userEmpId", "==", "UP3")
         .where("isPinned", "==", false)
         .limit(10)
         .get()
@@ -147,22 +155,19 @@ const UpTabs = () => {
             const user = doc.data();
             tempArr.push(user?.channelID.toString());
           });
-         
-          for(let i=0;i<tempArr.length;i++){
-            console.log(tempArr[i],"tempArr")
-            tempInfo(tempArr[i])
+
+          for (let i = 0; i < tempArr.length; i++) {
+            tempInfo(tempArr[i]);
           }
           channelIdData(tempArr);
-         
+
           setPinnedChannel(false);
-        setSoonzeChannel(false);
+          setSoonzeChannel(false);
         });
-
-
     } catch (error) {
       console.error(error, "errororo");
     }
-  }, [updatePinnedChannel,updateSoonzeChannel]);
+  }, [updatePinnedChannel, updateSoonzeChannel]);
 
   useEffect(() => {
     try {
@@ -171,7 +176,7 @@ const UpTabs = () => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Jimit")
+        .where("userEmpId", "==", "UP3")
         .where("isPinned", "==", true)
         .limit(10)
         .get()
@@ -181,14 +186,13 @@ const UpTabs = () => {
             tempArr.push(user?.channelID.toString());
           });
           channelIdDataFalse(tempArr);
-          console.log(tempArr,"tempArrtempArr");
           setPinnedChannel(false);
-        setSoonzeChannel(false);
+          setSoonzeChannel(false);
         });
     } catch (error) {
       console.error(error, "errororo");
     }
-  }, [updatePinnedChannel,updateSoonzeChannel]);
+  }, [updatePinnedChannel, updateSoonzeChannel]);
 
   useEffect(() => {
     if (search) {
@@ -210,29 +214,30 @@ const UpTabs = () => {
   });
 
   useEffect(() => {
-      // let filterDataNew = data?.map((val) => {
-      //   return { ...val, color: getRandomColor() };
-      // });
+    // let filterDataNew = data?.map((val) => {
+    //   return { ...val, color: getRandomColor() };
+    // });
 
-      const result = data?.map(item=>{
-        const data2 = readCount.find(temp=>item.enc_channelID===temp.enc_ChannelIDCount);
-        if(data2){
-          item.readCount = data2.readCount;
-        }
-        return item;
-      })
+    const result = data?.map((item) => {
+      const data2 = readCount.find(
+        (temp) => item.enc_channelID === temp.enc_ChannelIDCount
+      );
+      if (data2) {
+        item.readCount = data2.readCount;
+      }
+      return item;
+    });
     // setUpdateData(result);
     setData(data);
-  }, [data,readCount]);
-
+  }, [data, readCount]);
 
   useEffect(() => {
-  const totalReadCount = data.reduce((total, item) => total + item.readCount, 0);
-  setTotalCount(totalReadCount)
-  console.log(totalReadCount,"totalReadCount")
-  // localStorage.setItem("totalReadCount",totalCount)
-}, [totalCount,data])
-
+    const totalReadCount = data.reduce(
+      (total, item) => total + item.readCount,
+      0
+    );
+    setTotalCount(totalReadCount);
+  }, [totalCount, data]);
 
   return (
     <>
@@ -284,7 +289,7 @@ const UpTabs = () => {
               />
             </div>
           </TabPanel>
-          <TabPanel>  
+          <TabPanel>
             <div className={UpTabsStyle.searchWrapper}>
               <span>
                 <SearchSVG />

@@ -21,7 +21,7 @@ const Tile = ({
   LastPinnedGroups,
   LastSnoozeGroups,
   setData,
-  readCount
+  readCount,
 }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
@@ -30,11 +30,10 @@ const Tile = ({
   const [showChat, setShowList] = useState(false);
   const [listingChats, setListingChats] = useState([]);
   const [allChannelItem, setAllChannelItem] = useState();
-  const [counting,setCounting] = useState("")
+  const [counting, setCounting] = useState("");
 
   let tempObj;
   let snoozeObj;
-
 
   const channelDropdown = useCallback(async (value, item) => {
     if (value?.key === "PIN Channel") {
@@ -42,14 +41,20 @@ const Tile = ({
       // tempObj.isPinned = true;
       try {
         const firestore = firebase.firestore();
-        const collectionRef = firestore.collection("ChannelUserMapping").doc(item?.enc_channelID).collection("user").limit(10).get().then((querySnapshot )=>{
-          querySnapshot.forEach((doc) => {
-            const user = doc.data();
-            user.isPinned = true;
-            doc.ref.set(user)
+        const collectionRef = firestore
+          .collection("ChannelUserMapping")
+          .doc(item?.enc_channelID)
+          .collection("user")
+          .limit(10)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              const user = doc.data();
+              user.isPinned = true;
+              doc.ref.set(user);
+            });
           });
-        })
-         
+
         // await querySnapshot.set(tempObj);
         // console.log(snapshot,"snapshot");
 
@@ -128,18 +133,16 @@ const Tile = ({
     return colors[randomIndex];
   };
 
-  
   useEffect(() => {
     // const filterData = data?.filter((item) => {
-      //   return item?.isPinned === false;
-      // });
-      let filterDataNew = data?.map((val) => {
-        return val
-      });
+    //   return item?.isPinned === false;
+    // });
+    let filterDataNew = data?.map((val) => {
+      return val;
+    });
 
-      setUpdateData(filterDataNew);
+    setUpdateData(filterDataNew);
   }, [data]);
-
 
   updateData?.sort(
     (a, b) =>
@@ -162,6 +165,34 @@ const Tile = ({
             const messagesData = snapshot.docs.map((doc) => doc.data());
             setListingChats(messagesData);
           });
+
+        const userChats = firestore
+          .collectionGroup("user_chats")
+          .where("userEmpID", "==", "UP3")
+          .where("enc_channelID", "==", item?.enc_channelID);
+
+        const tempUserchats = await userChats.get();
+
+        const dataArray = tempUserchats?.docs?.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        for (let i = 0; i < dataArray.length; i++) {
+          let tempObj = dataArray[i];
+          tempObj.isRead = true;
+
+          const querySnapshot = await firestore
+            .collectionGroup("user_chats")
+            .where("userEmpID", "==", "UP3")
+            .where("enc_channelID", "==", item?.enc_channelID)
+            .limit(10)
+            .get();
+          querySnapshot.docs.forEach((snapshot) => {
+            snapshot.ref.update(tempObj);
+          });
+        }
+
         return () => {
           unsubscribe();
         };
@@ -208,7 +239,7 @@ const Tile = ({
   };
 
   // useEffect(() => {
- 
+
   //   try {
   //     const firestore = firebase.firestore();
   //     const unsubscribe = firestore
@@ -222,36 +253,34 @@ const Tile = ({
   //       //     console.log(user,"USER12345");
   //       //   });
   //       });
-     
+
   //   } catch (error) {
   //     console.error(error,"errororo");
   //   }
   // }, []);
 
+  // const tempID = async() =>{
 
-// const tempID = async() =>{
+  //   const firestore = firebase.firestore();
+  //   // const readOrUnread = firestore.collection("user_chats").where("isRead","==",false).where("enc_channelID","==","0RX4qTqAQRGnZEeZF83p").where("userEmpID","==","ChatUser_Himani").get();
+  //   const readOrUnread = firestore.collectionGroup("user_chats")
+  //   const query =  readOrUnread.where("isRead","==",false).where("enc_channelID","==","dJUuo4xXKcQYc3hFcTET").where("userEmpID","==","up1322")
+  //   const snapshot = await query.get();
+  //   console.log(snapshot?.docs?.length,"snapshot");
+  // }
 
-//   const firestore = firebase.firestore();
-//   // const readOrUnread = firestore.collection("user_chats").where("isRead","==",false).where("enc_channelID","==","0RX4qTqAQRGnZEeZF83p").where("userEmpID","==","ChatUser_Himani").get(); 
-//   const readOrUnread = firestore.collectionGroup("user_chats")
-//   const query =  readOrUnread.where("isRead","==",false).where("enc_channelID","==","dJUuo4xXKcQYc3hFcTET").where("userEmpID","==","up1322")
-//   const snapshot = await query.get();
-//   console.log(snapshot?.docs?.length,"snapshot");
-// }
-
-//   useEffect(()=>{
-//     tempID()
-//   },[])
-// const count = async (data) =>{
-//   console.log(data,"data")
-//   const firestore = firebase.firestore();
-//   const readOrUnread = firestore.collectionGroup("user_chats")
-//       const query =  readOrUnread.where("isRead","==",false).where("enc_channelID","==",data).where("userEmpID","==","up1322")
-//       const snapshot1 = await query.get();
-//       console.log(snapshot1,"snapshot1?.docs?.length")
-//   return 2
-// }
-
+  //   useEffect(()=>{
+  //     tempID()
+  //   },[])
+  // const count = async (data) =>{
+  //   console.log(data,"data")
+  //   const firestore = firebase.firestore();
+  //   const readOrUnread = firestore.collectionGroup("user_chats")
+  //       const query =  readOrUnread.where("isRead","==",false).where("enc_channelID","==",data).where("userEmpID","==","up1322")
+  //       const snapshot1 = await query.get();
+  //       console.log(snapshot1,"snapshot1?.docs?.length")
+  //   return 2
+  // }
 
   return (
     <>
@@ -283,16 +312,15 @@ const Tile = ({
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                {item?.readCount!==0&&(
-
-                <div className={TileStyle.unreadNum}>{item?.readCount}</div>
+                {item?.readCount !== 0 && (
+                  <div className={TileStyle.unreadNum}>{item?.readCount}</div>
                 )}
                 <Dropdown
                   className={TileStyle.dotMenuMain}
                   menu={{
                     items: items,
                     onClick: (value) => {
-                      channelDropdown(value, item); 
+                      channelDropdown(value, item);
                     },
                   }}
                   trigger={["click"]}
