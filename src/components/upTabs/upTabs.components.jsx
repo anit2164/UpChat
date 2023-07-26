@@ -132,7 +132,7 @@ const UpTabs = () => {
     const query = readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "UP1322");
+      .where("userEmpID", "==", "ChatUser_Anit");
     const snapshot1 = await query.limit(5).get();
     countArr.enc_ChannelIDCount = data;
     countArr.readCount = snapshot1?.docs?.length;
@@ -147,7 +147,7 @@ const UpTabs = () => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "UP1322")
+        .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", false)
         .limit(10)
         .get()
@@ -176,7 +176,7 @@ const UpTabs = () => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "UP1322")
+        .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", true)
         .limit(10)
         .get()

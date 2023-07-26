@@ -140,11 +140,11 @@ const Tile = ({
     // const filterData = data?.filter((item) => {
     //   return item?.isPinned === false;
     // });
-    let filterDataNew = data?.map((val) => {
-      return val;
-    });
-
-    setUpdateData(filterDataNew);
+    const color = "color";
+    for (let i = 0; i < data.length; i++) {
+      data[i][color] = getRandomColor();
+    }
+    setUpdateData(data);
   }, [data]);
 
   updateData?.sort(
@@ -171,7 +171,7 @@ const Tile = ({
 
         const userChats = firestore
           .collectionGroup("user_chats")
-          .where("userEmpID", "==", "UP1322")
+          .where("userEmpID", "==", "ChatUser_Anit")
           .where("enc_channelID", "==", item?.enc_channelID);
 
         const tempUserchats = await userChats.get();
@@ -187,7 +187,7 @@ const Tile = ({
 
           const querySnapshot = await firestore
             .collectionGroup("user_chats")
-            .where("userEmpID", "==", "UP1322")
+            .where("userEmpID", "==", "ChatUser_Anit")
             .where("enc_channelID", "==", item?.enc_channelID)
             .limit(10)
             .get();
