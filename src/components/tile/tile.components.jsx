@@ -171,7 +171,7 @@ const Tile = ({
 
         const userChats = firestore
           .collectionGroup("user_chats")
-          .where("userEmpID", "==", "UP3")
+          .where("userEmpID", "==", "UP1322")
           .where("enc_channelID", "==", item?.enc_channelID);
 
         const tempUserchats = await userChats.get();
@@ -187,7 +187,7 @@ const Tile = ({
 
           const querySnapshot = await firestore
             .collectionGroup("user_chats")
-            .where("userEmpID", "==", "UP3")
+            .where("userEmpID", "==", "UP1322")
             .where("enc_channelID", "==", item?.enc_channelID)
             .limit(10)
             .get();

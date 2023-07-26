@@ -132,7 +132,7 @@ const UpTabs = () => {
     const query = readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "UP3");
+      .where("userEmpID", "==", "UP1322");
     const snapshot1 = await query.limit(5).get();
     countArr.enc_ChannelIDCount = data;
     countArr.readCount = snapshot1?.docs?.length;
@@ -147,7 +147,7 @@ const UpTabs = () => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "UP3")
+        .where("userEmpId", "==", "UP1322")
         .where("isPinned", "==", false)
         .limit(10)
         .get()
@@ -168,7 +168,7 @@ const UpTabs = () => {
     } catch (error) {
       console.error(error, "errororo");
     }
-  }, [updatePinnedChannel, updateSoonzeChannel,setData,data]);
+  }, [updatePinnedChannel, updateSoonzeChannel]);
 
   useEffect(() => {
     try {
@@ -176,7 +176,7 @@ const UpTabs = () => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "UP3")
+        .where("userEmpId", "==", "UP1322")
         .where("isPinned", "==", true)
         .limit(10)
         .get()
@@ -192,7 +192,7 @@ const UpTabs = () => {
     } catch (error) {
       console.error(error, "errororo");
     }
-  }, [updatePinnedChannel, updateSoonzeChannel,setDataFalse,dataFalse]);
+  }, [updatePinnedChannel, updateSoonzeChannel]);
 
   useEffect(() => {
     if (search) {

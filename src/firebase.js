@@ -1,12 +1,11 @@
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDc_qC-hqXokHmpMZjtqw9NYHNh6VU9tDM",
-  authDomain: "testingproject1302.firebaseapp.com",
-  databaseURL: "https://testingproject1302-default-rtdb.firebaseio.com",
-  projectId: "testingproject1302",
-  storageBucket: "testingproject1302.appspot.com",
-  messagingSenderId: "1082221033937",
-  appId: "1:1082221033937:web:d48ccb53c56e35150588f0",
-  measurementId: "G-GEQ4RL74JZ"
+  apiKey: "AIzaSyCDagFarUxg3opWZULYcOWaYPD7cutmKS8",
+  authDomain: "mytestproject-9aa5c.firebaseapp.com",
+  projectId: "mytestproject-9aa5c",
+  storageBucket: "mytestproject-9aa5c.appspot.com",
+  messagingSenderId: "291079682716",
+  appId: "1:291079682716:web:c53dae1eabc7b01a1d0b59",
+  measurementId: "G-NJE9R1ZLTG"
 };
 export default firebaseConfig;
