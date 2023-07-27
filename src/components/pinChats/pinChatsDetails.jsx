@@ -22,6 +22,24 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
   const [showPinnedChatsList, setShowPinnedChatsList] = useState(false);
   const [listingChats, setListingChats] = useState([]);
   const [pinnedChatsItem, setPinnedChatsItem] = useState();
+  const [tempArrFalse, setTempArrFalse] = useState([]);
+  const [readCountTrue, setReadCountTrue] = useState([]);
+
+  let tempCountData = [];
+  const tempInfoData = async (data) => {
+    let countArr = {};
+    const firestore = firebase.firestore();
+    const readOrUnread = firestore.collectionGroup("user_chats");
+    const query = readOrUnread
+      .where("isRead", "==", true)
+      .where("enc_channelID", "==", data)
+      .where("userEmpID", "==", "ChatUser_Anit");
+    const snapshot1 = await query.limit(10).get();
+    countArr.enc_ChannelIDCount = data;
+    countArr.readCount = snapshot1?.docs?.length;
+    tempCountData.push(countArr);
+    setReadCountTrue(tempCountData);
+  };
 
   const items = [
     {
@@ -41,12 +59,6 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     },
   ];
   useEffect(() => {
-    // const filterData = dataFalse?.filter((item) => {
-    //   return item?.isPinned === true;
-    // });
-    // let filterDataNew = dataFalse?.map((val) => {
-    //   return { ...val, color: getRandomColor() };
-    // });
     const color = "color";
     for (let i = 0; i < dataFalse.length; i++) {
       dataFalse[i][color] = getRandomColor();
@@ -56,28 +68,16 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
 
   updateData?.sort(
     (a, b) =>
-      // moment(new Date(b?.lastMessageTime).toLocaleTimeString(), "hh:mm") -
-      // moment(new Date(a?.lastMessageTime).toLocaleTimeString(), "hh:mm")
       b?.lastMessageTime - a?.lastMessageTime
   );
 
-  let tempObj;
+  // let tempObj;
 
   const channelDropdown = useCallback(async (value, item) => {
-    tempObj = item;
-    tempObj.isPinned = false;
+    // tempObj = item;
+    // tempObj.isPinned = false;
     if (value?.key === "Unpin Channel") {
       try {
-        // const firestore = firebase.firestore();
-        // const collectionRef = firestore.collection("channels");
-        // const snapshot = collectionRef.doc(tempObj.id);
-
-        // await snapshot.set(tempObj);
-
-        // const dataArray = snapshot?.docs?.map((doc) => ({
-        //   id: doc.id,
-        //   ...doc.data(),
-        // }));
         const firestore = firebase.firestore();
         const collectionRef = firestore.collection("ChannelUserMapping").doc(item?.enc_channelID).collection("user").limit(10).get().then((querySnapshot )=>{
           querySnapshot.forEach((doc) => {
@@ -87,8 +87,58 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
           });
         })
 
-        // setDataNew(dataArray);
-        // setTempArr(dataArray);
+        try {
+          const firestore = firebase.firestore();
+          let tempArr = [];
+          const unsubscribe = firestore
+            .collectionGroup(`user`)
+            .where("userEmpId", "==", "ChatUser_Anit")
+            .where("isPinned", "==", true)
+            .limit(10)
+            .get()
+            .then((snapshot) => {
+              snapshot.forEach((doc) => {
+                const user = doc.data();
+                tempArr.push(user?.channelID.toString());
+              });
+              for (let i = 0; i < tempArr.length; i++) {
+                tempInfoData(tempArr[i]);
+              }
+              const collectionRef = firestore.collection("channels");
+        const queryPromises = [];
+    
+        while (tempArr?.length > 0) {
+          const batch = tempArr.splice(0, 30);
+          const query = collectionRef
+            .where("enc_channelID", "in", batch)
+            .limit(10)
+            .get();
+          queryPromises.push(query);
+        }
+    
+        Promise.all(queryPromises)
+          .then((querySnapshots) => {
+            const mergedResults = [];
+            querySnapshots.forEach((querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                mergedResults.push(doc.data());
+              });
+            });
+            console.log(mergedResults,"mergedResultsmergedResults");
+            setUpdateData(mergedResults);
+            setTempArrFalse(mergedResults);
+            // setPinnedChannel(false);
+            // setSoonzeChannel(false);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+              // setPinnedChannel(false);
+              // setSoonzeChannel(false);
+            });
+        } catch (error) {
+          console.error(error, "errororo");
+        }
         LastPinnedGroups();
       } catch (error) {
         console.error(error);
@@ -125,41 +175,23 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     }
   };
 
-  // const updateChannel = async (date) => {
-  //   pinnedChatsItem.lastMessageTime = date;
+  // const updateChannelDateTime = async (enc_channelID) => {
+  //   pinnedChatsItem.lastMessageTime = new Date();
   //   try {
   //     const firestore = firebase.firestore();
   //     const collectionRef = firestore.collection("channels");
-  //     const snapshot = collectionRef.doc(pinnedChatsItem.enc_channelID);
+  //     const snapshot = collectionRef.doc(enc_channelID);
   //     await snapshot.set(pinnedChatsItem);
-  //     let _data = await collectionRef.get();
+  //     let _data = await collectionRef.limit(10).get();
   //     const dataArray = _data?.docs?.map((doc) => ({
   //       id: doc.id,
   //       ...doc.data(),
   //     }));
-  //     // setDataFalse(dataArray);
+  //     setDataFalse(dataArray);
   //   } catch (error) {
   //     console.error(error);
   //   }
   // };
-
-  const updateChannelDateTime = async (enc_channelID) => {
-    pinnedChatsItem.lastMessageTime = new Date();
-    try {
-      const firestore = firebase.firestore();
-      const collectionRef = firestore.collection("channels");
-      const snapshot = collectionRef.doc(enc_channelID);
-      await snapshot.set(pinnedChatsItem);
-      let _data = await collectionRef.limit(10).get();
-      const dataArray = _data?.docs?.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setDataFalse(dataArray);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const getRandomColor = () => {
     const colors = [
@@ -246,7 +278,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
           activeUser={activeUser}
           setPinnedChatsItem={setPinnedChatsItem}
           setActiveUser={setActiveUser}
-          updateChannelDateTime={updateChannelDateTime}
+          // updateChannelDateTime={updateChannelDateTime}
         />
       )}
     </>
