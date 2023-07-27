@@ -44,10 +44,14 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     // const filterData = dataFalse?.filter((item) => {
     //   return item?.isPinned === true;
     // });
-    let filterDataNew = dataFalse?.map((val) => {
-      return { ...val, color: getRandomColor() };
-    });
-    setUpdateData(filterDataNew);
+    // let filterDataNew = dataFalse?.map((val) => {
+    //   return { ...val, color: getRandomColor() };
+    // });
+    const color = "color";
+    for (let i = 0; i < dataFalse.length; i++) {
+      dataFalse[i][color] = getRandomColor();
+    }
+    setUpdateData(dataFalse);
   }, [dataFalse]);
 
   updateData?.sort(
@@ -204,7 +208,9 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                {/* <div className={PinChatDetailsStyle.unreadNum}>5</div> */}
+                {item?.readCount !== 0  && (
+                <div className={PinChatDetailsStyle.unreadNum}>{item?.readCount}</div>  
+                )}
                 <Dropdown
                   className={PinChatDetailsStyle.dotMenuMain}
                   menu={{

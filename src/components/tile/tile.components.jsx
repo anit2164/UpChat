@@ -36,6 +36,7 @@ const Tile = ({
   let tempObj;
   let snoozeObj;
 
+  console.log(data,"data");
   
 
   const channelDropdown = useCallback(async (value, item) => {
@@ -291,7 +292,7 @@ const Tile = ({
       <div className={TileStyle.chatWrapper}>
         {updateData?.map((item) => {
           return (
-            <div className={`${TileStyle.chatItem} ${TileStyle.unreadMsg}`}>
+            <div className={`${TileStyle.chatItem} ${item?.readCount!==0 ? TileStyle.unreadMsgTile :"" }`}>
               <div
                 className={TileStyle.dFlex}
                 onClick={() => showChatList(item)}
@@ -316,7 +317,7 @@ const Tile = ({
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                {item?.readCount !== 0 && (
+                {item?.readCount !== 0  && (
                   <div className={TileStyle.unreadNum}>{item?.readCount}</div>
                 )}
                 <Dropdown

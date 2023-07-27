@@ -24,6 +24,7 @@ const UpTabs = () => {
   const [updatePinnedChannel, setPinnedChannel] = useState(false);
   const [updateSoonzeChannel, setSoonzeChannel] = useState(false);
   const [readCount, setReadCount] = useState([]);
+  const [readCountTrue, setReadCountTrue] = useState([]);
   const [totalCount, setTotalCount] = useState("");
 
   const LastPinnedGroups = () => {
@@ -33,6 +34,8 @@ const UpTabs = () => {
   const LastSnoozeGroups = () => {
     setSoonzeChannel(true);
   };
+
+  console.log(data,"datafirebaseFalse");
 
   // useEffect(() => {
   //   // Retrive Data
@@ -156,12 +159,10 @@ const UpTabs = () => {
             const user = doc.data();
             tempArr.push(user?.channelID.toString());
           });
-
           for (let i = 0; i < tempArr.length; i++) {
             tempInfo(tempArr[i]);
           }
           channelIdData(tempArr);
-
           setPinnedChannel(false);
           setSoonzeChannel(false);
         });
@@ -169,6 +170,22 @@ const UpTabs = () => {
       console.error(error, "errororo");
     }
   }, [updatePinnedChannel, updateSoonzeChannel]);
+
+  let tempCountData = [];
+  const tempInfoData = async (data) => {
+    let countArr = {};
+    const firestore = firebase.firestore();
+    const readOrUnread = firestore.collectionGroup("user_chats");
+    const query = readOrUnread
+      .where("isRead", "==", true)
+      .where("enc_channelID", "==", data)
+      .where("userEmpID", "==", "ChatUser_Anit");
+    const snapshot1 = await query.limit(10).get();
+    countArr.enc_ChannelIDCount = data;
+    countArr.readCount = snapshot1?.docs?.length;
+    tempCountData.push(countArr);
+    setReadCountTrue(tempCountData);
+  };
 
   useEffect(() => {
     try {
@@ -185,6 +202,9 @@ const UpTabs = () => {
             const user = doc.data();
             tempArr.push(user?.channelID.toString());
           });
+          for (let i = 0; i < tempArr.length; i++) {
+            tempInfoData(tempArr[i]);
+          }
           channelIdDataFalse(tempArr);
           setPinnedChannel(false);
           setSoonzeChannel(false);
