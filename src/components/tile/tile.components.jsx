@@ -21,7 +21,7 @@ const Tile = ({
   LastPinnedGroups,
   LastSnoozeGroups,
   setData,
-  channelIdData
+  channelIdData,
 }) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
@@ -37,7 +37,6 @@ const Tile = ({
   let tempObj;
   let snoozeObj;
 
-
   let tempCount = [];
   const tempInfo = async (data) => {
     let countArr = {};
@@ -46,14 +45,13 @@ const Tile = ({
     const query = readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Anit");
+      .where("userEmpID", "==", "ChatUser_Himani");
     const snapshot1 = await query.limit(10).get();
     countArr.enc_ChannelIDCount = data;
     countArr.readCount = snapshot1?.docs?.length;
     tempCount.push(countArr);
     setReadCount(tempCount);
   };
-  
 
   const channelDropdown = useCallback(async (value, item) => {
     if (value?.key === "PIN Channel") {
@@ -65,6 +63,7 @@ const Tile = ({
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
+          .where("userEmpId", "==", "ChatUser_Himani")
           .limit(10)
           .get()
           .then((querySnapshot) => {
@@ -90,9 +89,9 @@ const Tile = ({
           // UP0131
           const firestore = firebase.firestore();
           let tempArr = [];
-          const unsubscribe =  firestore
+          const unsubscribe = firestore
             .collectionGroup(`user`)
-            .where("userEmpId", "==", "ChatUser_Anit")
+            .where("userEmpId", "==", "ChatUser_Himani")
             .where("isPinned", "==", false)
             .limit(10)
             .get()
@@ -106,42 +105,41 @@ const Tile = ({
               }
               // channelIdData(tempArr);
               const collectionRef = firestore.collection("channels");
-      const queryPromises = [];
-  
-  
-      while (tempArr?.length > 0) {
-        const batch = tempArr?.splice(0, 30);
-        const query = collectionRef
-          .where("enc_channelID", "in", batch)
-          .limit(10)
-          .get();
-        queryPromises.push(query);
-      }
-  
-      Promise.all(queryPromises)
-        .then((querySnapshots) => {
-          const mergedResults = [];
-          querySnapshots.forEach((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              mergedResults.push(doc.data());
-            });
-          });
-          setUpdateData(mergedResults);
-          setTempArr(mergedResults);
-          console.log(mergedResults,"mergedResultsmergedResults");
-          // setPinnedChannel(false);
-          // setSoonzeChannel(false);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+              const queryPromises = [];
+
+              while (tempArr?.length > 0) {
+                const batch = tempArr?.splice(0, 30);
+                const query = collectionRef
+                  .where("enc_channelID", "in", batch)
+                  .limit(10)
+                  .get();
+                queryPromises.push(query);
+              }
+
+              Promise.all(queryPromises)
+                .then((querySnapshots) => {
+                  const mergedResults = [];
+                  querySnapshots.forEach((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                      mergedResults.push(doc.data());
+                    });
+                  });
+                  setUpdateData(mergedResults);
+                  setTempArr(mergedResults);
+                  console.log(mergedResults, "mergedResultsmergedResults");
+                  // setPinnedChannel(false);
+                  // setSoonzeChannel(false);
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
               // setPinnedChannel(false);
               // setSoonzeChannel(false);
             });
         } catch (error) {
           console.error(error, "errororo");
         }
-        
+
         LastPinnedGroups();
       } catch (error) {
         console.error(error);
@@ -218,10 +216,7 @@ const Tile = ({
     setUpdateData(data);
   }, [data]);
 
-  updateData?.sort(
-    (a, b) =>
-      b?.lastMessageTime - a?.lastMessageTime
-  );
+  updateData?.sort((a, b) => b?.lastMessageTime - a?.lastMessageTime);
 
   const showChatList = async (item) => {
     if (item?.enc_channelID !== allChannelItem?.enc_channelID) {
@@ -240,7 +235,7 @@ const Tile = ({
 
         const userChats = firestore
           .collectionGroup("user_chats")
-          .where("userEmpID", "==", "ChatUser_Anit")
+          .where("userEmpID", "==", "ChatUser_Himani")
           .where("enc_channelID", "==", item?.enc_channelID);
 
         const tempUserchats = await userChats.get();
@@ -256,7 +251,7 @@ const Tile = ({
 
           const querySnapshot = await firestore
             .collectionGroup("user_chats")
-            .where("userEmpID", "==", "ChatUser_Anit")
+            .where("userEmpID", "==", "ChatUser_Himani")
             .where("enc_channelID", "==", item?.enc_channelID)
             .limit(10)
             .get();
@@ -265,7 +260,6 @@ const Tile = ({
           });
         }
 
-        
         return () => {
           unsubscribe();
         };
@@ -275,33 +269,34 @@ const Tile = ({
     }
   };
 
-
-  // const updateChannelDateTime = async (enc_channelID) => {
-  //   allChannelItem.lastMessageTime = new Date();
-  //   try {
-  //     const firestore = firebase.firestore();
-  //     const collectionRef = firestore.collection("channels");
-  //     const snapshot = collectionRef.doc(enc_channelID);
-  //     await snapshot.set(allChannelItem);
-  //     let _data = await collectionRef.limit(10).get();
-  //     const dataArray = _data?.docs?.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //     setData(dataArray);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  
+  const updateChannelDateTime = async (enc_channelID) => {
+    allChannelItem.lastMessageTime = new Date();
+    try {
+      const firestore = firebase.firestore();
+      const collectionRef = firestore.collection("channels");
+      const snapshot = collectionRef.doc(enc_channelID);
+      await snapshot.set(allChannelItem);
+      let _data = await collectionRef.limit(10).get();
+      const dataArray = _data?.docs?.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setData(dataArray);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
       <div className={TileStyle.chatWrapper}>
         {updateData?.map((item) => {
           return (
-            <div className={`${TileStyle.chatItem} ${item?.readCount!==0 ? TileStyle.unreadMsgTile :"" }`}>
+            <div
+              className={`${TileStyle.chatItem} ${
+                item?.readCount !== 0 ? TileStyle.unreadMsgTile : ""
+              }`}
+            >
               <div
                 className={TileStyle.dFlex}
                 onClick={() => showChatList(item)}
@@ -326,7 +321,7 @@ const Tile = ({
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                {item?.readCount !== 0  && (
+                {item?.readCount !== 0 && (
                   <div className={TileStyle.unreadNum}>{item?.readCount}</div>
                 )}
                 <Dropdown
@@ -361,7 +356,7 @@ const Tile = ({
           allChannelItem={allChannelItem}
           setAllChannelItem={setAllChannelItem}
           // updateChannel={updateChannel}
-          // updateChannelDateTime={updateChannelDateTime}
+          updateChannelDateTime={updateChannelDateTime}
           setShowList={setShowList}
           activeUser={activeUser}
           setActiveUser={setActiveUser}

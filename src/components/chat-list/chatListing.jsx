@@ -143,7 +143,6 @@ const ChatListing = ({
   const date = new Date();
   const formattedTime = date.toUTCString();
 
-
   const createCollection = async (data) => {
     try {
       const firestore = firebase.firestore();
@@ -195,7 +194,7 @@ const ChatListing = ({
         const snapshot = collectionRef.doc(tempEnc_ID.id);
 
         await snapshot.set(obj);
-        await collectionRef.get()
+        await collectionRef.get();
 
         const dataArray = d?.docs?.map((doc) => ({
           id: doc.id,
@@ -252,7 +251,6 @@ const ChatListing = ({
 
           await snapshot.set(obj);
           await collectionRef.get();
-
 
           // const dataArray = d?.docs?.map((doc) => ({
           //   id: doc.id,
@@ -362,7 +360,7 @@ const ChatListing = ({
   //   if(data && dataKey!==filterData?.slice(-1)[0]?.hrID){
   //     updateChannel(filterData?.slice(-1)[0]?.date);
   //   }
-  
+
   const GFG_Fun1 = (time) => {
     var utcSeconds = time;
     var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
@@ -376,7 +374,7 @@ const ChatListing = ({
         <main className={ChatListingStyles.main}>
           {toggle && (
             <>
-              <Header setToggle={setToggle}/>
+              <Header setToggle={setToggle} />
               <UpTabs />
             </>
           )}
@@ -481,8 +479,7 @@ const ChatListing = ({
                         >
                           <span>{item?.text} | Action By: Harleen Kaur</span>
                           <span>
-                            {GFG_Fun1(item?.date?.seconds)}{" "}
-                            |{" "}
+                            {GFG_Fun1(item?.date?.seconds)} |{" "}
                             {item?.date?.seconds
                               ? new Date(item?.date?.seconds * 1000)
                                   .toLocaleTimeString()
@@ -616,7 +613,7 @@ const ChatListing = ({
               {/* <div
                   className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} `}
                 >
-                  
+
                   <div
                     className={` ${ChatListingStyles.systemGeneratedInner} ${ChatListingStyles.systemGeneratedCollapsed} `}
                   >

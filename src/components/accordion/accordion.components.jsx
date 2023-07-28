@@ -20,9 +20,11 @@ const Accordion = ({
   readCount,
 }) => {
   const [showBody, setShowBody] = useState(true);
+  const [collapseClass, setCollapseClass] = useState(false);
 
   const toggleAccordion = () => {
     setShowBody(!showBody);
+    setCollapseClass(!collapseClass);
   };
 
   return (
@@ -36,7 +38,9 @@ const Accordion = ({
           <div className={AccordionStyle.title}>{label}</div>
         </div>
         <div>
-          <ArrowDownSVG />
+          <ArrowDownSVG
+            className={collapseClass ? AccordionStyle?.accordionCollapsed : ""}
+          />
         </div>
       </div>
       {showBody && (

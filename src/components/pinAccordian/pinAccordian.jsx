@@ -19,9 +19,11 @@ const PinAccordian = ({
   dataFalse,
 }) => {
   const [showBody, setShowBody] = useState(true);
+  const [collapseClass, setCollapseClass] = useState(false);
 
   const toggleAccordion = () => {
     setShowBody(!showBody);
+    setCollapseClass(!collapseClass);
   };
 
   return (
@@ -35,7 +37,11 @@ const PinAccordian = ({
           <div className={PinAccordianStyle.title}>{label}</div>
         </div>
         <div>
-          <ArrowDownSVG />
+          <ArrowDownSVG
+            className={
+              collapseClass ? PinAccordianStyle?.accordionCollapsed : ""
+            }
+          />
         </div>
       </div>
       {showBody && (

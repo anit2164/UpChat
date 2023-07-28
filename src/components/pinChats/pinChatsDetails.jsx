@@ -33,7 +33,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     const query = readOrUnread
       .where("isRead", "==", true)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Anit");
+      .where("userEmpID", "==", "ChatUser_Himani");
     const snapshot1 = await query.limit(10).get();
     countArr.enc_ChannelIDCount = data;
     countArr.readCount = snapshot1?.docs?.length;
@@ -66,10 +66,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     setUpdateData(dataFalse);
   }, [dataFalse]);
 
-  updateData?.sort(
-    (a, b) =>
-      b?.lastMessageTime - a?.lastMessageTime
-  );
+  updateData?.sort((a, b) => b?.lastMessageTime - a?.lastMessageTime);
 
   // let tempObj;
 
@@ -79,20 +76,27 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     if (value?.key === "Unpin Channel") {
       try {
         const firestore = firebase.firestore();
-        const collectionRef = firestore.collection("ChannelUserMapping").doc(item?.enc_channelID).collection("user").limit(10).get().then((querySnapshot )=>{
-          querySnapshot.forEach((doc) => {
-            const user = doc.data();
-            user.isPinned = false;
-            doc.ref.set(user)
+        const collectionRef = firestore
+          .collection("ChannelUserMapping")
+          .doc(item?.enc_channelID)
+          .collection("user")
+          .where("userEmpId", "==", "ChatUser_Himani")
+          .limit(10)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              const user = doc.data();
+              user.isPinned = false;
+              doc.ref.set(user);
+            });
           });
-        })
 
         try {
           const firestore = firebase.firestore();
           let tempArr = [];
           const unsubscribe = firestore
             .collectionGroup(`user`)
-            .where("userEmpId", "==", "ChatUser_Anit")
+            .where("userEmpId", "==", "ChatUser_Himani")
             .where("isPinned", "==", true)
             .limit(10)
             .get()
@@ -105,34 +109,34 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
                 tempInfoData(tempArr[i]);
               }
               const collectionRef = firestore.collection("channels");
-        const queryPromises = [];
-    
-        while (tempArr?.length > 0) {
-          const batch = tempArr.splice(0, 30);
-          const query = collectionRef
-            .where("enc_channelID", "in", batch)
-            .limit(10)
-            .get();
-          queryPromises.push(query);
-        }
-    
-        Promise.all(queryPromises)
-          .then((querySnapshots) => {
-            const mergedResults = [];
-            querySnapshots.forEach((querySnapshot) => {
-              querySnapshot.forEach((doc) => {
-                mergedResults.push(doc.data());
-              });
-            });
-            console.log(mergedResults,"mergedResultsmergedResults");
-            setUpdateData(mergedResults);
-            setTempArrFalse(mergedResults);
-            // setPinnedChannel(false);
-            // setSoonzeChannel(false);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+              const queryPromises = [];
+
+              while (tempArr?.length > 0) {
+                const batch = tempArr.splice(0, 30);
+                const query = collectionRef
+                  .where("enc_channelID", "in", batch)
+                  .limit(10)
+                  .get();
+                queryPromises.push(query);
+              }
+
+              Promise.all(queryPromises)
+                .then((querySnapshots) => {
+                  const mergedResults = [];
+                  querySnapshots.forEach((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                      mergedResults.push(doc.data());
+                    });
+                  });
+                  console.log(mergedResults, "mergedResultsmergedResults");
+                  setUpdateData(mergedResults);
+                  setTempArrFalse(mergedResults);
+                  // setPinnedChannel(false);
+                  // setSoonzeChannel(false);
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
               // setPinnedChannel(false);
               // setSoonzeChannel(false);
             });
@@ -206,8 +210,6 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     return colors[randomIndex];
   };
 
-
-
   return (
     <>
       <div className={PinChatDetailsStyle.chatWrapper}>
@@ -240,8 +242,10 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                {item?.readCount !== 0  && (
-                <div className={PinChatDetailsStyle.unreadNum}>{item?.readCount}</div>  
+                {item?.readCount !== 0 && (
+                  <div className={PinChatDetailsStyle.unreadNum}>
+                    {item?.readCount}
+                  </div>
                 )}
                 <Dropdown
                   className={PinChatDetailsStyle.dotMenuMain}
