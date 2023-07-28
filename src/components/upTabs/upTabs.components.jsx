@@ -46,7 +46,6 @@ const UpTabs = () => {
   //         id: doc.id,
   //         ...doc.data(),
   //       }));
-  //       console.log(dataArray,"dataArray");
   //       setData(dataArray);
   //       setTempArr(dataArray);
   //       setPinnedChannel(false);
@@ -118,7 +117,6 @@ const UpTabs = () => {
               });
               setData(mergedResults);
               setTempArr(mergedResults);
-              console.log(mergedResults, "mergedResults123");
               setPinnedChannel(false);
               setSoonzeChannel(false);
             })
@@ -193,7 +191,6 @@ const UpTabs = () => {
               });
               setDataFalse(mergedResults);
               setTempArrFalse(mergedResults);
-              console.log(mergedResults, "mergedResults123");
               setPinnedChannel(false);
               setSoonzeChannel(false);
             })

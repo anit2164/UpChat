@@ -138,7 +138,6 @@ const ChatListing = ({
   // const [hours, minutes] = time.split(":");
   // const formattedHours = parseInt(hours, 10) % 12 || 12;
   // const formattedTime = `${formattedHours}:${minutes} ${period.toUpperCase()}`;
-  // console.log(formattedTime, "formattedTime");
 
   const date = new Date();
   const formattedTime = date.toUTCString();
@@ -196,10 +195,10 @@ const ChatListing = ({
         await snapshot.set(obj);
         await collectionRef.get();
 
-        const dataArray = d?.docs?.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        // const dataArray = d?.docs?.map((doc) => ({
+        //   id: doc.id,
+        //   ...doc.data(),
+        // }));
         localStorage.setItem("sendername", "Shreyash Zinzuvadia");
         getSenderName = localStorage.getItem("sendername");
         scrollToBottom();
@@ -256,7 +255,6 @@ const ChatListing = ({
           //   id: doc.id,
           //   ...doc.data(),
           // }));
-          // console.log(dataArray,"dataArraydataArray");
           localStorage.setItem("sendername", "Shreyash Zinzuvadia");
           getSenderName = localStorage.getItem("sendername");
           scrollToBottom();
@@ -353,17 +351,9 @@ const ChatListing = ({
     }
   };
 
-  // const data = filterData?.slice(-1)[0]?.isActivity===true
-
-  // const dataKey = localStorage.setItem("keyData",filterData?.slice(-1)[0]?.hrID);
-
-  //   if(data && dataKey!==filterData?.slice(-1)[0]?.hrID){
-  //     updateChannel(filterData?.slice(-1)[0]?.date);
-  //   }
-
   const GFG_Fun1 = (time) => {
     var utcSeconds = time;
-    var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+    var d = new Date(0); 
     const data = new Date(d.setUTCSeconds(utcSeconds));
     return moment(data).format("DD-MM-YYYY");
   };

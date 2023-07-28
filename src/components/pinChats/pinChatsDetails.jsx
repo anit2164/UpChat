@@ -197,6 +197,62 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
   //   }
   // };
 
+  const updateChannelDateTime = (enc_channelID) =>{
+    try {
+     // UP0131
+     const firestore = firebase.firestore();
+     let tempArr = [];
+     const unsubscribe = firestore
+       .collectionGroup(`user`)
+       .where("userEmpId", "==", "ChatUser_Himani")
+       .where("isPinned", "==", true)
+       .limit(10)
+       .get()
+       .then((snapshot) => {
+         snapshot.forEach((doc) => {
+           const user = doc.data();
+           tempArr.push(user?.channelID.toString());
+         });
+         for (let i = 0; i < tempArr.length; i++) {
+          tempInfoData(tempArr[i]);
+         }
+         // channelIdData(tempArr);
+         const collectionRef = firestore.collection("channels");
+         const queryPromises = [];
+         pinnedChatsItem.lastMessageTime = new Date();
+         while (tempArr?.length > 0) {
+           const batch = tempArr?.splice(0, 30);
+           const data = collectionRef.doc(enc_channelID);
+            data.set(pinnedChatsItem)
+           const query = collectionRef
+             .where("enc_channelID", "in", batch)
+             .limit(10)
+             .get();
+           queryPromises.push(query);
+           console.log(query,"queryqueryquery");
+         }
+
+         Promise.all(queryPromises)
+           .then((querySnapshots) => {
+             const mergedResults = [];
+             querySnapshots.forEach((querySnapshot) => {
+               querySnapshot.forEach((doc) => {
+                 mergedResults.push(doc.data());
+               });
+             });
+             setDataFalse(mergedResults);
+             setTempArr(mergedResults);
+             console.log(mergedResults, "mergedResults123");
+           })
+           .catch((error) => {
+             console.error(error);
+           });
+       });
+   } catch (error) {
+     console.error(error, "errororo");
+   }
+ }
+
   const getRandomColor = () => {
     const colors = [
       PinChatDetailsStyle.blueThumb,
@@ -282,7 +338,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
           activeUser={activeUser}
           setPinnedChatsItem={setPinnedChatsItem}
           setActiveUser={setActiveUser}
-          // updateChannelDateTime={updateChannelDateTime}
+          updateChannelDateTime={updateChannelDateTime}
         />
       )}
     </>

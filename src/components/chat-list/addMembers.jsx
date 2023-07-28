@@ -44,7 +44,6 @@ const AddMembers = ({
   
 // });
 // setListData(response?.data?.details)
-// console.log(response,"response")
 //       } catch (error) {
 //         console.error(error);
 //       }
