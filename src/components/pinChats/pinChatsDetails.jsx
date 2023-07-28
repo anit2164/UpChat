@@ -154,8 +154,11 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     }
   }, []);
 
-  const pinnedChatsDetails = (item) => {
+  let resetCount;
+  const pinnedChatsDetails = async (item) => {
     if (item?.enc_channelID !== pinnedChatsItem?.enc_channelID) {
+      resetCount = item;
+      resetCount.readCount = 0;
       setActiveUser(true);
       setPinnedChatsItem(item);
       setShowPinnedChatsList(true);
@@ -169,6 +172,33 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
             setListingChats(messagesData);
           });
 
+        const userChats = firestore
+          .collectionGroup("user_chats")
+          .where("userEmpID", "==", "ChatUser_Jimit")
+          .where("enc_channelID", "==", item?.enc_channelID);
+
+        const tempUserchats = await userChats.get();
+        const dataArray = tempUserchats?.docs?.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        for (let i = 0; i < dataArray.length; i++) {
+          let tempObj = dataArray[i];
+          tempObj.isRead = true;
+
+          const querySnapshot = await firestore
+            .collectionGroup("user_chats")
+            .where("userEmpID", "==", "ChatUser_Jimit")
+            .where("enc_channelID", "==", item?.enc_channelID)
+            .limit(10)
+            .get();
+          querySnapshot.docs.forEach((snapshot) => {
+            snapshot.ref.update(tempObj);
+          });
+          // setUpdateData(resetCount);
+        }
+
         return () => {
           unsubscribe();
         };
@@ -178,27 +208,8 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     }
   };
 
-  // const updateChannelDateTime = async (enc_channelID) => {
-  //   pinnedChatsItem.lastMessageTime = new Date();
-  //   try {
-  //     const firestore = firebase.firestore();
-  //     const collectionRef = firestore.collection("channels");
-  //     const snapshot = collectionRef.doc(enc_channelID);
-  //     await snapshot.set(pinnedChatsItem);
-  //     let _data = await collectionRef.limit(10).get();
-  //     const dataArray = _data?.docs?.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //     setDataFalse(dataArray);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   const updateChannelDateTime = (enc_channelID) => {
     try {
-      // UP0131
       const firestore = firebase.firestore();
       let tempArr = [];
       const unsubscribe = firestore
@@ -228,7 +239,6 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
               .limit(10)
               .get();
             queryPromises.push(query);
-            console.log(query, "queryqueryquery");
           }
 
           Promise.all(queryPromises)
@@ -241,7 +251,6 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
               });
               setDataFalse(mergedResults);
               setTempArr(mergedResults);
-              console.log(mergedResults, "mergedResults123");
             })
             .catch((error) => {
               console.error(error);

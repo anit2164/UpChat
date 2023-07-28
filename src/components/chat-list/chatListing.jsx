@@ -324,7 +324,7 @@ const ChatListing = ({
             return {
               id: doc.id,
               enc_channelID: allChannelItem?.enc_channelID,
-              isRead: false,
+              isRead: "ChatUser_Jimit" === userEmpId ? true : false,
               userEmpID: userEmpId,
               IsBookMark: false,
             };
@@ -353,7 +353,7 @@ const ChatListing = ({
 
   const GFG_Fun1 = (time) => {
     var utcSeconds = time;
-    var d = new Date(0); 
+    var d = new Date(0);
     const data = new Date(d.setUTCSeconds(utcSeconds));
     return moment(data).format("DD-MM-YYYY");
   };

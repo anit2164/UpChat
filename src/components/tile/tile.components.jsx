@@ -35,7 +35,6 @@ const Tile = ({
   const [readCountTrue, setReadCountTrue] = useState([]);
 
   updateData?.sort((a, b) => b?.lastMessageTime - a?.lastMessageTime);
-  console.log(updateData, "updateData");
   let tempObj;
   let snoozeObj;
 
@@ -209,7 +208,6 @@ const Tile = ({
   const showChatList = async (item) => {
     if (item?.enc_channelID !== allChannelItem?.enc_channelID) {
       resetCount = item;
-      console.log("resetCount", resetCount);
       resetCount.readCount = 0;
       setActiveUser(true);
       setAllChannelItem(item);

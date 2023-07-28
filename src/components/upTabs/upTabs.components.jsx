@@ -225,7 +225,6 @@ const UpTabs = () => {
         (temp) => item.enc_channelID === temp.enc_ChannelIDCount
       );
       if (data2) {
-        console.log(data, "data");
         item.readCount = data2.readCount;
       }
       return item;
@@ -233,6 +232,21 @@ const UpTabs = () => {
     // setUpdateData(result);
     // setData(data);
   }, [data, readCount]);
+
+  useEffect(() => {
+    console.log(readCountTrue, "readCountTrue");
+    const result = dataFalse?.map((item) => {
+      const data2 = readCountTrue.find(
+        (temp) => item.enc_channelID === temp.enc_ChannelIDCount
+      );
+      if (data2) {
+        item.readCount = data2.readCount;
+      }
+      return item;
+    });
+    // setUpdateData(result);
+    // setData(data);
+  }, [dataFalse, readCountTrue]);
 
   useEffect(() => {
     const totalReadCount = data.reduce(
