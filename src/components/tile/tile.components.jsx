@@ -55,8 +55,6 @@ const Tile = ({
 
   const channelDropdown = useCallback(async (value, item) => {
     if (value?.key === "PIN Channel") {
-      // tempObj = item;
-      // tempObj.isPinned = true;
       try {
         const firestore = firebase.firestore();
         const collectionRef = firestore
@@ -74,19 +72,7 @@ const Tile = ({
             });
           });
 
-        // await querySnapshot.set(tempObj);
-        // console.log(snapshot,"snapshot");
-
-        // const dataArray = collectionRef?.docs?.map((doc) => ({
-        //   id: doc.id,
-        //   ...doc.data(),
-        // }));
-
-        // setDataNew(dataArray);
-        // setTempArr(dataArray);
-
         try {
-          // UP0131
           const firestore = firebase.firestore();
           let tempArr = [];
           const unsubscribe = firestore

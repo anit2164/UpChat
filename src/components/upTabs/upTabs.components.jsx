@@ -15,7 +15,6 @@ import SnoozeGroupDetails from "../snoozeList/snoozeGroups";
 firebase.initializeApp(firebaseConfig);
 
 const UpTabs = () => {
-  const [title, setTitle] = useState("Add New Hiring Requests");
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [tempArr, setTempArr] = useState([]);
