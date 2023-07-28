@@ -66,7 +66,7 @@ const UpTabs = () => {
     const query = readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Himani");
+      .where("userEmpID", "==", "ChatUser_Jimit");
     const snapshot1 = await query.limit(5).get();
     countArr.enc_ChannelIDCount = data;
     countArr.readCount = snapshot1?.docs?.length;
@@ -75,14 +75,13 @@ const UpTabs = () => {
   };
 
   useEffect(() => {
-    // const unsubscribe = () =>{
     try {
       // UP0131
       const firestore = firebase.firestore();
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Himani")
+        .where("userEmpId", "==", "ChatUser_Jimit")
         .where("isPinned", "==", false)
         .limit(10)
         .get()
@@ -129,10 +128,6 @@ const UpTabs = () => {
     } catch (error) {
       console.error(error, "errororo");
     }
-    // }
-    // return () =>{
-    //   unsubscribe()
-    // }
   }, [updatePinnedChannel, updateSoonzeChannel]);
 
   let tempCountData = [];
@@ -143,7 +138,7 @@ const UpTabs = () => {
     const query = readOrUnread
       .where("isRead", "==", true)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Himani");
+      .where("userEmpID", "==", "ChatUser_Jimit");
     const snapshot1 = await query.limit(10).get();
     countArr.enc_ChannelIDCount = data;
     countArr.readCount = snapshot1?.docs?.length;
@@ -157,7 +152,7 @@ const UpTabs = () => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Himani")
+        .where("userEmpId", "==", "ChatUser_Jimit")
         .where("isPinned", "==", true)
         .limit(10)
         .get()
@@ -224,20 +219,20 @@ const UpTabs = () => {
     return item?.isSnoozed === true;
   });
 
-  // useEffect(() => {
-
-  //   const result = data?.map((item) => {
-  //     const data2 = readCount.find(
-  //       (temp) => item.enc_channelID === temp.enc_ChannelIDCount
-  //     );
-  //     if (data2) {
-  //       item.readCount = data2.readCount;
-  //     }
-  //     return item;
-  //   });
-  //   // setUpdateData(result);
-  //   setData(data);
-  // }, [data, readCount]);
+  useEffect(() => {
+    const result = data?.map((item) => {
+      const data2 = readCount.find(
+        (temp) => item.enc_channelID === temp.enc_ChannelIDCount
+      );
+      if (data2) {
+        console.log(data, "data");
+        item.readCount = data2.readCount;
+      }
+      return item;
+    });
+    // setUpdateData(result);
+    // setData(data);
+  }, [data, readCount]);
 
   useEffect(() => {
     const totalReadCount = data.reduce(

@@ -34,6 +34,8 @@ const Tile = ({
   const [readCount, setReadCount] = useState([]);
   const [readCountTrue, setReadCountTrue] = useState([]);
 
+  updateData?.sort((a, b) => b?.lastMessageTime - a?.lastMessageTime);
+  console.log(updateData, "updateData");
   let tempObj;
   let snoozeObj;
 
@@ -45,7 +47,7 @@ const Tile = ({
     const query = readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Himani");
+      .where("userEmpID", "==", "ChatUser_Jimit");
     const snapshot1 = await query.limit(10).get();
     countArr.enc_ChannelIDCount = data;
     countArr.readCount = snapshot1?.docs?.length;
@@ -61,7 +63,7 @@ const Tile = ({
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
-          .where("userEmpId", "==", "ChatUser_Himani")
+          .where("userEmpId", "==", "ChatUser_Jimit")
           .limit(10)
           .get()
           .then((querySnapshot) => {
@@ -77,7 +79,7 @@ const Tile = ({
           let tempArr = [];
           const unsubscribe = firestore
             .collectionGroup(`user`)
-            .where("userEmpId", "==", "ChatUser_Himani")
+            .where("userEmpId", "==", "ChatUser_Jimit")
             .where("isPinned", "==", false)
             .limit(10)
             .get()
@@ -202,10 +204,13 @@ const Tile = ({
     setUpdateData(data);
   }, [data]);
 
-  updateData?.sort((a, b) => b?.lastMessageTime - a?.lastMessageTime);
+  let resetCount;
 
   const showChatList = async (item) => {
     if (item?.enc_channelID !== allChannelItem?.enc_channelID) {
+      resetCount = item;
+      console.log("resetCount", resetCount);
+      resetCount.readCount = 0;
       setActiveUser(true);
       setAllChannelItem(item);
       setShowList(true);
@@ -221,7 +226,7 @@ const Tile = ({
 
         const userChats = firestore
           .collectionGroup("user_chats")
-          .where("userEmpID", "==", "ChatUser_Himani")
+          .where("userEmpID", "==", "ChatUser_Jimit")
           .where("enc_channelID", "==", item?.enc_channelID);
 
         const tempUserchats = await userChats.get();
@@ -237,13 +242,14 @@ const Tile = ({
 
           const querySnapshot = await firestore
             .collectionGroup("user_chats")
-            .where("userEmpID", "==", "ChatUser_Himani")
+            .where("userEmpID", "==", "ChatUser_Jimit")
             .where("enc_channelID", "==", item?.enc_channelID)
             .limit(10)
             .get();
           querySnapshot.docs.forEach((snapshot) => {
             snapshot.ref.update(tempObj);
           });
+          // setUpdateData(resetCount);
         }
 
         return () => {
@@ -274,14 +280,14 @@ const Tile = ({
   //   }
   // };
 
-  const updateChannelDateTime = (enc_channelID) =>{
-     try {
+  const updateChannelDateTime = (enc_channelID) => {
+    try {
       // UP0131
       const firestore = firebase.firestore();
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Himani")
+        .where("userEmpId", "==", "ChatUser_Jimit")
         .where("isPinned", "==", false)
         .limit(10)
         .get()
@@ -300,13 +306,13 @@ const Tile = ({
           while (tempArr?.length > 0) {
             const batch = tempArr?.splice(0, 30);
             const data = collectionRef.doc(enc_channelID);
-            data.set(allChannelItem)
+            data.set(allChannelItem);
             const query = collectionRef
               .where("enc_channelID", "in", batch)
               .limit(10)
               .get();
             queryPromises.push(query);
-            console.log(query,"queryqueryquery");
+            console.log(query, "queryqueryquery");
           }
 
           Promise.all(queryPromises)
@@ -319,7 +325,6 @@ const Tile = ({
               });
               setData(mergedResults);
               setTempArr(mergedResults);
-              console.log(mergedResults, "mergedResults123");
             })
             .catch((error) => {
               console.error(error);
@@ -328,12 +333,13 @@ const Tile = ({
     } catch (error) {
       console.error(error, "errororo");
     }
-  }
+  };
 
   return (
     <>
       <div className={TileStyle.chatWrapper}>
         {updateData?.map((item) => {
+          console.log(item, "itemeem");
           return (
             <div
               className={`${TileStyle.chatItem} ${

@@ -33,7 +33,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     const query = readOrUnread
       .where("isRead", "==", true)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Himani");
+      .where("userEmpID", "==", "ChatUser_Jimit");
     const snapshot1 = await query.limit(10).get();
     countArr.enc_ChannelIDCount = data;
     countArr.readCount = snapshot1?.docs?.length;
@@ -80,7 +80,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
-          .where("userEmpId", "==", "ChatUser_Himani")
+          .where("userEmpId", "==", "ChatUser_Jimit")
           .limit(10)
           .get()
           .then((querySnapshot) => {
@@ -96,7 +96,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
           let tempArr = [];
           const unsubscribe = firestore
             .collectionGroup(`user`)
-            .where("userEmpId", "==", "ChatUser_Himani")
+            .where("userEmpId", "==", "ChatUser_Jimit")
             .where("isPinned", "==", true)
             .limit(10)
             .get()
@@ -128,7 +128,6 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
                       mergedResults.push(doc.data());
                     });
                   });
-                  console.log(mergedResults, "mergedResultsmergedResults");
                   setUpdateData(mergedResults);
                   setTempArrFalse(mergedResults);
                   // setPinnedChannel(false);
@@ -197,61 +196,61 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
   //   }
   // };
 
-  const updateChannelDateTime = (enc_channelID) =>{
+  const updateChannelDateTime = (enc_channelID) => {
     try {
-     // UP0131
-     const firestore = firebase.firestore();
-     let tempArr = [];
-     const unsubscribe = firestore
-       .collectionGroup(`user`)
-       .where("userEmpId", "==", "ChatUser_Himani")
-       .where("isPinned", "==", true)
-       .limit(10)
-       .get()
-       .then((snapshot) => {
-         snapshot.forEach((doc) => {
-           const user = doc.data();
-           tempArr.push(user?.channelID.toString());
-         });
-         for (let i = 0; i < tempArr.length; i++) {
-          tempInfoData(tempArr[i]);
-         }
-         // channelIdData(tempArr);
-         const collectionRef = firestore.collection("channels");
-         const queryPromises = [];
-         pinnedChatsItem.lastMessageTime = new Date();
-         while (tempArr?.length > 0) {
-           const batch = tempArr?.splice(0, 30);
-           const data = collectionRef.doc(enc_channelID);
-            data.set(pinnedChatsItem)
-           const query = collectionRef
-             .where("enc_channelID", "in", batch)
-             .limit(10)
-             .get();
-           queryPromises.push(query);
-           console.log(query,"queryqueryquery");
-         }
+      // UP0131
+      const firestore = firebase.firestore();
+      let tempArr = [];
+      const unsubscribe = firestore
+        .collectionGroup(`user`)
+        .where("userEmpId", "==", "ChatUser_Jimit")
+        .where("isPinned", "==", true)
+        .limit(10)
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach((doc) => {
+            const user = doc.data();
+            tempArr.push(user?.channelID.toString());
+          });
+          for (let i = 0; i < tempArr.length; i++) {
+            tempInfoData(tempArr[i]);
+          }
+          // channelIdData(tempArr);
+          const collectionRef = firestore.collection("channels");
+          const queryPromises = [];
+          pinnedChatsItem.lastMessageTime = new Date();
+          while (tempArr?.length > 0) {
+            const batch = tempArr?.splice(0, 30);
+            const data = collectionRef.doc(enc_channelID);
+            data.set(pinnedChatsItem);
+            const query = collectionRef
+              .where("enc_channelID", "in", batch)
+              .limit(10)
+              .get();
+            queryPromises.push(query);
+            console.log(query, "queryqueryquery");
+          }
 
-         Promise.all(queryPromises)
-           .then((querySnapshots) => {
-             const mergedResults = [];
-             querySnapshots.forEach((querySnapshot) => {
-               querySnapshot.forEach((doc) => {
-                 mergedResults.push(doc.data());
-               });
-             });
-             setDataFalse(mergedResults);
-             setTempArr(mergedResults);
-             console.log(mergedResults, "mergedResults123");
-           })
-           .catch((error) => {
-             console.error(error);
-           });
-       });
-   } catch (error) {
-     console.error(error, "errororo");
-   }
- }
+          Promise.all(queryPromises)
+            .then((querySnapshots) => {
+              const mergedResults = [];
+              querySnapshots.forEach((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                  mergedResults.push(doc.data());
+                });
+              });
+              setDataFalse(mergedResults);
+              setTempArr(mergedResults);
+              console.log(mergedResults, "mergedResults123");
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        });
+    } catch (error) {
+      console.error(error, "errororo");
+    }
+  };
 
   const getRandomColor = () => {
     const colors = [

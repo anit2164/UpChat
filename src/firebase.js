@@ -1,11 +1,11 @@
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDPAPbI3q5cGNWJT5Z2tIekNR7I76QSFM8",
-  authDomain: "anitupchatdb2.firebaseapp.com",
-  projectId: "anitupchatdb2",
-  storageBucket: "anitupchatdb2.appspot.com",
-  messagingSenderId: "775002386861",
-  appId: "1:775002386861:web:6cda157a69d13d94ffb124",
-  measurementId: "G-JWW9VWT212"
+  apiKey: "AIzaSyCvyIS6c-CWO7HozKcJyITgiROn4lC8F7g",
+  authDomain: "upchatanitdb.firebaseapp.com",
+  projectId: "upchatanitdb",
+  storageBucket: "upchatanitdb.appspot.com",
+  messagingSenderId: "662591011312",
+  appId: "1:662591011312:web:74d28c2234cef3ea7bc535",
+  measurementId: "G-JLBSP6WMDC"
 };
 export default firebaseConfig;
