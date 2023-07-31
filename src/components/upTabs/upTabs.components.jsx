@@ -63,15 +63,15 @@ const UpTabs = () => {
     let countArr = {};
     const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
-    const query = readOrUnread
+    readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Jimit");
-    const snapshot1 = await query.limit(5).get();
-    countArr.enc_ChannelIDCount = data;
-    countArr.readCount = snapshot1?.docs?.length;
-    tempCount.push(countArr);
-    setReadCount(tempCount);
+      .where("userEmpID", "==", "ChatUser_Anit").limit(10).onSnapshot((snapshot)=>{
+        countArr.enc_ChannelIDCount = data;
+        countArr.readCount = snapshot?.docs?.length;
+        tempCount.push(countArr);
+        setReadCount(tempCount);
+      });
   };
 
   useEffect(() => {
@@ -81,11 +81,10 @@ const UpTabs = () => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Jimit")
+        .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", false)
         .limit(10)
-        .get()
-        .then((snapshot) => {
+        .onSnapshot((snapshot) => {
           snapshot.forEach((doc) => {
             const user = doc.data();
             tempArr.push(user?.channelID.toString());
@@ -95,36 +94,51 @@ const UpTabs = () => {
           }
           // channelIdData(tempArr);
           const collectionRef = firestore.collection("channels");
-          const queryPromises = [];
+          // const queryPromises = [];
 
           while (tempArr?.length > 0) {
             const batch = tempArr?.splice(0, 30);
             const query = collectionRef
               .where("enc_channelID", "in", batch)
               .limit(10)
-              .get();
-            queryPromises.push(query);
-          }
-
-          Promise.all(queryPromises)
-            .then((querySnapshots) => {
+              // .get();
+            // queryPromises.push(query);
+           query.onSnapshot((querySnapshot) => {
               const mergedResults = [];
-              querySnapshots.forEach((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                  mergedResults.push(doc.data());
-                });
+              querySnapshot.forEach((doc) => {
+                mergedResults.push(doc.data());
               });
               setData(mergedResults);
               setTempArr(mergedResults);
               setPinnedChannel(false);
               setSoonzeChannel(false);
-            })
-            .catch((error) => {
-              console.error(error);
             });
-          setPinnedChannel(false);
-          setSoonzeChannel(false);
+            // queryPromises.push(unsubscribe)
+          }
+
+          // Promise.all(queryPromises)
+          //   .then((querySnapshots) => {
+          //     const mergedResults = [];
+          //     querySnapshots.forEach((querySnapshot) => {
+          //       querySnapshot.forEach((doc) => {
+          //         mergedResults.push(doc.data());
+          //       });
+          //     });
+          //   console.log(mergedResults,"mergedResultsmergedResults");
+          //     setData(mergedResults);
+          //     setTempArr(mergedResults);
+          //     setPinnedChannel(false);
+          //     setSoonzeChannel(false);
+          //   })
+          //   .catch((error) => {
+          //     console.error(error);
+          //   });
+          // setPinnedChannel(false);
+          // setSoonzeChannel(false);
         });
+        return () =>{
+          unsubscribe()
+        }
     } catch (error) {
       console.error(error, "errororo");
     }
@@ -135,15 +149,15 @@ const UpTabs = () => {
     let countArr = {};
     const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
-    const query = readOrUnread
+    readOrUnread
       .where("isRead", "==", true)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Jimit");
-    const snapshot1 = await query.limit(10).get();
-    countArr.enc_ChannelIDCount = data;
-    countArr.readCount = snapshot1?.docs?.length;
-    tempCountData.push(countArr);
-    setReadCountTrue(tempCountData);
+      .where("userEmpID", "==", "ChatUser_Anit").limit(10).onSnapshot((snapshot)=>{
+      countArr.enc_ChannelIDCount = data;
+      countArr.readCount = snapshot?.docs?.length;
+      tempCountData.push(countArr);
+      setReadCountTrue(tempCountData);
+    });
   };
 
   useEffect(() => {
@@ -152,11 +166,10 @@ const UpTabs = () => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Jimit")
+        .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", true)
         .limit(10)
-        .get()
-        .then((snapshot) => {
+        .onSnapshot((snapshot) => {
           snapshot.forEach((doc) => {
             const user = doc.data();
             tempArr.push(user?.channelID.toString());
@@ -165,35 +178,45 @@ const UpTabs = () => {
             tempInfoData(tempArr[i]);
           }
           const collectionRef = firestore.collection("channels");
-          const queryPromises = [];
+          // const queryPromises = [];
 
           while (tempArr?.length > 0) {
             const batch = tempArr.splice(0, 30);
             const query = collectionRef
               .where("enc_channelID", "in", batch)
               .limit(10)
-              .get();
-            queryPromises.push(query);
-          }
-
-          Promise.all(queryPromises)
-            .then((querySnapshots) => {
+              // .get();
+            // queryPromises.push(query);
+             query.onSnapshot((querySnapshot) => {
               const mergedResults = [];
-              querySnapshots.forEach((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                  mergedResults.push(doc.data());
-                });
+              querySnapshot.forEach((doc) => {
+                mergedResults.push(doc.data());
               });
-              setDataFalse(mergedResults);
+             setDataFalse(mergedResults);
               setTempArrFalse(mergedResults);
               setPinnedChannel(false);
               setSoonzeChannel(false);
-            })
-            .catch((error) => {
-              console.error(error);
             });
-          setPinnedChannel(false);
-          setSoonzeChannel(false);
+          }
+
+          // Promise.all(queryPromises)
+          //   .then((querySnapshots) => {
+          //     const mergedResults = [];
+          //     querySnapshots.forEach((querySnapshot) => {
+          //       querySnapshot.forEach((doc) => {
+          //         mergedResults.push(doc.data());
+          //       });
+          //     });
+          //     setDataFalse(mergedResults);
+          //     setTempArrFalse(mergedResults);
+          //     setPinnedChannel(false);
+          //     setSoonzeChannel(false);
+          //   })
+          //   .catch((error) => {
+          //     console.error(error);
+          //   });
+          // setPinnedChannel(false);
+          // setSoonzeChannel(false);
         });
     } catch (error) {
       console.error(error, "errororo");

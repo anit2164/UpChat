@@ -324,7 +324,7 @@ const ChatListing = ({
             return {
               id: doc.id,
               enc_channelID: allChannelItem?.enc_channelID,
-              isRead: "ChatUser_Jimit" === userEmpId ? true : false,
+              isRead: "ChatUser_Anit" === userEmpId ? true : false,
               userEmpID: userEmpId,
               IsBookMark: false,
             };
