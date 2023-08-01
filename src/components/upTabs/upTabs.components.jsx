@@ -95,7 +95,6 @@ const UpTabs = () => {
           // channelIdData(tempArr);
           const collectionRef = firestore.collection("channels");
           // const queryPromises = [];
-
           while (tempArr?.length > 0) {
             const batch = tempArr?.splice(0, 30);
             const query = collectionRef
@@ -108,33 +107,16 @@ const UpTabs = () => {
               querySnapshot.forEach((doc) => {
                 mergedResults.push(doc.data());
               });
+              // mergedResults.map((item)=>{
+
+              //   return item.enc_channelID.includes(dataFalse?.[0]?.enc_channelID) && setDataFalse([])
+              // })
               setData(mergedResults);
               setTempArr(mergedResults);
               setPinnedChannel(false);
               setSoonzeChannel(false);
             });
-            // queryPromises.push(unsubscribe)
           }
-
-          // Promise.all(queryPromises)
-          //   .then((querySnapshots) => {
-          //     const mergedResults = [];
-          //     querySnapshots.forEach((querySnapshot) => {
-          //       querySnapshot.forEach((doc) => {
-          //         mergedResults.push(doc.data());
-          //       });
-          //     });
-          //   console.log(mergedResults,"mergedResultsmergedResults");
-          //     setData(mergedResults);
-          //     setTempArr(mergedResults);
-          //     setPinnedChannel(false);
-          //     setSoonzeChannel(false);
-          //   })
-          //   .catch((error) => {
-          //     console.error(error);
-          //   });
-          // setPinnedChannel(false);
-          // setSoonzeChannel(false);
         });
         return () =>{
           unsubscribe()
@@ -161,66 +143,53 @@ const UpTabs = () => {
   };
 
   useEffect(() => {
-    try {
-      const firestore = firebase.firestore();
-      let tempArr = [];
-      const unsubscribe = firestore
-        .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Anit")
-        .where("isPinned", "==", true)
-        .limit(10)
-        .onSnapshot((snapshot) => {
-          snapshot.forEach((doc) => {
-            const user = doc.data();
-            tempArr.push(user?.channelID.toString());
-          });
-          for (let i = 0; i < tempArr.length; i++) {
-            tempInfoData(tempArr[i]);
-          }
-          const collectionRef = firestore.collection("channels");
-          // const queryPromises = [];
+    const firestore = firebase.firestore();
+    let tempArr = [];
 
-          while (tempArr?.length > 0) {
-            const batch = tempArr.splice(0, 30);
-            const query = collectionRef
-              .where("enc_channelID", "in", batch)
-              .limit(10)
-              // .get();
-            // queryPromises.push(query);
-             query.onSnapshot((querySnapshot) => {
+    // Subscribe to the collection using onSnapshot
+    const unsubscribe = firestore
+      .collectionGroup(`user`)
+      .where("userEmpId", "==", "ChatUser_Anit")
+      .where("isPinned", "==", true)
+      .limit(10)
+      .onSnapshot((snapshot) => {
+        // This callback will be executed whenever there are changes to the query result
+        tempArr = [];
+        snapshot.forEach((doc) => {
+          const user = doc.data();
+          tempArr.push(user?.channelID.toString());
+        });
+
+        // Call tempInfoData with the latest data
+        for (let i = 0; i < tempArr.length; i++) {
+          tempInfoData(tempArr[i]);
+        }
+
+        const collectionRef = firestore.collection("channels");
+        const queryPromises = [];
+
+        // Similar to before, but now we're using onSnapshot for the individual queries
+        while (tempArr?.length > 0) {
+          const batch = tempArr.splice(0, 30);
+          const query = collectionRef
+            .where("enc_channelID", "in", batch)
+            .limit(10)
+            .onSnapshot((querySnapshot) => {
               const mergedResults = [];
               querySnapshot.forEach((doc) => {
                 mergedResults.push(doc.data());
               });
-             setDataFalse(mergedResults);
+              setDataFalse(mergedResults);
               setTempArrFalse(mergedResults);
               setPinnedChannel(false);
               setSoonzeChannel(false);
             });
-          }
+          queryPromises.push(query);
+        }
+      });
 
-          // Promise.all(queryPromises)
-          //   .then((querySnapshots) => {
-          //     const mergedResults = [];
-          //     querySnapshots.forEach((querySnapshot) => {
-          //       querySnapshot.forEach((doc) => {
-          //         mergedResults.push(doc.data());
-          //       });
-          //     });
-          //     setDataFalse(mergedResults);
-          //     setTempArrFalse(mergedResults);
-          //     setPinnedChannel(false);
-          //     setSoonzeChannel(false);
-          //   })
-          //   .catch((error) => {
-          //     console.error(error);
-          //   });
-          // setPinnedChannel(false);
-          // setSoonzeChannel(false);
-        });
-    } catch (error) {
-      console.error(error, "errororo");
-    }
+    // The unsubscribe function returned by onSnapshot will be used to clean up the listener
+    return () => unsubscribe();
   }, [updatePinnedChannel, updateSoonzeChannel]);
 
   useEffect(() => {
@@ -233,8 +202,25 @@ const UpTabs = () => {
         );
       });
       setData(filteredData);
+      // setDataFalse(filteredData);
     } else {
       setData(tempArr);
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (search) {
+      let filteredData = tempArrFalse?.filter((item) => {
+        return (
+          item?.role?.toLowerCase()?.includes(search?.toLowerCase()) ||
+          item?.companyName.toLowerCase().includes(search?.toLowerCase()) ||
+          item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase())
+        );
+      });
+      // setData(filteredData);
+      setDataFalse(filteredData);
+    } else {
+      setDataFalse(tempArrFalse);
     }
   }, [search]);
 
@@ -257,7 +243,6 @@ const UpTabs = () => {
   }, [data, readCount]);
 
   useEffect(() => {
-    console.log(readCountTrue, "readCountTrue");
     const result = dataFalse?.map((item) => {
       const data2 = readCountTrue.find(
         (temp) => item.enc_channelID === temp.enc_ChannelIDCount

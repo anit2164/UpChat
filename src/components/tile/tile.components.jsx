@@ -46,12 +46,12 @@ const Tile = ({
     const query = readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Jimit");
-    const snapshot1 = await query.limit(10).get();
-    countArr.enc_ChannelIDCount = data;
-    countArr.readCount = snapshot1?.docs?.length;
-    tempCount.push(countArr);
-    setReadCount(tempCount);
+      .where("userEmpID", "==", "ChatUser_Anit").onSnapshot((snapshot)=>{
+        countArr.enc_ChannelIDCount = data;
+        countArr.readCount = snapshot?.docs?.length;
+        tempCount.push(countArr);
+        setReadCount(tempCount);
+      })
   };
 
   const channelDropdown = useCallback(async (value, item) => {
@@ -62,72 +62,20 @@ const Tile = ({
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
-          .where("userEmpId", "==", "ChatUser_Jimit")
+          .where("userEmpId", "==", "ChatUser_Anit")
           .limit(10)
-          .get()
-          .then((querySnapshot) => {
+          .onSnapshot((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               const user = doc.data();
               user.isPinned = true;
               doc.ref.set(user);
             });
           });
-
-        try {
-          const firestore = firebase.firestore();
-          let tempArr = [];
-          const unsubscribe = firestore
-            .collectionGroup(`user`)
-            .where("userEmpId", "==", "ChatUser_Jimit")
-            .where("isPinned", "==", false)
-            .limit(10)
-            .get()
-            .then((snapshot) => {
-              snapshot.forEach((doc) => {
-                const user = doc.data();
-                tempArr.push(user?.channelID.toString());
-              });
-              for (let i = 0; i < tempArr.length; i++) {
-                tempInfo(tempArr[i]);
-              }
-              // channelIdData(tempArr);
-              const collectionRef = firestore.collection("channels");
-              const queryPromises = [];
-
-              while (tempArr?.length > 0) {
-                const batch = tempArr?.splice(0, 30);
-                const query = collectionRef
-                  .where("enc_channelID", "in", batch)
-                  .limit(10)
-                  .get();
-                queryPromises.push(query);
-              }
-
-              Promise.all(queryPromises)
-                .then((querySnapshots) => {
-                  const mergedResults = [];
-                  querySnapshots.forEach((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                      mergedResults.push(doc.data());
-                    });
-                  });
-                  setUpdateData(mergedResults);
-                  setTempArr(mergedResults);
-                  console.log(mergedResults, "mergedResultsmergedResults");
-                  // setPinnedChannel(false);
-                  // setSoonzeChannel(false);
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
-              // setPinnedChannel(false);
-              // setSoonzeChannel(false);
-            });
-        } catch (error) {
-          console.error(error, "errororo");
-        }
-
+          listData();
         LastPinnedGroups();
+        return () =>{
+          collectionRef()
+        }
       } catch (error) {
         console.error(error);
       }
@@ -203,6 +151,52 @@ const Tile = ({
     setUpdateData(data);
   }, [data]);
 
+  const listData = () =>{
+    try {
+      const firestore = firebase.firestore();
+      let tempArr = [];
+      const unsubscribe = firestore
+        .collectionGroup(`user`)
+        .where("userEmpId", "==", "ChatUser_Anit")
+        .where("isPinned", "==", false)
+        .limit(10)
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach((doc) => {
+            const user = doc.data();
+            tempArr.push(user?.channelID.toString());
+          });
+          for (let i = 0; i < tempArr.length; i++) {
+            tempInfo(tempArr[i]);
+          }
+          // channelIdData(tempArr);
+          const collectionRef = firestore.collection("channels");
+          const queryPromises = [];
+
+          while (tempArr?.length > 0) {
+            const batch = tempArr?.splice(0, 30);
+           collectionRef
+              .where("enc_channelID", "in", batch)
+              .limit(10).
+              // .get();
+            // queryPromises.push(query);
+           onSnapshot((querySnapshot) => {
+              const mergedResults = [];
+              querySnapshot.forEach((doc) => {
+                mergedResults.push(doc.data());
+              });
+              setUpdateData(mergedResults);
+              setTempArr(mergedResults);
+            });
+            // queryPromises.push(unsubscribe)
+          }
+
+        });
+    } catch (error) {
+      console.error(error, "errororo");
+    }
+  }
+
   let resetCount;
 
   const showChatList = async (item) => {
@@ -224,7 +218,7 @@ const Tile = ({
 
         const userChats = firestore
           .collectionGroup("user_chats")
-          .where("userEmpID", "==", "ChatUser_Jimit")
+          .where("userEmpID", "==", "ChatUser_Anit")
           .where("enc_channelID", "==", item?.enc_channelID);
 
         const tempUserchats = await userChats.get();
@@ -240,7 +234,7 @@ const Tile = ({
 
           const querySnapshot = await firestore
             .collectionGroup("user_chats")
-            .where("userEmpID", "==", "ChatUser_Jimit")
+            .where("userEmpID", "==", "ChatUser_Anit")
             .where("enc_channelID", "==", item?.enc_channelID)
             .limit(10)
             .get();
@@ -271,7 +265,6 @@ const Tile = ({
   //       id: doc.id,
   //       ...doc.data(),
   //     }));
-  //     console.log(dataArray,"dataArray");
   //     setUpdateData(dataArray);
   //   } catch (error) {
   //     console.error(error);
@@ -285,7 +278,7 @@ const Tile = ({
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Jimit")
+        .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", false)
         .limit(10)
         .get()
@@ -310,7 +303,6 @@ const Tile = ({
               .limit(10)
               .get();
             queryPromises.push(query);
-            console.log(query, "queryqueryquery");
           }
 
           Promise.all(queryPromises)
@@ -321,7 +313,7 @@ const Tile = ({
                   mergedResults.push(doc.data());
                 });
               });
-              setData(mergedResults);
+              setUpdateData(mergedResults);
               setTempArr(mergedResults);
             })
             .catch((error) => {
@@ -337,7 +329,6 @@ const Tile = ({
     <>
       <div className={TileStyle.chatWrapper}>
         {updateData?.map((item) => {
-          console.log(item, "itemeem");
           return (
             <div
               className={`${TileStyle.chatItem} ${

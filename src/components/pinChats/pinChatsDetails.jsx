@@ -33,12 +33,12 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     const query = readOrUnread
       .where("isRead", "==", true)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Jimit");
-    const snapshot1 = await query.limit(10).get();
-    countArr.enc_ChannelIDCount = data;
-    countArr.readCount = snapshot1?.docs?.length;
-    tempCountData.push(countArr);
-    setReadCountTrue(tempCountData);
+      .where("userEmpID", "==", "ChatUser_Anit").onSnapshot((snapshot)=>{
+        countArr.enc_ChannelIDCount = data;
+        countArr.readCount = snapshot?.docs?.length;
+        tempCountData.push(countArr);
+        setReadCountTrue(tempCountData);
+      })
   };
 
   const items = [
@@ -80,7 +80,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
-          .where("userEmpId", "==", "ChatUser_Jimit")
+          .where("userEmpId", "==", "ChatUser_Anit")
           .limit(10)
           .get()
           .then((querySnapshot) => {
@@ -90,59 +90,8 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
               doc.ref.set(user);
             });
           });
-
-        try {
-          const firestore = firebase.firestore();
-          let tempArr = [];
-          const unsubscribe = firestore
-            .collectionGroup(`user`)
-            .where("userEmpId", "==", "ChatUser_Jimit")
-            .where("isPinned", "==", true)
-            .limit(10)
-            .get()
-            .then((snapshot) => {
-              snapshot.forEach((doc) => {
-                const user = doc.data();
-                tempArr.push(user?.channelID.toString());
-              });
-              for (let i = 0; i < tempArr.length; i++) {
-                tempInfoData(tempArr[i]);
-              }
-              const collectionRef = firestore.collection("channels");
-              const queryPromises = [];
-
-              while (tempArr?.length > 0) {
-                const batch = tempArr.splice(0, 30);
-                const query = collectionRef
-                  .where("enc_channelID", "in", batch)
-                  .limit(10)
-                  .get();
-                queryPromises.push(query);
-              }
-
-              Promise.all(queryPromises)
-                .then((querySnapshots) => {
-                  const mergedResults = [];
-                  querySnapshots.forEach((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                      mergedResults.push(doc.data());
-                    });
-                  });
-                  setUpdateData(mergedResults);
-                  setTempArrFalse(mergedResults);
-                  // setPinnedChannel(false);
-                  // setSoonzeChannel(false);
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
-              // setPinnedChannel(false);
-              // setSoonzeChannel(false);
-            });
-        } catch (error) {
-          console.error(error, "errororo");
-        }
         LastPinnedGroups();
+        // setUpdateData([])
       } catch (error) {
         console.error(error);
       }
@@ -174,7 +123,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
 
         const userChats = firestore
           .collectionGroup("user_chats")
-          .where("userEmpID", "==", "ChatUser_Jimit")
+          .where("userEmpID", "==", "ChatUser_Anit")
           .where("enc_channelID", "==", item?.enc_channelID);
 
         const tempUserchats = await userChats.get();
@@ -189,7 +138,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
 
           const querySnapshot = await firestore
             .collectionGroup("user_chats")
-            .where("userEmpID", "==", "ChatUser_Jimit")
+            .where("userEmpID", "==", "ChatUser_Anit")
             .where("enc_channelID", "==", item?.enc_channelID)
             .limit(10)
             .get();
@@ -214,7 +163,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Jimit")
+        .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", true)
         .limit(10)
         .get()
@@ -273,6 +222,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   };
+
 
   return (
     <>
