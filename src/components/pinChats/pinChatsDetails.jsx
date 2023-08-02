@@ -26,6 +26,10 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
   const [readCountTrue, setReadCountTrue] = useState([]);
 
   let tempCountData = [];
+  let resetCount;
+  let lastDocument;
+  let pageSize = 10;
+
   const tempInfoData = async (data) => {
     let countArr = {};
     const firestore = firebase.firestore();
@@ -33,12 +37,13 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     const query = readOrUnread
       .where("isRead", "==", true)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Anit").onSnapshot((snapshot)=>{
+      .where("userEmpID", "==", "ChatUser_Anit")
+      .onSnapshot((snapshot) => {
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
         tempCountData.push(countArr);
         setReadCountTrue(tempCountData);
-      })
+      });
   };
 
   const items = [
@@ -81,7 +86,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
           .doc(item?.enc_channelID)
           .collection("user")
           .where("userEmpId", "==", "ChatUser_Anit")
-          .limit(10)
+          .limit(pageSize)
           .get()
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -91,7 +96,6 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
             });
           });
         LastPinnedGroups();
-        // setUpdateData([])
       } catch (error) {
         console.error(error);
       }
@@ -103,7 +107,6 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     }
   }, []);
 
-  let resetCount;
   const pinnedChatsDetails = async (item) => {
     if (item?.enc_channelID !== pinnedChatsItem?.enc_channelID) {
       resetCount = item;
@@ -120,7 +123,10 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
             const messagesData = snapshot.docs.map((doc) => doc.data());
             setListingChats(messagesData);
           });
-
+        // Reduce firebase call
+        if (snapshot.docs.length > 0) {
+          lastDocument = snapshot.docs[snapshot.docs.length - 1];
+        }
         const userChats = firestore
           .collectionGroup("user_chats")
           .where("userEmpID", "==", "ChatUser_Anit")
@@ -140,7 +146,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
             .collectionGroup("user_chats")
             .where("userEmpID", "==", "ChatUser_Anit")
             .where("enc_channelID", "==", item?.enc_channelID)
-            .limit(10)
+            .limit(pageSize)
             .get();
           querySnapshot.docs.forEach((snapshot) => {
             snapshot.ref.update(tempObj);
@@ -165,7 +171,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
         .collectionGroup(`user`)
         .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", true)
-        .limit(10)
+        .limit(pageSize)
         .get()
         .then((snapshot) => {
           snapshot.forEach((doc) => {
@@ -185,7 +191,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
             data.set(pinnedChatsItem);
             const query = collectionRef
               .where("enc_channelID", "in", batch)
-              .limit(10)
+              .limit(pageSize)
               .get();
             queryPromises.push(query);
           }
@@ -223,7 +229,6 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     return colors[randomIndex];
   };
 
-
   return (
     <>
       <div className={PinChatDetailsStyle.chatWrapper}>
@@ -231,11 +236,9 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
           return (
             <div
               className={`${PinChatDetailsStyle.chatItem} ${PinChatDetailsStyle.unreadMsg}`}
+              onClick={() => pinnedChatsDetails(item)}
             >
-              <div
-                className={PinChatDetailsStyle.dFlex}
-                onClick={() => pinnedChatsDetails(item)}
-              >
+              <div className={PinChatDetailsStyle.dFlex}>
                 <div
                   className={` ${PinChatDetailsStyle.chatInitialThumb} ${item?.color} `}
                 >
@@ -243,7 +246,10 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
                 </div>
                 <div className={PinChatDetailsStyle.chatGroupDetails}>
                   <div className={PinChatDetailsStyle.channelName}>
-                    {item?.companyName} | {item?.role}
+                    {item?.companyName} |{" "}
+                    {item.role.length > 27
+                      ? `${item.role.substring(0, 27)}...`
+                      : item.role}
                   </div>
                   <span className={PinChatDetailsStyle.hrStatus}>
                     {item?.hrNumber} | {item?.hrStatus}

@@ -188,9 +188,15 @@ const ChatListing = ({
           `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
         );
 
-        const tempEnc_ID = await collectionRef.add(obj);
+        const batch = firestore.batch();
+
+        // Add the new message to the batch
+        const tempEnc_ID = collectionRef.doc();
         obj.enc_chatID = tempEnc_ID.id;
-        const snapshot = collectionRef.doc(tempEnc_ID.id);
+        batch.set(tempEnc_ID, obj);
+
+        // Commit the batch write
+        await batch.commit();
 
         await snapshot.set(obj);
         await collectionRef.get();
@@ -244,9 +250,15 @@ const ChatListing = ({
             `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
           );
 
-          const tempEnc_ID = await collectionRef.add(obj);
+          const batch = firestore.batch();
+
+          // Add the new message to the batch
+          const tempEnc_ID = collectionRef.doc();
           obj.enc_chatID = tempEnc_ID.id;
-          const snapshot = collectionRef.doc(tempEnc_ID.id);
+          batch.set(tempEnc_ID, obj);
+
+          // Commit the batch write
+          await batch.commit();
 
           await snapshot.set(obj);
           await collectionRef.get();

@@ -37,6 +37,9 @@ const Tile = ({
   updateData?.sort((a, b) => b?.lastMessageTime - a?.lastMessageTime);
   let tempObj;
   let snoozeObj;
+  let pageSize = 10;
+  let resetCount;
+  let lastDocument;
 
   let tempCount = [];
   const tempInfo = async (data) => {
@@ -46,12 +49,13 @@ const Tile = ({
     const query = readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Anit").onSnapshot((snapshot)=>{
+      .where("userEmpID", "==", "ChatUser_Anit")
+      .onSnapshot((snapshot) => {
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
         tempCount.push(countArr);
         setReadCount(tempCount);
-      })
+      });
   };
 
   const channelDropdown = useCallback(async (value, item) => {
@@ -63,7 +67,7 @@ const Tile = ({
           .doc(item?.enc_channelID)
           .collection("user")
           .where("userEmpId", "==", "ChatUser_Anit")
-          .limit(10)
+          .limit(pageSize)
           .onSnapshot((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               const user = doc.data();
@@ -71,11 +75,11 @@ const Tile = ({
               doc.ref.set(user);
             });
           });
-          listData();
+        listData();
         LastPinnedGroups();
-        return () =>{
-          collectionRef()
-        }
+        return () => {
+          collectionRef();
+        };
       } catch (error) {
         console.error(error);
       }
@@ -151,7 +155,7 @@ const Tile = ({
     setUpdateData(data);
   }, [data]);
 
-  const listData = () =>{
+  const listData = () => {
     try {
       const firestore = firebase.firestore();
       let tempArr = [];
@@ -159,7 +163,7 @@ const Tile = ({
         .collectionGroup(`user`)
         .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", false)
-        .limit(10)
+        .limit(pageSize)
         .get()
         .then((snapshot) => {
           snapshot.forEach((doc) => {
@@ -175,29 +179,26 @@ const Tile = ({
 
           while (tempArr?.length > 0) {
             const batch = tempArr?.splice(0, 30);
-           collectionRef
+            collectionRef
               .where("enc_channelID", "in", batch)
-              .limit(10).
+              .limit(pageSize)
               // .get();
-            // queryPromises.push(query);
-           onSnapshot((querySnapshot) => {
-              const mergedResults = [];
-              querySnapshot.forEach((doc) => {
-                mergedResults.push(doc.data());
+              // queryPromises.push(query);
+              .onSnapshot((querySnapshot) => {
+                const mergedResults = [];
+                querySnapshot.forEach((doc) => {
+                  mergedResults.push(doc.data());
+                });
+                setUpdateData(mergedResults);
+                setTempArr(mergedResults);
               });
-              setUpdateData(mergedResults);
-              setTempArr(mergedResults);
-            });
             // queryPromises.push(unsubscribe)
           }
-
         });
     } catch (error) {
       console.error(error, "errororo");
     }
-  }
-
-  let resetCount;
+  };
 
   const showChatList = async (item) => {
     if (item?.enc_channelID !== allChannelItem?.enc_channelID) {
@@ -215,6 +216,11 @@ const Tile = ({
             const messagesData = snapshot.docs.map((doc) => doc.data());
             setListingChats(messagesData);
           });
+
+        // Reduce firebase call
+        if (snapshot.docs.length > 0) {
+          lastDocument = snapshot.docs[snapshot.docs.length - 1];
+        }
 
         const userChats = firestore
           .collectionGroup("user_chats")
@@ -236,7 +242,7 @@ const Tile = ({
             .collectionGroup("user_chats")
             .where("userEmpID", "==", "ChatUser_Anit")
             .where("enc_channelID", "==", item?.enc_channelID)
-            .limit(10)
+            .limit(pageSize)
             .get();
           querySnapshot.docs.forEach((snapshot) => {
             snapshot.ref.update(tempObj);
@@ -253,24 +259,6 @@ const Tile = ({
     }
   };
 
-  // const updateChannelDateTime = async (enc_channelID) => {
-  //   allChannelItem.lastMessageTime = new Date();
-  //   try {
-  //     const firestore = firebase.firestore();
-  //     const collectionRef = firestore.collection("channels");
-  //     const snapshot = collectionRef.doc(enc_channelID);
-  //     await snapshot.set(allChannelItem);
-  //     let _data = await collectionRef.limit(10).get();
-  //     const dataArray = _data?.docs?.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //     setUpdateData(dataArray);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   const updateChannelDateTime = (enc_channelID) => {
     try {
       // UP0131
@@ -280,7 +268,7 @@ const Tile = ({
         .collectionGroup(`user`)
         .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", false)
-        .limit(10)
+        .limit(pageSize)
         .get()
         .then((snapshot) => {
           snapshot.forEach((doc) => {
@@ -334,11 +322,9 @@ const Tile = ({
               className={`${TileStyle.chatItem} ${
                 item?.readCount !== 0 ? TileStyle.unreadMsgTile : ""
               }`}
+              onClick={() => showChatList(item)}
             >
-              <div
-                className={TileStyle.dFlex}
-                onClick={() => showChatList(item)}
-              >
+              <div className={TileStyle.dFlex}>
                 <div
                   className={` ${TileStyle.chatInitialThumb} ${item?.color} `}
                 >
@@ -346,8 +332,12 @@ const Tile = ({
                 </div>
                 <div className={TileStyle.chatGroupDetails}>
                   <div className={TileStyle.channelName}>
-                    {item?.companyName} | {item?.role}
+                    {item?.companyName} |{" "}
+                    {item.role.length > 27
+                      ? `${item.role.substring(0, 27)}...`
+                      : item.role}
                   </div>
+
                   <span className={TileStyle.hrStatus}>
                     {item?.hrNumber} | {item?.hrStatus}
                   </span>
