@@ -37,7 +37,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     const query = readOrUnread
       .where("isRead", "==", true)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Anit")
+      .where("userEmpID", "==", "ChatUser_Himani")
       .onSnapshot((snapshot) => {
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
@@ -85,7 +85,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
-          .where("userEmpId", "==", "ChatUser_Anit")
+          .where("userEmpId", "==", "ChatUser_Himani")
           .limit(pageSize)
           .get()
           .then((querySnapshot) => {
@@ -116,20 +116,22 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
       setShowPinnedChatsList(true);
       try {
         const firestore = firebase.firestore();
+        let reduceFirebaseCall = [];
         const unsubscribe = firestore
           .collection(`ChannelChatsMapping/${item?.enc_channelID}/chats`)
           .orderBy("date", "asc")
           .onSnapshot((snapshot) => {
             const messagesData = snapshot.docs.map((doc) => doc.data());
             setListingChats(messagesData);
+            reduceFirebaseCall = snapshot
           });
         // Reduce firebase call
-        if (snapshot.docs.length > 0) {
-          lastDocument = snapshot.docs[snapshot.docs.length - 1];
+        if (reduceFirebaseCall?.docs?.length > 0) {
+          lastDocument = reduceFirebaseCall?.docs[reduceFirebaseCall?.docs?.length - 1];
         }
         const userChats = firestore
           .collectionGroup("user_chats")
-          .where("userEmpID", "==", "ChatUser_Anit")
+          .where("userEmpID", "==", "ChatUser_Himani")
           .where("enc_channelID", "==", item?.enc_channelID);
 
         const tempUserchats = await userChats.get();
@@ -144,7 +146,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
 
           const querySnapshot = await firestore
             .collectionGroup("user_chats")
-            .where("userEmpID", "==", "ChatUser_Anit")
+            .where("userEmpID", "==", "ChatUser_Himani")
             .where("enc_channelID", "==", item?.enc_channelID)
             .limit(pageSize)
             .get();
@@ -169,7 +171,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Anit")
+        .where("userEmpId", "==", "ChatUser_Himani")
         .where("isPinned", "==", true)
         .limit(pageSize)
         .get()

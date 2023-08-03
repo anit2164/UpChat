@@ -188,23 +188,13 @@ const ChatListing = ({
           `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
         );
 
-        const batch = firestore.batch();
-
-        // Add the new message to the batch
-        const tempEnc_ID = collectionRef.doc();
+        const tempEnc_ID = await collectionRef.add(obj);
         obj.enc_chatID = tempEnc_ID.id;
-        batch.set(tempEnc_ID, obj);
-
-        // Commit the batch write
-        await batch.commit();
+        const snapshot = collectionRef.doc(tempEnc_ID.id);
 
         await snapshot.set(obj);
         await collectionRef.get();
 
-        // const dataArray = d?.docs?.map((doc) => ({
-        //   id: doc.id,
-        //   ...doc.data(),
-        // }));
         localStorage.setItem("sendername", "Shreyash Zinzuvadia");
         getSenderName = localStorage.getItem("sendername");
         scrollToBottom();
@@ -250,15 +240,9 @@ const ChatListing = ({
             `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
           );
 
-          const batch = firestore.batch();
-
-          // Add the new message to the batch
-          const tempEnc_ID = collectionRef.doc();
+          const tempEnc_ID = await collectionRef.add(obj);
           obj.enc_chatID = tempEnc_ID.id;
-          batch.set(tempEnc_ID, obj);
-
-          // Commit the batch write
-          await batch.commit();
+          const snapshot = collectionRef.doc(tempEnc_ID.id);
 
           await snapshot.set(obj);
           await collectionRef.get();
@@ -336,7 +320,7 @@ const ChatListing = ({
             return {
               id: doc.id,
               enc_channelID: allChannelItem?.enc_channelID,
-              isRead: "ChatUser_Anit" === userEmpId ? true : false,
+              isRead: "ChatUser_Himani" === userEmpId ? true : false,
               userEmpID: userEmpId,
               IsBookMark: false,
             };

@@ -66,7 +66,7 @@ const UpTabs = () => {
     readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Anit").limit(10).onSnapshot((snapshot)=>{
+      .where("userEmpID", "==", "ChatUser_Himani").limit(10).onSnapshot((snapshot)=>{
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
         tempCount.push(countArr);
@@ -81,7 +81,7 @@ const UpTabs = () => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Anit")
+        .where("userEmpId", "==", "ChatUser_Himani")
         .where("isPinned", "==", false)
         .limit(10)
         .onSnapshot((snapshot) => {
@@ -132,9 +132,9 @@ const UpTabs = () => {
     const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
     readOrUnread
-      .where("isRead", "==", true)
+      .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Anit").limit(10).onSnapshot((snapshot)=>{
+      .where("userEmpID", "==", "ChatUser_Himani").limit(10).onSnapshot((snapshot)=>{
       countArr.enc_ChannelIDCount = data;
       countArr.readCount = snapshot?.docs?.length;
       tempCountData.push(countArr);
@@ -149,7 +149,7 @@ const UpTabs = () => {
     // Subscribe to the collection using onSnapshot
     const unsubscribe = firestore
       .collectionGroup(`user`)
-      .where("userEmpId", "==", "ChatUser_Anit")
+      .where("userEmpId", "==", "ChatUser_Himani")
       .where("isPinned", "==", true)
       .limit(10)
       .onSnapshot((snapshot) => {
@@ -236,6 +236,7 @@ const UpTabs = () => {
       if (data2) {
         item.readCount = data2.readCount;
       }
+      console.log(item,"datataitem");
       return item;
     });
     // setUpdateData(result);
