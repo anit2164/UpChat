@@ -49,7 +49,7 @@ const Tile = ({
     const query = readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Himani")
+      .where("userEmpID", "==", "ChatUser_Anit")
       .onSnapshot((snapshot) => {
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
@@ -66,7 +66,7 @@ const Tile = ({
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
-          .where("userEmpId", "==", "ChatUser_Himani")
+          .where("userEmpId", "==", "ChatUser_Anit")
           .limit(pageSize)
           .onSnapshot((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -161,7 +161,7 @@ const Tile = ({
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Himani")
+        .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", false)
         .limit(pageSize)
         .get()
@@ -216,17 +216,18 @@ const Tile = ({
           .onSnapshot((snapshot) => {
             const messagesData = snapshot.docs.map((doc) => doc.data());
             setListingChats(messagesData);
-            reduceFirebaseCall = snapshot
+            reduceFirebaseCall = snapshot;
           });
 
         // Reduce firebase call
         if (reduceFirebaseCall?.docs?.length > 0) {
-          lastDocument = reduceFirebaseCall?.docs[reduceFirebaseCall?.docs?.length - 1];
+          lastDocument =
+            reduceFirebaseCall?.docs[reduceFirebaseCall?.docs?.length - 1];
         }
 
         const userChats = firestore
           .collectionGroup("user_chats")
-          .where("userEmpID", "==", "ChatUser_Himani")
+          .where("userEmpID", "==", "ChatUser_Anit")
           .where("enc_channelID", "==", item?.enc_channelID);
 
         const tempUserchats = await userChats.get();
@@ -242,7 +243,7 @@ const Tile = ({
 
           const querySnapshot = await firestore
             .collectionGroup("user_chats")
-            .where("userEmpID", "==", "ChatUser_Himani")
+            .where("userEmpID", "==", "ChatUser_Anit")
             .where("enc_channelID", "==", item?.enc_channelID)
             .limit(pageSize)
             .get();
@@ -268,7 +269,7 @@ const Tile = ({
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Himani")
+        .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", false)
         .limit(pageSize)
         .get()
@@ -319,6 +320,7 @@ const Tile = ({
     <>
       <div className={TileStyle.chatWrapper}>
         {updateData?.map((item) => {
+          console.log(item, "iteememem");
           return (
             <div
               className={`${TileStyle.chatItem} ${
@@ -335,7 +337,7 @@ const Tile = ({
                 <div className={TileStyle.chatGroupDetails}>
                   <div className={TileStyle.channelName}>
                     {item?.companyName} |{" "}
-                    {item.role.length > 27
+                    {item?.role?.length > 27
                       ? `${item.role.substring(0, 27)}...`
                       : item.role}
                   </div>

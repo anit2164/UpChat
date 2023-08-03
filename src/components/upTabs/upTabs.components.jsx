@@ -66,14 +66,15 @@ const UpTabs = () => {
     readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Himani").limit(10).onSnapshot((snapshot)=>{
+      .where("userEmpID", "==", "ChatUser_Anit")
+      .limit(10)
+      .onSnapshot((snapshot) => {
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
         tempCount.push(countArr);
         setReadCount(tempCount);
       });
   };
-
   useEffect(() => {
     try {
       // UP0131
@@ -81,7 +82,7 @@ const UpTabs = () => {
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Himani")
+        .where("userEmpId", "==", "ChatUser_Anit")
         .where("isPinned", "==", false)
         .limit(10)
         .onSnapshot((snapshot) => {
@@ -99,28 +100,42 @@ const UpTabs = () => {
             const batch = tempArr?.splice(0, 30);
             const query = collectionRef
               .where("enc_channelID", "in", batch)
-              .limit(10)
-              // .get();
+              .limit(10);
+            // .get();
             // queryPromises.push(query);
-           query.onSnapshot((querySnapshot) => {
+            query.onSnapshot((querySnapshot) => {
               const mergedResults = [];
               querySnapshot.forEach((doc) => {
                 mergedResults.push(doc.data());
+                console.log(mergedResults, "mergedResultsmergedResults");
+                // tempInfo(mergedResults);
               });
               // mergedResults.map((item)=>{
 
               //   return item.enc_channelID.includes(dataFalse?.[0]?.enc_channelID) && setDataFalse([])
               // })
-              setData(mergedResults);
-              setTempArr(mergedResults);
+              console.log(tempCount, "tempCount");
+              const result = mergedResults?.map((item) => {
+                const data2 = tempCount.find(
+                  (temp) => item.enc_channelID === temp.enc_ChannelIDCount
+                );
+                console.log("data2", data2);
+                if (data2) {
+                  item.readCount = data2.readCount;
+                }
+                return item;
+              });
+              console.log(result, "result");
+              setData(result);
+              setTempArr(result);
               setPinnedChannel(false);
               setSoonzeChannel(false);
             });
           }
         });
-        return () =>{
-          unsubscribe()
-        }
+      return () => {
+        unsubscribe();
+      };
     } catch (error) {
       console.error(error, "errororo");
     }
@@ -134,12 +149,14 @@ const UpTabs = () => {
     readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Himani").limit(10).onSnapshot((snapshot)=>{
-      countArr.enc_ChannelIDCount = data;
-      countArr.readCount = snapshot?.docs?.length;
-      tempCountData.push(countArr);
-      setReadCountTrue(tempCountData);
-    });
+      .where("userEmpID", "==", "ChatUser_Anit")
+      .limit(10)
+      .onSnapshot((snapshot) => {
+        countArr.enc_ChannelIDCount = data;
+        countArr.readCount = snapshot?.docs?.length;
+        tempCountData.push(countArr);
+        setReadCountTrue(tempCountData);
+      });
   };
 
   useEffect(() => {
@@ -149,7 +166,7 @@ const UpTabs = () => {
     // Subscribe to the collection using onSnapshot
     const unsubscribe = firestore
       .collectionGroup(`user`)
-      .where("userEmpId", "==", "ChatUser_Himani")
+      .where("userEmpId", "==", "ChatUser_Anit")
       .where("isPinned", "==", true)
       .limit(10)
       .onSnapshot((snapshot) => {
@@ -228,20 +245,31 @@ const UpTabs = () => {
     return item?.isSnoozed === true;
   });
 
-  useEffect(() => {
-    const result = data?.map((item) => {
-      const data2 = readCount.find(
-        (temp) => item.enc_channelID === temp.enc_ChannelIDCount
-      );
-      if (data2) {
-        item.readCount = data2.readCount;
-      }
-      console.log(item,"datataitem");
-      return item;
-    });
-    // setUpdateData(result);
-    // setData(data);
-  }, [data, readCount]);
+  // const showCountAllChannel = async (item) => {
+  //   const data2 = readCount.find(
+  //     (temp) => item.enc_channelID === temp.enc_ChannelIDCount
+  //   );
+  //   return data2;
+  // };
+
+  // useEffect(() => {
+  //   const result = data?.map(async (item) => {
+  //     // setTimeout(() => {
+  //     const data2 = readCount.find(
+  //       (temp) => item.enc_channelID === temp.enc_ChannelIDCount
+  //     );
+  //     if (data2) {
+  //       console.log(data2, "data2222");
+  //       item.readCount = data2.readCount;
+  //     }
+  //     console.log(item, "datataitem");
+  //     return item;
+  //     // }, 500);
+  //   });
+
+  //   // setUpdateData(result);
+  //   // setData(result);
+  // }, [data, readCount]);
 
   useEffect(() => {
     const result = dataFalse?.map((item) => {
