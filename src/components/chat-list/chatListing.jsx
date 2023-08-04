@@ -64,6 +64,7 @@ const ChatListing = ({
   const [userDataList, setUserDataList] = useState([]);
   const [scrollDown, setScrollDown] = useState(false);
   const [searchInChat, setSearchInChat] = useState(false);
+  const firestore = firebase.firestore();
 
   const bottomToTopRef = useRef(null);
   const arrawScroll = useRef(null);
@@ -147,12 +148,13 @@ const ChatListing = ({
 
   const createCollection = async (data) => {
     try {
-      const firestore = firebase.firestore();
+      // const firestore = firebase.firestore();
       const collectionRef = firestore.collection(
         `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats/${data}/user_chats/`
       );
       for (let i = 0; i < userDataList.length; i++) {
-        await collectionRef.add(userDataList[i]);
+        console.log("userDataList", userDataList[i]);
+        const addData = await collectionRef.add(userDataList[i]);
       }
     } catch (error) {
       console.error("Error creating collection:", error);
@@ -186,7 +188,7 @@ const ChatListing = ({
           id: allChannelItem?.hrID,
           note: messageHandler,
         };
-        const firestore = firebase.firestore();
+        // const firestore = firebase.firestore();
         const collectionRef = firestore.collection(
           `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
         );
@@ -243,7 +245,7 @@ const ChatListing = ({
             id: allChannelItem?.hrID,
             note: messageHandler,
           };
-          const firestore = firebase.firestore();
+          // const firestore = firebase.firestore();
           const collectionRef = firestore.collection(
             `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
           );
@@ -319,7 +321,7 @@ const ChatListing = ({
 
   useEffect(() => {
     try {
-      const firestore = firebase.firestore();
+      // const firestore = firebase.firestore();
       const unsubscribe = firestore
         .collection(`ChannelUserMapping/${allChannelItem?.enc_channelID}/user`)
         .onSnapshot((snapshot) => {
@@ -333,6 +335,7 @@ const ChatListing = ({
               IsBookMark: false,
             };
           });
+          console.log("UserData", userData);
           setUserDataList(userData);
         });
       return () => {

@@ -25,6 +25,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
   const [tempArrFalse, setTempArrFalse] = useState([]);
   const [readCountTrue, setReadCountTrue] = useState([]);
   const loginUserId = localStorage.getItem("EmployeeID");
+  const firestore = firebase.firestore();
 
   let tempCountData = [];
   let resetCount;
@@ -33,7 +34,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
 
   const tempInfoData = async (data) => {
     let countArr = {};
-    const firestore = firebase.firestore();
+    // const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
     const query = readOrUnread
       .where("isRead", "==", true)
@@ -81,7 +82,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     // tempObj.isPinned = false;
     if (value?.key === "Unpin Channel") {
       try {
-        const firestore = firebase.firestore();
+        // const firestore = firebase.firestore();
         const collectionRef = firestore
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
@@ -116,7 +117,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
       setPinnedChatsItem(item);
       setShowPinnedChatsList(true);
       try {
-        const firestore = firebase.firestore();
+        // const firestore = firebase.firestore();
         let reduceFirebaseCall = [];
         const unsubscribe = firestore
           .collection(`ChannelChatsMapping/${item?.enc_channelID}/chats`)
@@ -169,7 +170,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
 
   const updateChannelDateTime = (enc_channelID) => {
     try {
-      const firestore = firebase.firestore();
+      // const firestore = firebase.firestore();
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)

@@ -34,6 +34,7 @@ const Tile = ({
   const [readCount, setReadCount] = useState([]);
   const [readCountTrue, setReadCountTrue] = useState([]);
   const loginUserId = localStorage.getItem("EmployeeID");
+  const firestore = firebase.firestore();
   updateData?.sort((a, b) => b?.lastMessageTime - a?.lastMessageTime);
   let tempObj;
   let snoozeObj;
@@ -44,7 +45,7 @@ const Tile = ({
   let tempCount = [];
   const tempInfo = async (data) => {
     let countArr = {};
-    const firestore = firebase.firestore();
+    // const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
     const query = readOrUnread
       .where("isRead", "==", false)
@@ -61,7 +62,7 @@ const Tile = ({
   const channelDropdown = useCallback(async (value, item) => {
     if (value?.key === "PIN Channel") {
       try {
-        const firestore = firebase.firestore();
+        // const firestore = firebase.firestore();
         const collectionRef = firestore
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
@@ -87,7 +88,7 @@ const Tile = ({
       snoozeObj = item;
       snoozeObj.isSnoozed = true;
       try {
-        const firestore = firebase.firestore();
+        // const firestore = firebase.firestore();
         const collectionRef = firestore.collection("channels");
         const snapshot = collectionRef.doc(snoozeObj.id);
 
@@ -157,7 +158,7 @@ const Tile = ({
 
   const listData = () => {
     try {
-      const firestore = firebase.firestore();
+      // const firestore = firebase.firestore();
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
@@ -208,13 +209,15 @@ const Tile = ({
       setAllChannelItem(item);
       setShowList(true);
       try {
-        const firestore = firebase.firestore();
+        // const firestore = firebase.firestore();
         let reduceFirebaseCall = [];
+        console.log("item?.enc_channelID", item?.enc_channelID);
         const unsubscribe = firestore
           .collection(`ChannelChatsMapping/${item?.enc_channelID}/chats`)
           .orderBy("date", "asc")
           .onSnapshot((snapshot) => {
             const messagesData = snapshot.docs.map((doc) => doc.data());
+            console.log("messagesData", messagesData);
             setListingChats(messagesData);
             reduceFirebaseCall = snapshot;
           });
@@ -241,16 +244,17 @@ const Tile = ({
           let tempObj = dataArray[i];
           tempObj.isRead = true;
 
-          const querySnapshot = await firestore
+          firestore
             .collectionGroup("user_chats")
             .where("userEmpID", "==", loginUserId)
             .where("enc_channelID", "==", item?.enc_channelID)
             .limit(pageSize)
-            .get();
-          querySnapshot.docs.forEach((snapshot) => {
-            snapshot.ref.update(tempObj);
-          });
-          // setUpdateData(resetCount);
+            .get()
+            .then((querySnapshot) => {
+              querySnapshot.docs.forEach((snapshot) => {
+                snapshot.ref.update(tempObj);
+              });
+            });
         }
 
         return () => {
@@ -265,7 +269,7 @@ const Tile = ({
   const updateChannelDateTime = (enc_channelID) => {
     try {
       // UP0131
-      const firestore = firebase.firestore();
+      // const firestore = firebase.firestore();
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)

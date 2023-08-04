@@ -16,9 +16,9 @@ firebase.initializeApp(firebaseConfig);
 
 const UpTabs = () => {
   const [search, setSearch] = useState("");
-  const [data, setData] = useState([]);
+  const [allChannel, setAllChannel] = useState([]);
   const [tempArr, setTempArr] = useState([]);
-  const [dataFalse, setDataFalse] = useState([]);
+  const [pinData, setpinData] = useState([]);
   const [tempArrFalse, setTempArrFalse] = useState([]);
   const [updatePinnedChannel, setPinnedChannel] = useState(false);
   const [updateSoonzeChannel, setSoonzeChannel] = useState(false);
@@ -27,6 +27,7 @@ const UpTabs = () => {
   const [totalCount, setTotalCount] = useState("");
   const [unReadCount, setUnReadCount] = useState([]);
   const loginUserId = localStorage.getItem("EmployeeID");
+  const firestore = firebase.firestore();
 
   const LastPinnedGroups = () => {
     setPinnedChannel(true);
@@ -63,7 +64,7 @@ const UpTabs = () => {
   let tempCount = [];
   const tempInfo = async (data) => {
     let countArr = {};
-    const firestore = firebase.firestore();
+    // const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
     readOrUnread
       .where("isRead", "==", false)
@@ -75,13 +76,12 @@ const UpTabs = () => {
         countArr.readCount = snapshot?.docs?.length;
         tempCount.push(countArr);
         setReadCount(tempCount);
-        console.log(tempCount, ":tempCounttempCount");
       });
   };
   useEffect(() => {
     try {
       // UP0131
-      const firestore = firebase.firestore();
+      // const firestore = firebase.firestore();
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
@@ -110,14 +110,17 @@ const UpTabs = () => {
               const mergedResults = [];
               querySnapshot.forEach((doc) => {
                 mergedResults.push(doc.data());
-                console.log(mergedResults, "mergedResultsmergedResults");
+                console.log(doc.data());
                 // tempInfo(mergedResults);
               });
               // mergedResults.map((item)=>{
 
               //   return item.enc_channelID.includes(dataFalse?.[0]?.enc_channelID) && setDataFalse([])
               // })
-              setData(mergedResults);
+
+              //All channel
+              console.log(mergedResults, "mergedResults ===== All Channel");
+              setAllChannel(mergedResults);
               setUnReadCount(mergedResults);
               setTempArr(mergedResults);
               setPinnedChannel(false);
@@ -136,7 +139,7 @@ const UpTabs = () => {
   let tempCountData = [];
   const tempInfoData = async (data) => {
     let countArr = {};
-    const firestore = firebase.firestore();
+    // const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
     readOrUnread
       .where("isRead", "==", false)
@@ -152,7 +155,7 @@ const UpTabs = () => {
   };
 
   useEffect(() => {
-    const firestore = firebase.firestore();
+    // const firestore = firebase.firestore();
     let tempArr = [];
 
     // Subscribe to the collection using onSnapshot
@@ -188,7 +191,9 @@ const UpTabs = () => {
               querySnapshot.forEach((doc) => {
                 mergedResults.push(doc.data());
               });
-              setDataFalse(mergedResults);
+              console.log(mergedResults, "mergedResults ===== Pin Data");
+              //Pin Channel Data
+              setpinData(mergedResults);
               setTempArrFalse(mergedResults);
               setPinnedChannel(false);
               setSoonzeChannel(false);
@@ -210,10 +215,10 @@ const UpTabs = () => {
           item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase())
         );
       });
-      setData(filteredData);
+      setAllChannel(filteredData);
       // setDataFalse(filteredData);
     } else {
-      setData(tempArr);
+      setAllChannel(tempArr);
     }
   }, [search]);
 
@@ -227,19 +232,19 @@ const UpTabs = () => {
         );
       });
       // setData(filteredData);
-      setDataFalse(filteredData);
+      setpinData(filteredData);
     } else {
-      setDataFalse(tempArrFalse);
+      setpinData(tempArrFalse);
     }
   }, [search]);
 
-  const filterData = data?.filter((item) => {
+  const filterData = allChannel?.filter((item) => {
     return item?.isSnoozed === true;
   });
 
   useEffect(() => {
     let result = [];
-    data?.forEach((item) => {
+    allChannel?.forEach((item) => {
       const data2 = readCount.find(
         (temp) => item.enc_channelID === temp.enc_ChannelIDCount
       );
@@ -253,16 +258,14 @@ const UpTabs = () => {
 
     setTimeout(() => {
       setUnReadCount(result);
-      console.log(result, "result unpinned");
     }, 600);
 
-    console.log(unReadCount, "unReadCountunReadCount");
     // setUpdateData(result);
     // setData(result);
-  }, [data, readCount]);
+  }, [allChannel, readCount]);
 
   useEffect(() => {
-    const result = dataFalse?.map((item) => {
+    const result = pinData?.map((item) => {
       const data2 = readCountTrue.find(
         (temp) => item.enc_channelID === temp.enc_ChannelIDCount
       );
@@ -273,15 +276,15 @@ const UpTabs = () => {
     });
     // setUpdateData(result);
     // setData(data);
-  }, [dataFalse, readCountTrue]);
+  }, [pinData, readCountTrue]);
 
   useEffect(() => {
-    const totalReadCount = data.reduce(
+    const totalReadCount = allChannel.reduce(
       (total, item) => total + item.readCount,
       0
     );
     setTotalCount(totalReadCount);
-  }, [totalCount, data]);
+  }, [totalCount, allChannel]);
 
   return (
     <>
@@ -316,8 +319,8 @@ const UpTabs = () => {
                 label={"Pinned Groups"}
                 isCollapsible={true}
                 search={search}
-                dataFalse={dataFalse}
-                setDataFalse={setDataFalse}
+                dataFalse={pinData}
+                setDataFalse={setpinData}
                 LastPinnedGroups={LastPinnedGroups}
               />
               <Accordion
@@ -327,7 +330,7 @@ const UpTabs = () => {
                 search={search}
                 data={unReadCount}
                 LastPinnedGroups={LastPinnedGroups}
-                setData={setData}
+                setData={setAllChannel}
                 LastSnoozeGroups={LastSnoozeGroups}
                 readCount={readCount}
               />
@@ -349,9 +352,9 @@ const UpTabs = () => {
             <div className={UpTabsStyle.chatListWrapper}>
               <SnoozeGroupDetails
                 search={search}
-                data={data}
+                data={allChannel}
                 LastSnoozeGroups={LastSnoozeGroups}
-                setData={setData}
+                setData={setAllChannel}
               />
             </div>
           </TabPanel>
