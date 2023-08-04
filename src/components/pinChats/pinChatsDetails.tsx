@@ -25,13 +25,14 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
   const [tempArrFalse, setTempArrFalse] = useState([]);
   const [readCountTrue, setReadCountTrue] = useState([]);
   const loginUserId = localStorage.getItem("EmployeeID");
+  const firestore = firebase.firestore();
 
   let tempCountData: any = [];
   let lastDocument;
   let pageSize = 10;
   const tempInfoData = async (data: any) => {
     let countArr: any = {};
-    const firestore = firebase.firestore();
+    // const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
     const query = readOrUnread
       .where("isRead", "==", true)
@@ -78,7 +79,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
     // tempObj.isPinned = false;
     if (value?.key === "Unpin Channel") {
       try {
-        const firestore = firebase.firestore();
+        // const firestore = firebase.firestore();
         const collectionRef = firestore
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
@@ -95,7 +96,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
           });
 
         try {
-          const firestore = firebase.firestore();
+          // const firestore = firebase.firestore();
           let tempArr: any = [];
           const unsubscribe = firestore
             .collectionGroup(`user`)
@@ -166,7 +167,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
       setPinnedChatsItem(item);
       setShowPinnedChatsList(true);
       try {
-        const firestore = firebase.firestore();
+        // const firestore = firebase.firestore();
         let reduceFirebaseCall: any = [];
         const unsubscribe = firestore
           .collection(`ChannelChatsMapping/${item?.enc_channelID}/chats`)
@@ -220,7 +221,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
 
   const updateChannelDateTime = (enc_channelID: any) => {
     try {
-      const firestore = firebase.firestore();
+      // const firestore = firebase.firestore();
       let tempArr: any = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)

@@ -25,6 +25,7 @@ const UpTabs = () => {
   const [readCountTrue, setReadCountTrue] = useState([]);
   const [totalCount, setTotalCount] = useState("");
   const [unReadCount, setUnReadCount] = useState([]);
+  const firestore = firebase.firestore();
 
   const loginUserId = localStorage.getItem("EmployeeID");
 
@@ -39,7 +40,7 @@ const UpTabs = () => {
   let tempCount: any = [];
   const tempInfo = async (data: any) => {
     let countArr: any = {};
-    const firestore = firebase.firestore();
+    // const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
     const query = readOrUnread
       .where("isRead", "==", false)
@@ -57,7 +58,7 @@ const UpTabs = () => {
   useEffect(() => {
     try {
       // UP0131
-      const firestore = firebase.firestore();
+      // const firestore = firebase.firestore();
       let tempArr: any = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
@@ -104,7 +105,7 @@ const UpTabs = () => {
   let tempCountData: any = [];
   const tempInfoData = async (data: any) => {
     let countArr: any = {};
-    const firestore = firebase.firestore();
+    // const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
     const query = readOrUnread
       .where("isRead", "==", false)
@@ -120,7 +121,7 @@ const UpTabs = () => {
   };
 
   useEffect(() => {
-    const firestore = firebase.firestore();
+    // const firestore = firebase.firestore();
     let tempArr: any = [];
 
     // Subscribe to the collection using onSnapshot

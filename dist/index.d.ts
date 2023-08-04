@@ -14,6 +14,8 @@ declare const MemberListing: (allChannelItem: any) => React.JSX.Element;
 
 declare const AddMembers: ({ allChannelItem, showAddMemberModel, setShowAddMemberModel, setHideMemberModel, userDataList, }: any) => React.JSX.Element;
 
+declare const MyContext: any;
+
 declare const Header: ({ setToggle }: any) => React.JSX.Element;
 
 declare const PinAccordian: ({ icon, label, isCollapsible, search, dataFalse, LastPinnedGroups, setDataFalse, }: any) => React.JSX.Element;
@@ -28,4 +30,4 @@ declare const UpTabs: () => React.JSX.Element;
 
 declare const PinChatDetails: ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => React.JSX.Element;
 
-export { Accordion, AddMembers, Button, ChatListing, Collapse, Header, MemberListing, PinAccordian, PinChatDetails, SnoozeGroupDetails, Tile, UpTabs };
+export { Accordion, AddMembers, Button, ChatListing, Collapse, Header, MemberListing, MyContext, PinAccordian, PinChatDetails, SnoozeGroupDetails, Tile, UpTabs };

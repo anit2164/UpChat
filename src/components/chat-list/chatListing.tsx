@@ -1,5 +1,12 @@
 import ChatListingStyles from "./chatListing.module.css";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  createContext,
+} from "react";
 import Collapse from "../../components/collapsible/collapsible.components";
 import Header from "../header/header.components";
 import UpTabs from "../../components/upTabs/upTabs.components";
@@ -33,6 +40,7 @@ import { Provider } from "react-redux";
 // import Tile from "../tile/tile.components";
 import store from "../../redux_toolkit/store/store";
 import moment from "moment";
+import MyContext from "./MyContext";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -68,6 +76,8 @@ const ChatListing = ({
   const [searchInChat, setSearchInChat] = useState(false);
   const [username, setUsername] = useState("");
   const [loggeInUserDesignation, setLoggedInUserDesignation] = useState("");
+  const [totalCount, setTotalCount] = useState(0);
+  const firestore = firebase.firestore();
 
   const bottomToTopRef: any = useRef(null);
   const arrawScroll = useRef(null);
@@ -76,7 +86,7 @@ const ChatListing = ({
 
   let name: any = loginUserId;
   let initials = name
-    .split(" ")
+    ?.split(" ")
     .reduce((acc: any, subname: any) => acc + subname[0], "");
 
   let lastChatMessage;
@@ -159,7 +169,7 @@ const ChatListing = ({
 
   const createCollection = async (data: any) => {
     try {
-      const firestore = firebase.firestore();
+      // const firestore = firebase.firestore();
       const collectionRef = firestore.collection(
         `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats/${data}/user_chats/`
       );
@@ -200,7 +210,7 @@ const ChatListing = ({
           id: allChannelItem?.hrID,
           note: messageHandler,
         };
-        const firestore = firebase.firestore();
+        // const firestore = firebase.firestore();
         const collectionRef = firestore.collection(
           `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
         );
@@ -256,7 +266,7 @@ const ChatListing = ({
             id: allChannelItem?.hrID,
             note: messageHandler,
           };
-          const firestore = firebase.firestore();
+          // const firestore = firebase.firestore();
           const collectionRef = firestore.collection(
             `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
           );
@@ -331,7 +341,7 @@ const ChatListing = ({
 
   useEffect(() => {
     try {
-      const firestore = firebase.firestore();
+      // const firestore = firebase.firestore();
       const unsubscribe = firestore
         .collection(`ChannelUserMapping/${allChannelItem?.enc_channelID}/user`)
         .onSnapshot((snapshot) => {
@@ -381,8 +391,10 @@ const ChatListing = ({
           <main className={ChatListingStyles.main}>
             {toggle && (
               <>
-                <Header setToggle={setToggle} />
-                <UpTabs />
+                <MyContext.Provider value={{ totalCount, setTotalCount }}>
+                  <Header setToggle={setToggle} />
+                  <UpTabs />
+                </MyContext.Provider>
               </>
             )}
 

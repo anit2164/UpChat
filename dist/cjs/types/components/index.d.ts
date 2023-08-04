@@ -1,6 +1,6 @@
 export { default as Button } from "./Button";
 export { default as Collapse } from "./collapsible";
-export { ChatListing, MemberListing, AddMembers } from "./chat-list";
+export { ChatListing, MemberListing, AddMembers, MyContext } from "./chat-list";
 export { default as Header } from "./header";
 export { default as PinAccordian } from "./pinAccordian";
 export { default as Accordion } from "./accordion";
