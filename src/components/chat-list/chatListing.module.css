@@ -906,6 +906,15 @@
   text-align: center;
   margin-right: 8px;
 }
+.circleAvtar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  line-height: 30px;
+  text-align: center;
+  margin-right: 8px;
+  font-size: 12px;
+}
 
 .addMembersAreaFooter {
   padding: 16px;
@@ -960,4 +969,16 @@
 .linkLabel svg {
   max-width: 16px;
   margin-right: 8px;
+}
+.chatInitialThumb {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 8px;
+
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 5px;
 }

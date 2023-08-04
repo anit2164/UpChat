@@ -187,64 +187,39 @@ input[type="number"] {
 
 /** ============ ANTD DROPDOWN STARTS ===============*/
 
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown .ant-dropdown-menu,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu
-  .ant-dropdown-menu {
+.ant-dropdown .ant-dropdown-menu,
+.ant-dropdown-menu-submenu .ant-dropdown-menu {
   padding: 0;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
   border-radius: 8px;
 }
 
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown
-  .ant-dropdown-menu
-  .ant-dropdown-menu-item,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu
-  .ant-dropdown-menu
-  .ant-dropdown-menu-item,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown
-  .ant-dropdown-menu
-  .ant-dropdown-menu-submenu-title,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu
-  .ant-dropdown-menu
-  .ant-dropdown-menu-submenu-title {
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item,
+.ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-item,
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-submenu-title,
+.ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-submenu-title {
   padding: 8px 16px;
   font-size: 12px;
   color: #232323;
 }
 
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown
-  .ant-dropdown-menu
-  .ant-dropdown-menu-item:hover,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu
-  .ant-dropdown-menu
-  .ant-dropdown-menu-item:hover,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item:hover,
+.ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-item:hover,
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-submenu-title:hover,
+.ant-dropdown-menu-submenu
   .ant-dropdown-menu
   .ant-dropdown-menu-submenu-title:hover,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu
-  .ant-dropdown-menu
-  .ant-dropdown-menu-submenu-title:hover,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown
-  .ant-dropdown-menu
-  .ant-dropdown-menu-item-active,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu
-  .ant-dropdown-menu
-  .ant-dropdown-menu-item-active,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown
-  .ant-dropdown-menu
-  .ant-dropdown-menu-submenu-title-active,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-active,
+.ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-item-active,
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-submenu-title-active,
+.ant-dropdown-menu-submenu
   .ant-dropdown-menu
   .ant-dropdown-menu-submenu-title-active {
   background-color: #fff9e1;
 }
 
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown
-  .ant-dropdown-menu
-  .ant-dropdown-menu-item-icon,
-:where(.css-dev-only-do-not-override-12jzuas).ant-dropdown-menu-submenu
-  .ant-dropdown-menu
-  .ant-dropdown-menu-item-icon {
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-icon,
+.ant-dropdown-menu-submenu .ant-dropdown-menu .ant-dropdown-menu-item-icon {
   margin-inline-end: 12px;
   max-width: 16px;
 }

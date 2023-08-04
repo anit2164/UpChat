@@ -320,7 +320,6 @@ const Tile = ({
     <>
       <div className={TileStyle.chatWrapper}>
         {updateData?.map((item) => {
-          console.log(item, "iteememem");
           return (
             <div
               className={`${TileStyle.chatItem} ${

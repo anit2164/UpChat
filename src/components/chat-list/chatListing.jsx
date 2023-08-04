@@ -79,7 +79,7 @@ const ChatListing = ({
     {
       label: ChannelMenu.BOOKMARKS,
       key: ChannelMenu.BOOKMARKS,
-      icon: <BookmarkIconDark width="16" />,
+      icon: <BookmarkIconDark width="12" />,
     },
     {
       label: ChannelMenu.CHANNEL_LIBRARY,
@@ -206,6 +206,9 @@ const ChatListing = ({
       }
     }
   };
+
+  let name = "Shreyash Zinzuvadia";
+  let initials = name.split(" ").reduce((acc, subname) => acc + subname[0], "");
 
   const handleKeyDown = async (e) => {
     if (e.key === "Enter") {
@@ -483,12 +486,17 @@ const ChatListing = ({
                         ref={bottomToTopRef}
                       >
                         <div className={ChatListingStyles.channelMessageInner}>
-                          <img
+                          <div
+                            className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
+                          >
+                            {initials}
+                          </div>
+                          {/* <img
                             className={ChatListingStyles.profileAvtar}
-                            src="https://i.pravatar.cc/40"
+                            src={initials}
                             width="30"
                             height="30"
-                          />
+                          /> */}
                           <div className={ChatListingStyles.profileName}>
                             {item?.senderName}
                           </div>

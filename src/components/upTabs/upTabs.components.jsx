@@ -25,6 +25,7 @@ const UpTabs = () => {
   const [readCount, setReadCount] = useState([]);
   const [readCountTrue, setReadCountTrue] = useState([]);
   const [totalCount, setTotalCount] = useState("");
+  const [unReadCount, setUnReadCount] = useState([]);
 
   const LastPinnedGroups = () => {
     setPinnedChannel(true);
@@ -67,12 +68,13 @@ const UpTabs = () => {
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
       .where("userEmpID", "==", "ChatUser_Anit")
-      .limit(10)
+      .limit(20)
       .onSnapshot((snapshot) => {
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
         tempCount.push(countArr);
         setReadCount(tempCount);
+        console.log(tempCount, ":tempCounttempCount");
       });
   };
   useEffect(() => {
@@ -114,20 +116,9 @@ const UpTabs = () => {
 
               //   return item.enc_channelID.includes(dataFalse?.[0]?.enc_channelID) && setDataFalse([])
               // })
-              console.log(tempCount, "tempCount");
-              const result = mergedResults?.map((item) => {
-                const data2 = tempCount.find(
-                  (temp) => item.enc_channelID === temp.enc_ChannelIDCount
-                );
-                console.log("data2", data2);
-                if (data2) {
-                  item.readCount = data2.readCount;
-                }
-                return item;
-              });
-              console.log(result, "result");
-              setData(result);
-              setTempArr(result);
+              setData(mergedResults);
+              setUnReadCount(mergedResults);
+              setTempArr(mergedResults);
               setPinnedChannel(false);
               setSoonzeChannel(false);
             });
@@ -245,31 +236,29 @@ const UpTabs = () => {
     return item?.isSnoozed === true;
   });
 
-  // const showCountAllChannel = async (item) => {
-  //   const data2 = readCount.find(
-  //     (temp) => item.enc_channelID === temp.enc_ChannelIDCount
-  //   );
-  //   return data2;
-  // };
+  useEffect(() => {
+    let result = [];
+    data?.forEach((item) => {
+      const data2 = readCount.find(
+        (temp) => item.enc_channelID === temp.enc_ChannelIDCount
+      );
+      setTimeout(() => {
+        if (data2) {
+          item.readCount = data2.readCount;
+        }
+        result.push(item);
+      }, 500);
+    });
 
-  // useEffect(() => {
-  //   const result = data?.map(async (item) => {
-  //     // setTimeout(() => {
-  //     const data2 = readCount.find(
-  //       (temp) => item.enc_channelID === temp.enc_ChannelIDCount
-  //     );
-  //     if (data2) {
-  //       console.log(data2, "data2222");
-  //       item.readCount = data2.readCount;
-  //     }
-  //     console.log(item, "datataitem");
-  //     return item;
-  //     // }, 500);
-  //   });
+    setTimeout(() => {
+      setUnReadCount(result);
+      console.log(result, "result unpinned");
+    }, 600);
 
-  //   // setUpdateData(result);
-  //   // setData(result);
-  // }, [data, readCount]);
+    console.log(unReadCount, "unReadCountunReadCount");
+    // setUpdateData(result);
+    // setData(result);
+  }, [data, readCount]);
 
   useEffect(() => {
     const result = dataFalse?.map((item) => {
@@ -335,7 +324,7 @@ const UpTabs = () => {
                 label={"All Channels"}
                 isCollapsible={true}
                 search={search}
-                data={data}
+                data={unReadCount}
                 LastPinnedGroups={LastPinnedGroups}
                 setData={setData}
                 LastSnoozeGroups={LastSnoozeGroups}
