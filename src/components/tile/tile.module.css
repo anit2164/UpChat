@@ -1,0 +1,152 @@
+.dFlex {
+  display: flex;
+}
+
+.chatItem {
+  padding: 10px 11px 10px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.chatInitialThumb {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 8px;
+
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 5px;
+}
+
+.chatGroupDetails {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.channelName {
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.unread .channelName {
+  font-weight: 600;
+}
+
+.hrStatus {
+  color: #676767;
+  font-weight: 500;
+  text-align: left;
+}
+
+.blueThumb {
+  background-color: #bee2ff;
+  color: #3678b1;
+}
+
+.darkRedThumb {
+  background-color: #fceae6;
+  color: #cc4d4d;
+}
+
+.greenThumb {
+  background-color: rgba(69, 255, 83, 0.2);
+  color: #006c1a;
+}
+
+.yellowThumb {
+  background-color: #f7f4bf;
+  color: #8b851a;
+}
+
+.orangeThumb {
+  background-color: #ffd1b2;
+  color: #ef6000;
+}
+
+.skyBlueThumb {
+  background-color: #bff6ff;
+  color: #0095ad;
+}
+
+.dFlexTime {
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.timeStamp {
+  color: #676767;
+  margin-right: 8px;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.unreadNum {
+  margin-right: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 30px;
+
+  font-weight: 400;
+  background-color: #dd332b;
+  color: #fff7ee;
+}
+
+.dotMenuMain {
+  padding: 11px 5px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.dotMenuMain:hover {
+  background-color: rgba(217, 217, 217, 0.43);
+}
+
+.dotMenu {
+  background-color: #232323;
+  width: 3px;
+  height: 3px;
+  position: relative;
+  display: block;
+  border-radius: 30px;
+}
+
+.dotMenu::before,
+.dotMenu::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  background-color: #232323;
+  width: 3px;
+  height: 3px;
+  border-radius: 30px;
+}
+
+.dotMenu::before {
+  top: -5px;
+}
+
+.dotMenu::after {
+  top: 5px;
+}
+.noDataFound {
+  font-size: 18px;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+}
