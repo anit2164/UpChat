@@ -69,6 +69,9 @@ const ChatListing = ({
   const arrawScroll = useRef(null);
 
   let lastChatMessage;
+  const loginUserId = localStorage.getItem("EmployeeID");
+
+  let name = loginUserId;
 
   const channelMainDropdown = [
     {
@@ -207,8 +210,10 @@ const ChatListing = ({
     }
   };
 
-  let name = "Shreyash Zinzuvadia";
-  let initials = name.split(" ").reduce((acc, subname) => acc + subname[0], "");
+  // let name = "Shreyash Zinzuvadia";
+  let initials = name
+    ?.split(" ")
+    .reduce((acc, subname) => acc + subname[0], "");
 
   const handleKeyDown = async (e) => {
     if (e.key === "Enter") {
@@ -323,7 +328,7 @@ const ChatListing = ({
             return {
               id: doc.id,
               enc_channelID: allChannelItem?.enc_channelID,
-              isRead: "ChatUser_Anit" === userEmpId ? true : false,
+              isRead: loginUserId === userEmpId ? true : false,
               userEmpID: userEmpId,
               IsBookMark: false,
             };

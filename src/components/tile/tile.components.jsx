@@ -33,7 +33,7 @@ const Tile = ({
   const [counting, setCounting] = useState("");
   const [readCount, setReadCount] = useState([]);
   const [readCountTrue, setReadCountTrue] = useState([]);
-
+  const loginUserId = localStorage.getItem("EmployeeID");
   updateData?.sort((a, b) => b?.lastMessageTime - a?.lastMessageTime);
   let tempObj;
   let snoozeObj;
@@ -49,7 +49,7 @@ const Tile = ({
     const query = readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", "ChatUser_Anit")
+      .where("userEmpID", "==", loginUserId)
       .onSnapshot((snapshot) => {
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
@@ -66,7 +66,7 @@ const Tile = ({
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
-          .where("userEmpId", "==", "ChatUser_Anit")
+          .where("userEmpId", "==", loginUserId)
           .limit(pageSize)
           .onSnapshot((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -161,7 +161,7 @@ const Tile = ({
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Anit")
+        .where("userEmpId", "==", loginUserId)
         .where("isPinned", "==", false)
         .limit(pageSize)
         .get()
@@ -227,7 +227,7 @@ const Tile = ({
 
         const userChats = firestore
           .collectionGroup("user_chats")
-          .where("userEmpID", "==", "ChatUser_Anit")
+          .where("userEmpID", "==", loginUserId)
           .where("enc_channelID", "==", item?.enc_channelID);
 
         const tempUserchats = await userChats.get();
@@ -243,7 +243,7 @@ const Tile = ({
 
           const querySnapshot = await firestore
             .collectionGroup("user_chats")
-            .where("userEmpID", "==", "ChatUser_Anit")
+            .where("userEmpID", "==", loginUserId)
             .where("enc_channelID", "==", item?.enc_channelID)
             .limit(pageSize)
             .get();
@@ -269,7 +269,7 @@ const Tile = ({
       let tempArr = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
-        .where("userEmpId", "==", "ChatUser_Anit")
+        .where("userEmpId", "==", loginUserId)
         .where("isPinned", "==", false)
         .limit(pageSize)
         .get()
