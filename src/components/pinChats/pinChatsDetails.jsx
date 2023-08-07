@@ -83,21 +83,44 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }) => {
     if (value?.key === "Unpin Channel") {
       try {
         // const firestore = firebase.firestore();
-        const collectionRef = firestore
+        // const collectionRef = firestore
+        //   .collection("ChannelUserMapping")
+        //   .doc(item?.enc_channelID)
+        //   .collection("user")
+        //   .where("userEmpId", "==", loginUserId)
+        //   .get()
+        //   .then((querySnapshot) => {
+        //     querySnapshot.forEach((doc) => {
+        //       const user = doc.data();
+        //       user.isPinned = false;
+        //       doc.ref.set(user);
+        //     });
+        //   });
+        // LastPinnedGroups();
+
+        const docRef = firestore
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
-          .where("userEmpId", "==", loginUserId)
-          .limit(pageSize)
+          .where("userEmpId", "==", loginUserId);
+
+        docRef
           .get()
           .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              const user = doc.data();
-              user.isPinned = false;
-              doc.ref.set(user);
-            });
+            const document = querySnapshot.docs[0];
+            if (document) {
+              const documentRef = document.ref;
+              return documentRef.update({
+                isPinned: false,
+              });
+            }
+          })
+          .then(() => {
+            console.log("Document updated successfully");
+          })
+          .catch((error) => {
+            console.error("Error updating document:", error);
           });
-        LastPinnedGroups();
       } catch (error) {
         console.error(error);
       }

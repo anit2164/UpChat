@@ -62,25 +62,47 @@ const Tile = ({
   const channelDropdown = useCallback(async (value, item) => {
     if (value?.key === "PIN Channel") {
       try {
-        // const firestore = firebase.firestore();
-        const collectionRef = firestore
+        // const collectionRef = firestore
+        //   .collection("ChannelUserMapping")
+        //   .doc(item?.enc_channelID)
+        //   .collection("user")
+        //   .where("userEmpId", "==", loginUserId)
+        //   .limit(pageSize)
+        //   .onSnapshot((querySnapshot) => {
+        //     querySnapshot.forEach((doc) => {
+        //       const user = doc.data();
+        //       user.isPinned = true;
+        //       doc.ref.set(user);
+        //     });
+        //   });
+        // listData();
+        // LastPinnedGroups();
+        // return () => {
+        //   collectionRef();
+        // };
+        const docRef = firestore
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
-          .where("userEmpId", "==", loginUserId)
-          .limit(pageSize)
-          .onSnapshot((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              const user = doc.data();
-              user.isPinned = true;
-              doc.ref.set(user);
-            });
+          .where("userEmpId", "==", loginUserId);
+
+        docRef
+          .get()
+          .then((querySnapshot) => {
+            const document = querySnapshot.docs[0];
+            if (document) {
+              const documentRef = document.ref;
+              return documentRef.update({
+                isPinned: true,
+              });
+            }
+          })
+          .then(() => {
+            console.log("Document updated successfully");
+          })
+          .catch((error) => {
+            console.error("Error updating document:", error);
           });
-        listData();
-        LastPinnedGroups();
-        return () => {
-          collectionRef();
-        };
       } catch (error) {
         console.error(error);
       }
