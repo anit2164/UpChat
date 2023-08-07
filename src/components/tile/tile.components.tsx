@@ -11,7 +11,7 @@ import "firebase/compat/firestore";
 import { ChannelMenu } from "../../constants/application";
 import ViewHRDetailsSVG from "../../assets/svg/viewHrDetails.svg";
 import ChatListing from "../chat-list/chatListing";
-import MyContext from "../chat-list/MyContext";
+import MyContext from "../chat-list/myContext";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -334,7 +334,6 @@ const Tile = ({
   };
 
   useEffect(() => {
-    console.log(updateData, "updateDataupdateData");
     for (var i = 0; i < updateData.length; i++) {
       sum += updateData[i]?.readCount;
     }
@@ -350,9 +349,11 @@ const Tile = ({
               className={`${TileStyle.chatItem} ${
                 item?.readCount !== 0 ? TileStyle.unread : ""
               }`}
-              onClick={() => showChatList(item)}
             >
-              <div className={TileStyle.dFlex}>
+              <div
+                className={TileStyle.dFlex}
+                onClick={() => showChatList(item)}
+              >
                 <div
                   className={` ${TileStyle.chatInitialThumb} ${item?.color} `}
                 >

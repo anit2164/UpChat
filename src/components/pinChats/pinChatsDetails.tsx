@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Dropdown, Space } from "antd";
 import PinChatDetailsStyle from "./pinChatsDetails.module.css";
 import BriefcaseSVG from "../../assets/svg/briefcase.svg";
@@ -11,6 +11,7 @@ import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import ChatListing from "../chat-list/chatListing";
+import MyContext from "../chat-list/myContext";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -26,6 +27,8 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
   const [readCountTrue, setReadCountTrue] = useState([]);
   const loginUserId = localStorage.getItem("EmployeeID");
   const firestore = firebase.firestore();
+
+  const { setTotalCountPinned }: any = useContext(MyContext);
 
   let tempCountData: any = [];
   let lastDocument;
@@ -284,6 +287,13 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   };
+  var sum = 0;
+  useEffect(() => {
+    for (var i = 0; i < updateData.length; i++) {
+      sum += updateData[i]?.readCount;
+    }
+    setTotalCountPinned(sum);
+  }, [updateData]);
 
   return (
     <>
@@ -294,9 +304,11 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
               className={`${PinChatDetailsStyle.chatItem} ${
                 item?.readCount !== 0 ? PinChatDetailsStyle.unreadMsg : ""
               }`}
-              onClick={() => pinnedChatsDetails(item)}
             >
-              <div className={PinChatDetailsStyle.dFlex}>
+              <div
+                className={PinChatDetailsStyle.dFlex}
+                onClick={() => pinnedChatsDetails(item)}
+              >
                 <div
                   className={` ${PinChatDetailsStyle.chatInitialThumb} ${item?.color} `}
                 >

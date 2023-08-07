@@ -40,7 +40,7 @@ import { Provider } from "react-redux";
 // import Tile from "../tile/tile.components";
 import store from "../../redux_toolkit/store/store";
 import moment from "moment";
-import MyContext from "./MyContext";
+import MyContext from "./myContext";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -77,6 +77,8 @@ const ChatListing = ({
   const [username, setUsername] = useState("");
   const [loggeInUserDesignation, setLoggedInUserDesignation] = useState("");
   const [totalCount, setTotalCount] = useState(0);
+  const [totalCountPinned, setTotalCountPinned] = useState(0);
+
   const firestore = firebase.firestore();
 
   const bottomToTopRef: any = useRef(null);
@@ -391,7 +393,14 @@ const ChatListing = ({
           <main className={ChatListingStyles.main}>
             {toggle && (
               <>
-                <MyContext.Provider value={{ totalCount, setTotalCount }}>
+                <MyContext.Provider
+                  value={{
+                    totalCount,
+                    setTotalCount,
+                    totalCountPinned,
+                    setTotalCountPinned,
+                  }}
+                >
                   <Header setToggle={setToggle} />
                   <UpTabs />
                 </MyContext.Provider>

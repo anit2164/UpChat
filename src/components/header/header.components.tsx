@@ -4,14 +4,14 @@ import HeaderStyle from "./header.module.css";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import firebaseConfig from "../../firebase";
-import MyContext from "../chat-list/MyContext";
+import MyContext from "../chat-list/myContext";
 
 firebase.initializeApp(firebaseConfig);
 
 const Header = ({ setToggle }: any) => {
   const [data, setData] = useState([]);
   const [useName, setUsername] = useState("");
-  const { totalCount }: any = useContext(MyContext);
+  const { totalCount, totalCountPinned }: any = useContext(MyContext);
   useEffect(() => {
     // Retrive Data
     const fetchData = async () => {
@@ -41,6 +41,8 @@ const Header = ({ setToggle }: any) => {
     setUsername(loggedInData?.FullName);
   }, []);
 
+  var countDetails = totalCount + totalCountPinned;
+
   return (
     <div className={HeaderStyle.container} onClick={() => setToggle(false)}>
       <div className={HeaderStyle.containerBody}>
@@ -55,8 +57,8 @@ const Header = ({ setToggle }: any) => {
         <div className={HeaderStyle.title}>{useName}</div>
       </div>
       <div className={HeaderStyle.titleRight}>
-        {totalCount !== 0 && (
-          <span className={HeaderStyle.unreadNum}>{totalCount}</span>
+        {countDetails !== 0 && (
+          <span className={HeaderStyle.unreadNum}>{countDetails}</span>
         )}
         <ArrowDownSVG />
       </div>
