@@ -1,0 +1,74 @@
+.searchWrapper {
+  padding: 10px 14px 16px;
+  position: relative;
+  background: #fff;
+}
+
+.searchWrapper span {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  left: 31px;
+  top: 53%;
+  transform: translateY(-50%);
+}
+
+.searchWrapper span svg {
+  display: block;
+}
+
+.searchWrapper input {
+  width: 100%;
+  border: 1px solid #ebebeb;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  height: 40px;
+  padding-left: 44px;
+  color: #232323;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+input:focus {
+  outline: none;
+}
+
+.chatListWrapper {
+  background: #fff;
+  padding: 5px 2px 10px 8px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 430px;
+}
+
+@media screen and (max-height: 700px) {
+  .chatListWrapper {
+    height: 330px;
+  }
+}
+
+.chatListWrapper::-webkit-scrollbar-thumb {
+  border-radius: 5px !important;
+  background: #bfbfbf;
+}
+
+.chatListWrapper::-webkit-scrollbar-track {
+  background: #f5fcf9;
+}
+
+.chatListWrapper::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.numSnooze {
+  background-color: #1363df;
+  color: #fff;
+  height: 20px;
+  font-size: 12px;
+  line-height: 18px;
+  display: inline-block;
+  border-radius: 14px;
+  padding: 2px 6px;
+  margin-left: 4px;
+}

@@ -1,0 +1,40 @@
+.container {
+  padding: 16px 13px 8px 7px;
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+
+  align-items: center;
+}
+
+.container > div {
+  display: flex;
+  align-items: center;
+}
+
+.containerInnerHeader {
+  gap: 8px;
+  /* align-items: flex-start !important; */
+}
+
+.avatar {
+  width: 40px;
+  max-width: 40px;
+  border-radius: 50%;
+}
+
+.avatarDetails {
+  font-size: 0.8vw;
+  font-weight: 600;
+}
+
+.title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  color: #232323;
+}
+.accordionCollapsed {
+  transform: rotate(180deg);
+}
