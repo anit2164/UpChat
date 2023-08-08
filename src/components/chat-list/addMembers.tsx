@@ -4,7 +4,7 @@ import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 // import { addMemberListingHandler } from "../../redux_toolkit/slices/addMemberListing";
 import FiChevronLeftSVG from "../../assets/svg/fiChevronLeft.svg";
 import SearchSVG from "../../assets/svg/search.svg";
@@ -26,10 +26,19 @@ const AddMembers = ({
   const [sortedData, setSortedData] = useState([]);
   const [filteredDataInfo, setFilteredDataInfo] = useState([]);
 
+
+  var storageToken: any;
+  setTimeout(() => {
+    storageToken = JSON.parse(localStorage.getItem("apiKey") || "{}");
+  }, 0);
+
+  let userName = localStorage.getItem("FullName");
+  let employeeId = localStorage.getItem("EmployeeID");
+
   // const dispatch: any = useDispatch();
-  const addMemberListingdata: any = useSelector(
-    (state: any) => state?.addMemberListing
-  );
+  // const addMemberListingdata: any = useSelector(
+  //   (state: any) => state?.addMemberListing
+  // );
 
   // useEffect(() => {
   //   dispatch(addMemberListingHandler());
@@ -129,6 +138,48 @@ const AddMembers = ({
     }
   };
 
+
+  let tempArr: any = [];
+
+  for (let index = 0; index < showUserName.length; index++) {
+    let tempObj = {
+      userName: "",
+      userEmpID: "",
+    };
+
+    const element = showUserName[index];
+    (tempObj.userName = element?.userName),
+      (tempObj.userEmpID = element?.userEmpId);
+    tempArr.push(tempObj);
+  }
+  // Dot Net API call
+  const addMemberAPI = async () => {
+    try {
+      const data = {
+        channelID: allChannelItem?.allChannelItem.enc_channelID,
+        channelActionID: 1,
+        actionPerformBy_UserName: userName,
+        actionPerformBy_UserEmpID: employeeId,
+        createdByID: 0,
+        userDetails: tempArr,
+      };
+
+      const response = await axios.post(
+        "http://3.218.6.134:9096/User/UpdateUserHistory",
+        data,
+        {
+          headers: {
+            Authorization: storageToken,
+            "X-API-KEY": "QXBpS2V5TWlkZGxld2FyZQ==",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const addMembers = async () => {
     let tempObj;
     try {
@@ -147,6 +198,8 @@ const AddMembers = ({
     } catch (error) {
       console.error(error);
     }
+    // Dot Net API call
+    addMemberAPI();
   };
 
   const getRandomColor = () => {
@@ -225,10 +278,9 @@ const AddMembers = ({
                 <div className={ChatListingStyles.membersArea}>
                   <div className={ChatListingStyles.membersAreaLeft}>
                     <span
-                      className={` ${
-                        ChatListingStyles.circle
-                      } ${getRandomColor()} `}
-                      // style={{ backgroundColor: getRandomColor() }}
+                      className={` ${ChatListingStyles.circle
+                        } ${getRandomColor()} `}
+                    // style={{ backgroundColor: getRandomColor() }}
                     >
                       {item?.userInitial}
                     </span>

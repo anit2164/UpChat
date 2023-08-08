@@ -41,6 +41,7 @@ import { Provider } from "react-redux";
 import store from "../../redux_toolkit/store/store";
 import moment from "moment";
 import MyContext from "./myContext";
+import axios from "axios";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -85,6 +86,11 @@ const ChatListing = ({
   const arrawScroll = useRef(null);
 
   const loginUserId = localStorage.getItem("EmployeeID");
+
+  var storageToken: any;
+  setTimeout(() => {
+    storageToken = JSON.parse(localStorage.getItem("apiKey") || "{}");
+  }, 0);
 
   let name: any = loginUserId;
   let initials = name
@@ -184,6 +190,31 @@ const ChatListing = ({
     }
   };
 
+
+
+  const sendMessageAPI = async () => {
+    try {
+      const data = {
+        id: allChannelItem?.hrID,
+        note: messageHandler,
+      };
+
+      const response = await axios.post(
+        "http://3.218.6.134:9082/ViewAllHR/UpChatSaveHRNotes",
+        data,
+        {
+          headers: {
+            Authorization: storageToken,
+            "X-API-KEY": "QXBpS2V5TWlkZGxld2FyZQ==",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const sendMessage = async (e: any) => {
     if (messageHandler) {
       setMessageHandler("");
@@ -233,6 +264,7 @@ const ChatListing = ({
         updateChannelDateTime(allChannelItem?.enc_channelID);
         createCollection(tempEnc_ID.id);
         // dispatch(sendMessageHandler(apiObj));
+        sendMessageAPI();
       } catch (error) {
         console.error(error);
       }
@@ -290,6 +322,7 @@ const ChatListing = ({
           updateChannelDateTime(allChannelItem?.enc_channelID);
           createCollection(tempEnc_ID.id);
           // dispatch(sendMessageHandler(apiObj));
+          sendMessageAPI();
         } catch (error) {
           console.error(error);
         }
@@ -319,8 +352,8 @@ const ChatListing = ({
     const divElement: any = arrawScroll.current;
     if (
       divElement?.scrollHeight -
-        divElement?.scrollTop -
-        divElement?.clientHeight <
+      divElement?.scrollTop -
+      divElement?.clientHeight <
       filterData?.length
     ) {
       setScrollDown(true);
@@ -517,11 +550,11 @@ const ChatListing = ({
                               {GFG_Fun1(item?.date?.seconds)} |{" "}
                               {item?.date?.seconds
                                 ? new Date(item?.date?.seconds * 1000)
-                                    .toLocaleTimeString()
-                                    .replace(
-                                      /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                      "$1$3"
-                                    )
+                                  .toLocaleTimeString()
+                                  .replace(
+                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                    "$1$3"
+                                  )
                                 : item?.date}
                             </span>
                           </div>
@@ -556,11 +589,11 @@ const ChatListing = ({
                             <span className={ChatListingStyles.timeStamp}>
                               {item?.date?.seconds
                                 ? new Date(item?.date?.seconds * 1000)
-                                    .toLocaleTimeString()
-                                    .replace(
-                                      /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                      "$1$3"
-                                    )
+                                  .toLocaleTimeString()
+                                  .replace(
+                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                    "$1$3"
+                                  )
                                 : item?.date}
                             </span>
                             <Dropdown
@@ -581,13 +614,11 @@ const ChatListing = ({
                             </Dropdown>
                           </div>
                           <div
-                            className={` ${
-                              ChatListingStyles.channelMessageBox
-                            } ${
-                              username === item?.senderName
+                            className={` ${ChatListingStyles.channelMessageBox
+                              } ${username === item?.senderName
                                 ? ChatListingStyles.channelMessageRight
                                 : "null"
-                            } `}
+                              } `}
                           >
                             <p>{item?.text}</p>
                             {/* <div className={ChatListingStyles.chatReaction}>
