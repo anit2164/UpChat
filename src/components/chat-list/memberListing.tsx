@@ -126,6 +126,22 @@ const MemberListing = (allChannelItem: any) => {
     removeMemberAPI(item);
   };
 
+  let initials;
+  const userInitial = (item: any) => {
+    item = item.trimStart();
+    if (item?.split(" ").length > 1) {
+      let firstName = item?.split(" ")?.[0];
+      let lastName = item?.split(" ")?.[1];
+      item = firstName + " " + lastName;
+      initials = item
+        ?.split(" ")
+        .reduce((acc: any, subname: any) => acc + subname[0], "");
+      return initials;
+    } else {
+      return item.substring(0, 2);
+    }
+  };
+
   return (
     <>
       <div className={ChatListingStyles.channelWindowStatus}>
@@ -167,11 +183,10 @@ const MemberListing = (allChannelItem: any) => {
                             height="24"
                           /> */}
                           <span
-                            className={` ${
-                              ChatListingStyles.circle
-                            } ${getRandomColor()} `}
+                            className={` ${ChatListingStyles.circle
+                              } ${getRandomColor()} `}
                           >
-                            {item?.userInitial}
+                            {userInitial(item?.userName)}
                           </span>
                           <div className={ChatListingStyles.profileName}>
                             {item?.userName}

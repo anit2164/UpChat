@@ -417,9 +417,13 @@ const ChatListing = ({
     return moment(data).format("DD-MM-YYYY");
   };
 
-  let initials: any;
+  let initials;
   const userInitial = (item: any) => {
+    item = item.trimStart();
     if (item?.split(" ").length > 1) {
+      let firstName = item?.split(" ")?.[0];
+      let lastName = item?.split(" ")?.[1];
+      item = firstName + " " + lastName;
       initials = item
         ?.split(" ")
         .reduce((acc: any, subname: any) => acc + subname[0], "");
