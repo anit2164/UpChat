@@ -92,7 +92,7 @@ const ChatListing = ({
   }, 0);
 
   let name: any = loginUserId;
-  let initials = name
+  let initials1 = name
     ?.split(" ")
     .reduce((acc: any, subname: any) => acc + subname[0], "");
 
@@ -236,7 +236,7 @@ const ChatListing = ({
           Replied: "",
           isRepliedTo: "",
           msgRepliedId: "",
-          userInitial: initials,
+          userInitial: initials1,
         };
         let apiObj = {
           id: allChannelItem?.hrID,
@@ -293,7 +293,7 @@ const ChatListing = ({
             Replied: "",
             isRepliedTo: "",
             msgRepliedId: "",
-            userInitial: initials,
+            userInitial: initials1,
           };
           let apiObj = {
             id: allChannelItem?.hrID,
@@ -351,8 +351,8 @@ const ChatListing = ({
     const divElement: any = arrawScroll.current;
     if (
       divElement?.scrollHeight -
-        divElement?.scrollTop -
-        divElement?.clientHeight <
+      divElement?.scrollTop -
+      divElement?.clientHeight <
       filterData?.length
     ) {
       setScrollDown(true);
@@ -415,6 +415,18 @@ const ChatListing = ({
     var d = new Date(0);
     const data = new Date(d.setUTCSeconds(utcSeconds));
     return moment(data).format("DD-MM-YYYY");
+  };
+
+  let initials: any;
+  const userInitial = (item: any) => {
+    if (item?.split(" ").length > 1) {
+      initials = item
+        ?.split(" ")
+        .reduce((acc: any, subname: any) => acc + subname[0], "");
+      return initials;
+    } else {
+      return item.substring(0, 2);
+    }
   };
 
   return (
@@ -550,11 +562,11 @@ const ChatListing = ({
                             {GFG_Fun1(item?.date?.seconds)} |{" "}
                             {item?.date?.seconds
                               ? new Date(item?.date?.seconds * 1000)
-                                  .toLocaleTimeString()
-                                  .replace(
-                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                    "$1$3"
-                                  )
+                                .toLocaleTimeString()
+                                .replace(
+                                  /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                  "$1$3"
+                                )
                               : item?.date}
                           </span>
                         </div>
@@ -568,7 +580,7 @@ const ChatListing = ({
                           <div
                             className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
                           >
-                            {item?.userInitial}
+                            {userInitial(item?.senderName)}
                           </div>
                           {/* <img
                               className={ChatListingStyles.profileAvtar}
@@ -587,11 +599,11 @@ const ChatListing = ({
                           <span className={ChatListingStyles.timeStamp}>
                             {item?.date?.seconds
                               ? new Date(item?.date?.seconds * 1000)
-                                  .toLocaleTimeString()
-                                  .replace(
-                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                    "$1$3"
-                                  )
+                                .toLocaleTimeString()
+                                .replace(
+                                  /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                  "$1$3"
+                                )
                               : item?.date}
                           </span>
                           <Dropdown
@@ -612,11 +624,10 @@ const ChatListing = ({
                           </Dropdown>
                         </div>
                         <div
-                          className={` ${ChatListingStyles.channelMessageBox} ${
-                            username === item?.senderName
-                              ? ChatListingStyles.channelMessageRight
-                              : "null"
-                          } `}
+                          className={` ${ChatListingStyles.channelMessageBox} ${username === item?.senderName
+                            ? ChatListingStyles.channelMessageRight
+                            : "null"
+                            } `}
                         >
                           <p>{item?.text}</p>
                           {/* <div className={ChatListingStyles.chatReaction}>
