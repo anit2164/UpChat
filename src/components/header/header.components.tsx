@@ -57,7 +57,7 @@ const Header = ({ setToggle }: any) => {
         <div className={HeaderStyle.title}>{useName}</div>
       </div>
       <div className={HeaderStyle.titleRight}>
-        {countDetails !== 0 && (
+        {!isNaN(countDetails) && countDetails !== 0 && (
           <span className={HeaderStyle.unreadNum}>{countDetails}</span>
         )}
         <ArrowDownSVG />
