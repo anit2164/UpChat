@@ -32,11 +32,11 @@ import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 // import { useDispatch, useSelector } from "react-redux";
-// import { sendMessageHandler } from "@/redux_toolkit/slices/sendMessage";
+import { sendMessageHandler } from "../../redux_toolkit/slices/sendMessage";
 import MemberListing from "./memberListing";
 import ScrollToBottomSVG from "../../assets/svg/scrollToBottom.svg";
 import { ChannelMenu } from "../../constants/application";
-import { Provider } from "react-redux";
+// import { Provider } from "react-redux";
 // import Tile from "../tile/tile.components";
 import store from "../../redux_toolkit/store/store";
 import moment from "moment";
@@ -64,7 +64,7 @@ const ChatListing = ({
   setPinnedChatsItem,
   updateChannelDateTime,
 }: any) => {
-  // const dispatch = useDispatch();
+  // const dispatch: any = useDispatch();
   const [toggle, setToggle] = useState(false);
   const [messageHandler, setMessageHandler] = useState("");
   const [smileIcon, setSmileIcon] = useState(false);
@@ -86,7 +86,6 @@ const ChatListing = ({
   const arrawScroll = useRef(null);
 
   const loginUserId = localStorage.getItem("EmployeeID");
-
   var storageToken: any;
   setTimeout(() => {
     storageToken = JSON.parse(localStorage.getItem("apiKey") || "{}");
@@ -190,8 +189,6 @@ const ChatListing = ({
     }
   };
 
-
-
   const sendMessageAPI = async () => {
     try {
       const data = {
@@ -205,16 +202,18 @@ const ChatListing = ({
         {
           headers: {
             Authorization: storageToken,
+            // Authorization:
+            //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkNoYXRVc2VyX0FuaXQiLCJMb2dpblVzZXJJZCI6IjEwNDYyIiwiTG9naW5Vc2VyVHlwZUlkIjoiNCIsIm5iZiI6MTY5MTQ3Mzg5MCwiZXhwIjoxNjkxNTA5ODkwLCJpYXQiOjE2OTE0NzM4OTB9.MEbqmQcu4h2Kgmbpd0Jmxr_c1F_eP3Lq5WYtRIl7Hbk",
             "X-API-KEY": "QXBpS2V5TWlkZGxld2FyZQ==",
             "Content-Type": "application/json",
           },
         }
       );
+      console.log(response, "responseresponseresponse");
     } catch (error) {
       console.error(error);
     }
   };
-
   const sendMessage = async (e: any) => {
     if (messageHandler) {
       setMessageHandler("");
@@ -352,8 +351,8 @@ const ChatListing = ({
     const divElement: any = arrawScroll.current;
     if (
       divElement?.scrollHeight -
-      divElement?.scrollTop -
-      divElement?.clientHeight <
+        divElement?.scrollTop -
+        divElement?.clientHeight <
       filterData?.length
     ) {
       setScrollDown(true);
@@ -376,7 +375,6 @@ const ChatListing = ({
 
   useEffect(() => {
     try {
-      // const firestore = firebase.firestore();
       const unsubscribe = firestore
         .collection(`ChannelUserMapping/${allChannelItem?.enc_channelID}/user`)
         .onSnapshot((snapshot) => {
@@ -421,104 +419,104 @@ const ChatListing = ({
 
   return (
     <>
-      <Provider store={store}>
-        {!(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
-          <main className={ChatListingStyles.main}>
-            {toggle && (
-              <>
-                <MyContext.Provider
-                  value={{
-                    totalCount,
-                    setTotalCount,
-                    totalCountPinned,
-                    setTotalCountPinned,
-                  }}
-                >
-                  <Header setToggle={setToggle} />
-                  <UpTabs />
-                </MyContext.Provider>
-              </>
-            )}
+      {/* <Provider store={store}> */}
+      {!(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
+        <main className={ChatListingStyles.main}>
+          {toggle && (
+            <>
+              <MyContext.Provider
+                value={{
+                  totalCount,
+                  setTotalCount,
+                  totalCountPinned,
+                  setTotalCountPinned,
+                }}
+              >
+                <Header setToggle={setToggle} />
+                <UpTabs />
+              </MyContext.Provider>
+            </>
+          )}
 
-            <Collapse setToggle={setToggle} toggle={toggle} />
-          </main>
-        )}
+          <Collapse setToggle={setToggle} toggle={toggle} />
+        </main>
+      )}
 
-        {(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
-          <div
-            className={` ${ChatListingStyles.channelWindow} ${ChatListingStyles.chatListingWindow} `}
-          >
-            <div className={ChatListingStyles.channelWindowHeader}>
-              <div className={ChatListingStyles.channelHeaderLeft}>
-                {/* {activeUser === true ? "Online" : "Offline"} */}
-                <div
-                  className={` ${ChatListingStyles.chatInitialThumb} ${ChatListingStyles.blueThumb} `}
-                >
-                  {allChannelItem?.companyInitial}
-                </div>
-                <div className={ChatListingStyles.channelName}>
-                  {allChannelItem?.role} | {allChannelItem?.companyName} |{" "}
-                  {allChannelItem?.hrNumber}
-                </div>
+      {(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
+        <div
+          className={` ${ChatListingStyles.channelWindow} ${ChatListingStyles.chatListingWindow} `}
+        >
+          <div className={ChatListingStyles.channelWindowHeader}>
+            <div className={ChatListingStyles.channelHeaderLeft}>
+              {/* {activeUser === true ? "Online" : "Offline"} */}
+              <div
+                className={` ${ChatListingStyles.chatInitialThumb} ${ChatListingStyles.blueThumb} `}
+              >
+                {allChannelItem?.companyInitial}
               </div>
-              <div className={ChatListingStyles.channelHeaderRight}>
-                <Dropdown
-                  className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
-                  placement="bottomRight"
-                  menu={{
-                    items: channelMainDropdown,
-                    onClick: (value) => {
-                      chatListDropdown(value);
-                    },
-                  }}
-                  trigger={["click"]}
-                >
-                  <a onClick={(e) => e.preventDefault()}>
-                    <Space>
-                      <span className={ChatListingStyles.dotMenu}></span>
-                    </Space>
-                  </a>
-                </Dropdown>
-                <span
-                  className={ChatListingStyles.chatWindowClose}
-                  onClick={closeModal}
-                ></span>
+              <div className={ChatListingStyles.channelName}>
+                {allChannelItem?.role} | {allChannelItem?.companyName} |{" "}
+                {allChannelItem?.hrNumber}
               </div>
             </div>
-            <MemberListing allChannelItem={allChannelItem} />
-            <div
-              className={ChatListingStyles.channelWindowInner}
-              ref={arrawScroll}
-              onScroll={handleScroll}
-            >
-              {searchInChat === true && (
-                <div className={ChatListingStyles.searchInChatWrapper}>
-                  <div className={ChatListingStyles.searchInChatInner}>
-                    <>
-                      <SearchIcon className={ChatListingStyles.searchIcon} />
-                      <input
-                        type="text"
-                        placeholder="Search in chat"
-                        value={search}
-                        onChange={(e) => {
-                          setSearch(e.target.value);
+            <div className={ChatListingStyles.channelHeaderRight}>
+              <Dropdown
+                className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
+                placement="bottomRight"
+                menu={{
+                  items: channelMainDropdown,
+                  onClick: (value) => {
+                    chatListDropdown(value);
+                  },
+                }}
+                trigger={["click"]}
+              >
+                <a onClick={(e) => e.preventDefault()}>
+                  <Space>
+                    <span className={ChatListingStyles.dotMenu}></span>
+                  </Space>
+                </a>
+              </Dropdown>
+              <span
+                className={ChatListingStyles.chatWindowClose}
+                onClick={closeModal}
+              ></span>
+            </div>
+          </div>
+          <MemberListing allChannelItem={allChannelItem} />
+          <div
+            className={ChatListingStyles.channelWindowInner}
+            ref={arrawScroll}
+            onScroll={handleScroll}
+          >
+            {searchInChat === true && (
+              <div className={ChatListingStyles.searchInChatWrapper}>
+                <div className={ChatListingStyles.searchInChatInner}>
+                  <>
+                    <SearchIcon className={ChatListingStyles.searchIcon} />
+                    <input
+                      type="text"
+                      placeholder="Search in chat"
+                      value={search}
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                      }}
+                    />
+                    {search?.length !== 0 && (
+                      <span
+                        className={ChatListingStyles.closeIcon}
+                        onClick={() => {
+                          setSearch("");
+                          setSearchInChat(false);
                         }}
-                      />
-                      {search?.length !== 0 && (
-                        <span
-                          className={ChatListingStyles.closeIcon}
-                          onClick={() => {
-                            setSearch("");
-                            setSearchInChat(false);
-                          }}
-                        ></span>
-                      )}
-                    </>
-                  </div>
+                      ></span>
+                    )}
+                  </>
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* <span className={ChatListingStyles.numberOfSearch}>
+            {/* <span className={ChatListingStyles.numberOfSearch}>
                   <span className={ChatListingStyles.arrowIcon}>
                     <ArrowIcon />
                   </span>
@@ -528,100 +526,100 @@ const ChatListing = ({
                   </span>
                 </span> */}
 
-              <div
-                className={ChatListingStyles.channelWindowMessages}
-                id="content"
-              >
-                {filterData?.map((item: any, key: any) => {
-                  return (
-                    <>
-                      {item?.isActivity === true ? (
+            <div
+              className={ChatListingStyles.channelWindowMessages}
+              id="content"
+            >
+              {filterData?.map((item: any, key: any) => {
+                return (
+                  <>
+                    {item?.isActivity === true ? (
+                      <div
+                        className={ChatListingStyles.channelMessageMain}
+                        ref={bottomToTopRef}
+                      >
                         <div
-                          className={ChatListingStyles.channelMessageMain}
-                          ref={bottomToTopRef}
+                          className={ChatListingStyles.systemGeneratedHeader}
                         >
-                          <div
-                            className={ChatListingStyles.systemGeneratedHeader}
+                          <span>
+                            {item?.text} | Action By: {item?.senderName}
+                          </span>
+                          <span
+                            className={ChatListingStyles.systemGeneratedDate}
                           >
-                            <span>
-                              {item?.text} | Action By: {item?.senderName}
-                            </span>
-                            <span>
-                              {GFG_Fun1(item?.date?.seconds)} |{" "}
-                              {item?.date?.seconds
-                                ? new Date(item?.date?.seconds * 1000)
+                            {GFG_Fun1(item?.date?.seconds)} |{" "}
+                            {item?.date?.seconds
+                              ? new Date(item?.date?.seconds * 1000)
                                   .toLocaleTimeString()
                                   .replace(
                                     /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
                                     "$1$3"
                                   )
-                                : item?.date}
-                            </span>
-                          </div>
+                              : item?.date}
+                          </span>
                         </div>
-                      ) : (
-                        <div
-                          className={ChatListingStyles.channelMessageMain}
-                          ref={bottomToTopRef}
-                        >
+                      </div>
+                    ) : (
+                      <div
+                        className={ChatListingStyles.channelMessageMain}
+                        ref={bottomToTopRef}
+                      >
+                        <div className={ChatListingStyles.channelMessageInner}>
                           <div
-                            className={ChatListingStyles.channelMessageInner}
+                            className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
                           >
-                            <div
-                              className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
-                            >
-                              {item?.userInitial}
-                            </div>
-                            {/* <img
+                            {item?.userInitial}
+                          </div>
+                          {/* <img
                               className={ChatListingStyles.profileAvtar}
                               src="https://i.pravatar.cc/40"
                               width="30"
                               height="30"
                             /> */}
-                            <div className={ChatListingStyles.profileName}>
-                              {item?.senderName}
-                            </div>
-                            <span
-                              className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
-                            >
-                              {item?.senderDesignation}
-                            </span>
-                            <span className={ChatListingStyles.timeStamp}>
-                              {item?.date?.seconds
-                                ? new Date(item?.date?.seconds * 1000)
+                          <div className={ChatListingStyles.profileName}>
+                            {item?.senderName}
+                          </div>
+                          <span
+                            className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
+                          >
+                            {item?.senderDesignation}
+                          </span>
+                          <span className={ChatListingStyles.timeStamp}>
+                            {item?.date?.seconds
+                              ? new Date(item?.date?.seconds * 1000)
                                   .toLocaleTimeString()
                                   .replace(
                                     /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
                                     "$1$3"
                                   )
-                                : item?.date}
-                            </span>
-                            <Dropdown
-                              className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
-                              placement="bottomRight"
-                              menu={{
-                                items: chatDropdown,
-                              }}
-                              trigger={["click"]}
-                            >
-                              <a onClick={(e) => e.preventDefault()}>
-                                <Space>
-                                  <span
-                                    className={ChatListingStyles.dotMenu}
-                                  ></span>
-                                </Space>
-                              </a>
-                            </Dropdown>
-                          </div>
-                          <div
-                            className={` ${ChatListingStyles.channelMessageBox
-                              } ${username === item?.senderName
-                                ? ChatListingStyles.channelMessageRight
-                                : "null"
-                              } `}
+                              : item?.date}
+                          </span>
+                          <Dropdown
+                            className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
+                            placement="bottomRight"
+                            menu={{
+                              items: chatDropdown,
+                            }}
+                            trigger={["click"]}
                           >
-                            <p>{item?.text}</p>
-                            {/* <div className={ChatListingStyles.chatReaction}>
+                            <a onClick={(e) => e.preventDefault()}>
+                              <Space>
+                                <span
+                                  className={ChatListingStyles.dotMenu}
+                                ></span>
+                              </Space>
+                            </a>
+                          </Dropdown>
+                        </div>
+                        <div
+                          className={` ${ChatListingStyles.channelMessageBox} ${
+                            username === item?.senderName
+                              ? ChatListingStyles.channelMessageRight
+                              : "null"
+                          } `}
+                        >
+                          <p>{item?.text}</p>
+                          {/* <div className={ChatListingStyles.chatReaction}>
                               <div
                                 className={ChatListingStyles.chatReactionInner}
                               >
@@ -675,17 +673,17 @@ const ChatListing = ({
                                 </div>
                               </div>
                             </div> */}
-                          </div>
                         </div>
-                      )}
-                      {/* <div className={ChatListingStyles.divider}>
+                      </div>
+                    )}
+                    {/* <div className={ChatListingStyles.divider}>
                       <span>TODAY</span>
                     </div> */}
-                    </>
-                  );
-                })}
+                  </>
+                );
+              })}
 
-                {/* <div
+              {/* <div
                   className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} `}
                 >
                   <div className={ChatListingStyles.systemGeneratedHeader}>
@@ -716,13 +714,11 @@ const ChatListing = ({
                   </div>
                 </div> */}
 
-                {filterData?.length === 0 && (
-                  <p className={ChatListingStyles.noChatFound}>
-                    No Chats Found
-                  </p>
-                )}
+              {filterData?.length === 0 && (
+                <p className={ChatListingStyles.noChatFound}>No Chats Found</p>
+              )}
 
-                {/* <div className={ChatListingStyles.channelMessageMain}>
+              {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
                     className={ChatListingStyles.profileAvtar}
@@ -783,8 +779,8 @@ const ChatListing = ({
                 </div>
               </div> */}
 
-                {/* System Generated Message Starts */}
-                {/* <div
+              {/* System Generated Message Starts */}
+              {/* <div
                 className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} `}
               >
                 <div className={ChatListingStyles.systemGenerated}>
@@ -792,9 +788,9 @@ const ChatListing = ({
                   05-06-2023 | 12:24 PM
                 </div>
               </div> */}
-                {/* System Generated Message Ends */}
+              {/* System Generated Message Ends */}
 
-                {/* <div className={ChatListingStyles.channelMessageMain}>
+              {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
                     className={ChatListingStyles.profileAvtar}
@@ -833,13 +829,13 @@ const ChatListing = ({
                 </div>
               </div> */}
 
-                {/* <div className={ChatListingStyles.divider}>
+              {/* <div className={ChatListingStyles.divider}>
                 <span className={ChatListingStyles.dividerInner}>
                   2 Unread Messages
                 </span>
               </div> */}
 
-                {/* <div className={ChatListingStyles.channelMessageMain}>
+              {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
                     className={ChatListingStyles.profileAvtar}
@@ -931,37 +927,37 @@ const ChatListing = ({
                   </div>
                 </div>
               </div> */}
-                {!scrollDown && filterData?.length > 5 && (
-                  <span
-                    className={ChatListingStyles.scrollToBottom}
-                    onClick={scrollToBottom}
-                  >
-                    <ScrollToBottomSVG />
-                  </span>
-                )}
-              </div>
-            </div>
-            <div className={ChatListingStyles.channelWindowFooter}>
-              <input
-                type="text"
-                // placeholder="Please allow me sometime"
-                value={messageHandler}
-                onChange={(e: any) => setMessageHandler(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-              <span className={ChatListingStyles.channelAddMedia}>
-                <span className={ChatListingStyles.mediaPlus}></span>
-              </span>
-              <span
-                className={ChatListingStyles.channelSubmit}
-                onClick={(e: any) => sendMessage(e)}
-              >
-                <SendIcon />
-              </span>
+              {!scrollDown && filterData?.length > 5 && (
+                <span
+                  className={ChatListingStyles.scrollToBottom}
+                  onClick={scrollToBottom}
+                >
+                  <ScrollToBottomSVG />
+                </span>
+              )}
             </div>
           </div>
-        )}
-      </Provider>
+          <div className={ChatListingStyles.channelWindowFooter}>
+            <input
+              type="text"
+              // placeholder="Please allow me sometime"
+              value={messageHandler}
+              onChange={(e: any) => setMessageHandler(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <span className={ChatListingStyles.channelAddMedia}>
+              <span className={ChatListingStyles.mediaPlus}></span>
+            </span>
+            <span
+              className={ChatListingStyles.channelSubmit}
+              onClick={(e: any) => sendMessage(e)}
+            >
+              <SendIcon />
+            </span>
+          </div>
+        </div>
+      )}
+      {/* </Provider> */}
     </>
   );
 };

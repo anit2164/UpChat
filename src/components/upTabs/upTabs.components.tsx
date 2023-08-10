@@ -15,9 +15,9 @@ firebase.initializeApp(firebaseConfig);
 
 const UpTabs = () => {
   const [search, setSearch] = useState("");
-  const [data, setData] = useState([]);
+  const [allChannel, setAllChannel] = useState([]);
   const [tempArr, setTempArr] = useState([]);
-  const [dataFalse, setDataFalse] = useState([]);
+  const [pinData, setpinData] = useState([]);
   const [tempArrFalse, setTempArrFalse] = useState([]);
   const [updatePinnedChannel, setPinnedChannel] = useState(false);
   const [updateSoonzeChannel, setSoonzeChannel] = useState(false);
@@ -25,9 +25,10 @@ const UpTabs = () => {
   const [readCountTrue, setReadCountTrue] = useState([]);
   const [totalCount, setTotalCount] = useState("");
   const [unReadCount, setUnReadCount] = useState([]);
-  const firestore = firebase.firestore();
+  const [unReadCountPinned, setUnReadCountPinned] = useState([]);
 
   const loginUserId = localStorage.getItem("EmployeeID");
+  const firestore = firebase.firestore();
 
   const LastPinnedGroups = () => {
     setPinnedChannel(true);
@@ -37,16 +38,40 @@ const UpTabs = () => {
     setSoonzeChannel(true);
   };
 
+  // useEffect(() => {
+  //   // Retrive Data
+  //   const fetchData = async () => {
+  //     try {
+  //       const firestore = firebase.firestore();
+  //       const collectionRef = firestore.collection("channels");
+  //       const snapshot = await collectionRef.get();
+
+  //       const dataArray = snapshot.docs.map((doc) => ({
+  //         id: doc.id,
+  //         ...doc.data(),
+  //       }));
+  //       setData(dataArray);
+  //       setTempArr(dataArray);
+  //       setPinnedChannel(false);
+  //       setSoonzeChannel(false);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [updatePinnedChannel, updateSoonzeChannel]);
+
   let tempCount: any = [];
   const tempInfo = async (data: any) => {
     let countArr: any = {};
     // const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
-    const query = readOrUnread
+    readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
       .where("userEmpID", "==", loginUserId)
-      .limit(10)
+      .limit(20)
       .onSnapshot((snapshot) => {
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
@@ -54,60 +79,70 @@ const UpTabs = () => {
         setReadCount(tempCount);
       });
   };
+  // useEffect(() => {
+  //   try {
+  //     // UP0131
+  //     // const firestore = firebase.firestore();
+  //     let tempArr = [];
+  //     const unsubscribe = firestore
+  //       .collectionGroup(`user`)
+  //       .where("userEmpId", "==", loginUserId)
+  //       .where("isPinned", "==", false)
+  //       .limit(10)
+  //       .onSnapshot((snapshot) => {
+  //         snapshot.forEach((doc) => {
+  //           const user = doc.data();
+  //           tempArr.push(user?.channelID.toString());
+  //           tempInfo(user?.channelID.toString());
+  //         });
+  //         // for (let i = 0; i < tempArr.length; i++) {
+  //         //   tempInfo(tempArr[i]);
+  //         // }
+  //         // channelIdData(tempArr);
+  //         const collectionRef = firestore.collection("channels");
+  //         // const queryPromises = [];
+  //         while (tempArr?.length > 0) {
+  //           const batch = tempArr?.splice(0, 30);
+  //           const query = collectionRef
+  //             .where("enc_channelID", "in", batch)
+  //             .limit(10);
+  //           // .get();
+  //           // queryPromises.push(query);
+  //           query.onSnapshot((querySnapshot) => {
+  //             const mergedResults = [];
+  //             querySnapshot.forEach((doc) => {
+  //               mergedResults.push(doc.data());
+  //               console.log(doc.data());
+  //               // tempInfo(mergedResults);
+  //             });
+  //             // mergedResults.map((item)=>{
 
-  useEffect(() => {
-    try {
-      // UP0131
-      // const firestore = firebase.firestore();
-      let tempArr: any = [];
-      const unsubscribe = firestore
-        .collectionGroup(`user`)
-        .where("userEmpId", "==", loginUserId)
-        .where("isPinned", "==", false)
-        .limit(10)
-        .onSnapshot((snapshot) => {
-          snapshot.forEach((doc) => {
-            const user = doc.data();
-            tempArr.push(user?.channelID.toString());
-          });
-          for (let i = 0; i < tempArr.length; i++) {
-            tempInfo(tempArr[i]);
-          }
-          // channelIdData(tempArr);
-          const collectionRef = firestore.collection("channels");
-          // const queryPromises = [];
-          while (tempArr?.length > 0) {
-            const batch = tempArr?.splice(0, 30);
-            const query = collectionRef
-              .where("enc_channelID", "in", batch)
-              .limit(10);
-            query.onSnapshot((querySnapshot) => {
-              const mergedResults: any = [];
-              querySnapshot.forEach((doc) => {
-                mergedResults.push(doc.data());
-              });
-              setUnReadCount(mergedResults);
-              setData(mergedResults);
-              setTempArr(mergedResults);
-              setPinnedChannel(false);
-              setSoonzeChannel(false);
-            });
-          }
-        });
-      return () => {
-        unsubscribe();
-      };
-    } catch (error) {
-      console.error(error, "errororo");
-    }
-  }, [updatePinnedChannel, updateSoonzeChannel]);
+  //             //   return item.enc_channelID.includes(dataFalse?.[0]?.enc_channelID) && setDataFalse([])
+  //             // })
+
+  //             //All channel
+  //             console.log(mergedResults, "mergedResults ===== All Channel");
+  //             setAllChannel(mergedResults);
+  //             setUnReadCount(mergedResults);
+  //             setTempArr(mergedResults);
+  //             setPinnedChannel(false);
+  //             setSoonzeChannel(false);
+  //           });
+  //         }
+  //       });
+  //     return () => {
+  //       unsubscribe();
+  //     };
+  //   } catch (error) {
+  //     console.error(error, "errororo");
+  //   }
+  // }, [updatePinnedChannel, updateSoonzeChannel]);
 
   let tempCountData: any = [];
   const tempInfoData = async (data: any) => {
     let countArr: any = {};
-    // const firestore = firebase.firestore();
     const readOrUnread = firestore.collectionGroup("user_chats");
-    const query = readOrUnread
+    readOrUnread
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
       .where("userEmpID", "==", loginUserId)
@@ -120,57 +155,129 @@ const UpTabs = () => {
       });
   };
 
-  useEffect(() => {
-    // const firestore = firebase.firestore();
-    let tempArr: any = [];
+  // useEffect(() => {
+  //   // const firestore = firebase.firestore();
+  //   let tempArr = [];
 
-    // Subscribe to the collection using onSnapshot
+  //   // Subscribe to the collection using onSnapshot
+  //   const unsubscribe = firestore
+  //     .collectionGroup(`user`)
+  //     .where("userEmpId", "==", loginUserId)
+  //     .where("isPinned", "==", true)
+  //     .limit(10)
+  //     .onSnapshot((snapshot) => {
+  //       // This callback will be executed whenever there are changes to the query result
+  //       tempArr = [];
+  //       snapshot.forEach((doc) => {
+  //         const user = doc.data();
+  //         tempArr.push(user?.channelID.toString());
+  //         tempInfoData(user?.channelID.toString());
+  //       });
+
+  //       // Call tempInfoData with the latest data
+  //       // for (let i = 0; i < tempArr.length; i++) {
+  //       //   tempInfoData(tempArr[i]);
+  //       // }
+
+  //       const collectionRef = firestore.collection("channels");
+  //       const queryPromises = [];
+
+  //       // Similar to before, but now we're using onSnapshot for the individual queries
+  //       while (tempArr?.length > 0) {
+  //         const batch = tempArr.splice(0, 30);
+  //         const query = collectionRef
+  //           .where("enc_channelID", "in", batch)
+  //           .limit(10)
+  //           .onSnapshot((querySnapshot) => {
+  //             const mergedResults = [];
+  //             querySnapshot.forEach((doc) => {
+  //               mergedResults.push(doc.data());
+  //             });
+  //             console.log(mergedResults, "mergedResults ===== Pin Data");
+  //             //Pin Channel Data
+  //             setpinData(mergedResults);
+  //             setTempArrFalse(mergedResults);
+  //             setPinnedChannel(false);
+  //             setSoonzeChannel(false);
+  //           });
+  //         queryPromises.push(query);
+  //       }
+  //     });
+
+  //   // The unsubscribe function returned by onSnapshot will be used to clean up the listener
+  //   return () => unsubscribe();
+  // }, [updatePinnedChannel, updateSoonzeChannel]);
+
+  useEffect(() => {
+    let tempArrPin: any = [];
+    let tempArrUnPin: any = [];
     const unsubscribe = firestore
       .collectionGroup(`user`)
       .where("userEmpId", "==", loginUserId)
-      .where("isPinned", "==", true)
       .limit(10)
       .onSnapshot((snapshot) => {
-        // This callback will be executed whenever there are changes to the query result
-        tempArr = [];
         snapshot.forEach((doc) => {
           const user = doc.data();
-          tempArr.push(user?.channelID.toString());
+          if (user.isPinned) {
+            tempArrPin.push(user?.channelID.toString());
+            tempInfoData(user?.channelID.toString());
+          } else {
+            tempArrUnPin.push(user?.channelID.toString());
+            tempInfo(user?.channelID.toString());
+          }
         });
-
-        // Call tempInfoData with the latest data
-        for (let i = 0; i < tempArr.length; i++) {
-          tempInfoData(tempArr[i]);
-        }
-
-        const collectionRef = firestore.collection("channels");
-        const queryPromises = [];
-
-        // Similar to before, but now we're using onSnapshot for the individual queries
-        while (tempArr?.length > 0) {
-          const batch = tempArr.splice(0, 30);
-          const query = collectionRef
-            .where("enc_channelID", "in", batch)
-            .limit(10)
-            .onSnapshot((querySnapshot) => {
-              const mergedResults: any = [];
-              querySnapshot.forEach((doc) => {
-                mergedResults.push(doc.data());
-              });
-              setDataFalse(mergedResults);
-              setTempArrFalse(mergedResults);
-              setPinnedChannel(false);
-              setSoonzeChannel(false);
-            });
-          queryPromises.push(query);
-        }
+        getPinData(tempArrPin);
+        getUnpinData(tempArrUnPin);
       });
-
-    // The unsubscribe function returned by onSnapshot will be used to clean up the listener
     return () => unsubscribe();
   }, [updatePinnedChannel, updateSoonzeChannel]);
 
-  // All channel data search
+  const getPinData = (tempArr: any) => {
+    const collectionRef = firestore.collection("channels");
+    if (tempArr?.length > 0) {
+      const batch = tempArr.splice(0, 30);
+      const query = collectionRef
+        .where("enc_channelID", "in", batch)
+        .limit(10)
+        .onSnapshot((querySnapshot) => {
+          const mergedResults: any = [];
+          querySnapshot.forEach((doc) => {
+            mergedResults.push(doc.data());
+          });
+          console.log(mergedResults, "mergeResult pinnedData");
+          setpinData(mergedResults);
+          setTempArrFalse(mergedResults);
+          setPinnedChannel(false);
+          setSoonzeChannel(false);
+        });
+    } else {
+      setpinData([]);
+    }
+  };
+
+  const getUnpinData = (tempArr: any) => {
+    const collectionRef = firestore.collection("channels");
+    if (tempArr?.length > 0) {
+      const batch = tempArr?.splice(0, 30);
+      const query = collectionRef.where("enc_channelID", "in", batch).limit(10);
+      query.onSnapshot((querySnapshot) => {
+        const mergedResults: any = [];
+
+        querySnapshot.forEach((doc) => {
+          mergedResults.push(doc.data());
+        });
+        console.log(mergedResults, "mergeResultUnPinnedData");
+        setAllChannel(mergedResults);
+        setUnReadCount(mergedResults);
+        setTempArr(mergedResults);
+        setPinnedChannel(false);
+        setSoonzeChannel(false);
+      });
+    } else {
+      setUnReadCount([]);
+    }
+  };
+
   useEffect(() => {
     if (search) {
       let filteredData = tempArr?.filter((item: any) => {
@@ -180,12 +287,13 @@ const UpTabs = () => {
           item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase())
         );
       });
-      setData(filteredData);
+      setAllChannel(filteredData);
+      // setDataFalse(filteredData);
     } else {
-      setData(tempArr);
+      setAllChannel(tempArr);
     }
   }, [search]);
-  // Pinned data search
+
   useEffect(() => {
     if (search) {
       let filteredData = tempArrFalse?.filter((item: any) => {
@@ -196,33 +304,21 @@ const UpTabs = () => {
         );
       });
       // setData(filteredData);
-      setDataFalse(filteredData);
+      setpinData(filteredData);
     } else {
-      setDataFalse(tempArrFalse);
+      setpinData(tempArrFalse);
     }
   }, [search]);
 
-  const filterData = data?.filter((item: any) => {
+  const filterData = allChannel?.filter((item: any) => {
     return item?.isSnoozed === true;
   });
 
-  // useEffect(() => {
-  //   const result = data?.map((item: any) => {
-  //     const data2: any = readCount.find(
-  //       (temp: any) => item.enc_channelID === temp.enc_ChannelIDCount
-  //     );
-  //     if (data2) {
-  //       item.readCount = data2.readCount;
-  //     }
-  //     return item;
-  //   });
-  //   // setUpdateData(result);
-  //   // setData(data);
-  // }, [data, readCount]);
+  // UseEffect for unpinned groups
 
   useEffect(() => {
     let result: any = [];
-    data?.forEach((item: any) => {
+    allChannel?.forEach((item: any) => {
       const data2: any = readCount.find(
         (temp: any) => item.enc_channelID === temp.enc_ChannelIDCount
       );
@@ -240,29 +336,40 @@ const UpTabs = () => {
 
     // setUpdateData(result);
     // setData(result);
-  }, [data, readCount]);
+  }, [allChannel, readCount]);
+
+  // Result for pinned groups
 
   useEffect(() => {
-    const result = dataFalse?.map((item: any) => {
+    let result: any = [];
+    pinData?.map((item: any) => {
       const data2: any = readCountTrue.find(
         (temp: any) => item.enc_channelID === temp.enc_ChannelIDCount
       );
-      if (data2) {
-        item.readCount = data2.readCount;
-      }
-      return item;
-    });
+
+      setTimeout(() => {
+        if (data2) {
+          item.readCount = data2.readCount;
+        }
+        result.push(item);
+      });
+    }, 500);
+
+    setTimeout(() => {
+      setUnReadCountPinned(result);
+    }, 600);
+
     // setUpdateData(result);
     // setData(data);
-  }, [dataFalse, readCountTrue]);
+  }, [pinData, readCountTrue]);
 
   useEffect(() => {
-    const totalReadCount = data.reduce(
+    const totalReadCount = allChannel.reduce(
       (total: any, item: any) => total + item.readCount,
       0
     );
     setTotalCount(totalReadCount);
-  }, [totalCount, data]);
+  }, [totalCount, allChannel]);
 
   return (
     <>
@@ -297,8 +404,8 @@ const UpTabs = () => {
                 label={"Pinned Groups"}
                 isCollapsible={true}
                 search={search}
-                dataFalse={dataFalse}
-                setDataFalse={setDataFalse}
+                dataFalse={unReadCountPinned}
+                setDataFalse={setpinData}
                 LastPinnedGroups={LastPinnedGroups}
               />
               <Accordion
@@ -306,10 +413,9 @@ const UpTabs = () => {
                 label={"All Channels"}
                 isCollapsible={true}
                 search={search}
-                // data={data}
                 data={unReadCount}
                 LastPinnedGroups={LastPinnedGroups}
-                setData={setData}
+                setData={setAllChannel}
                 LastSnoozeGroups={LastSnoozeGroups}
                 readCount={readCount}
               />
@@ -331,9 +437,9 @@ const UpTabs = () => {
             <div className={UpTabsStyle.chatListWrapper}>
               <SnoozeGroupDetails
                 search={search}
-                data={data}
+                data={allChannel}
                 LastSnoozeGroups={LastSnoozeGroups}
-                setData={setData}
+                setData={setAllChannel}
               />
             </div>
           </TabPanel>

@@ -83,73 +83,44 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
     if (value?.key === "Unpin Channel") {
       try {
         // const firestore = firebase.firestore();
-        const collectionRef = firestore
+        // const collectionRef = firestore
+        //   .collection("ChannelUserMapping")
+        //   .doc(item?.enc_channelID)
+        //   .collection("user")
+        //   .where("userEmpId", "==", loginUserId)
+        //   .get()
+        //   .then((querySnapshot) => {
+        //     querySnapshot.forEach((doc) => {
+        //       const user = doc.data();
+        //       user.isPinned = false;
+        //       doc.ref.set(user);
+        //     });
+        //   });
+        // LastPinnedGroups();
+
+        const docRef = firestore
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
-          .where("userEmpId", "==", loginUserId)
-          .limit(pageSize)
+          .where("userEmpId", "==", loginUserId);
+
+        docRef
           .get()
           .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              const user = doc.data();
-              user.isPinned = false;
-              doc.ref.set(user);
-            });
-          });
-
-        try {
-          // const firestore = firebase.firestore();
-          let tempArr: any = [];
-          const unsubscribe = firestore
-            .collectionGroup(`user`)
-            .where("userEmpId", "==", loginUserId)
-            .where("isPinned", "==", true)
-            .limit(pageSize)
-            .get()
-            .then((snapshot) => {
-              snapshot.forEach((doc) => {
-                const user = doc.data();
-                tempArr.push(user?.channelID.toString());
+            const document = querySnapshot.docs[0];
+            if (document) {
+              const documentRef = document.ref;
+              return documentRef.update({
+                isPinned: false,
               });
-              for (let i = 0; i < tempArr.length; i++) {
-                tempInfoData(tempArr[i]);
-              }
-              const collectionRef = firestore.collection("channels");
-              const queryPromises = [];
-
-              while (tempArr?.length > 0) {
-                const batch = tempArr.splice(0, 30);
-                const query = collectionRef
-                  .where("enc_channelID", "in", batch)
-                  .limit(pageSize)
-                  .get();
-                queryPromises.push(query);
-              }
-
-              Promise.all(queryPromises)
-                .then((querySnapshots) => {
-                  const mergedResults: any = [];
-                  querySnapshots.forEach((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                      mergedResults.push(doc.data());
-                    });
-                  });
-                  setUpdateData(mergedResults);
-                  setTempArrFalse(mergedResults);
-                  // setPinnedChannel(false);
-                  // setSoonzeChannel(false);
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
-              // setPinnedChannel(false);
-              // setSoonzeChannel(false);
-            });
-        } catch (error) {
-          console.error(error, "errororo");
-        }
-        LastPinnedGroups();
+            }
+          })
+          .then(() => {
+            console.log("Document updated successfully");
+          })
+          .catch((error) => {
+            console.error("Error updating document:", error);
+          });
       } catch (error) {
         console.error(error);
       }
@@ -160,6 +131,90 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
       );
     }
   }, []);
+
+  // const channelDropdown = useCallback(async (value: any, item: any) => {
+  //   // tempObj = item;
+  //   // tempObj.isPinned = false;
+  //   if (value?.key === "Unpin Channel") {
+  //     try {
+  //       // const firestore = firebase.firestore();
+  //       const collectionRef = firestore
+  //         .collection("ChannelUserMapping")
+  //         .doc(item?.enc_channelID)
+  //         .collection("user")
+  //         .where("userEmpId", "==", loginUserId)
+  //         .limit(pageSize)
+  //         .get()
+  //         .then((querySnapshot) => {
+  //           querySnapshot.forEach((doc) => {
+  //             const user = doc.data();
+  //             user.isPinned = false;
+  //             doc.ref.set(user);
+  //           });
+  //         });
+
+  //       try {
+  //         // const firestore = firebase.firestore();
+  //         let tempArr: any = [];
+  //         const unsubscribe = firestore
+  //           .collectionGroup(`user`)
+  //           .where("userEmpId", "==", loginUserId)
+  //           .where("isPinned", "==", true)
+  //           .limit(pageSize)
+  //           .get()
+  //           .then((snapshot) => {
+  //             snapshot.forEach((doc) => {
+  //               const user = doc.data();
+  //               tempArr.push(user?.channelID.toString());
+  //             });
+  //             for (let i = 0; i < tempArr.length; i++) {
+  //               tempInfoData(tempArr[i]);
+  //             }
+  //             const collectionRef = firestore.collection("channels");
+  //             const queryPromises = [];
+
+  //             while (tempArr?.length > 0) {
+  //               const batch = tempArr.splice(0, 30);
+  //               const query = collectionRef
+  //                 .where("enc_channelID", "in", batch)
+  //                 .limit(pageSize)
+  //                 .get();
+  //               queryPromises.push(query);
+  //             }
+
+  //             Promise.all(queryPromises)
+  //               .then((querySnapshots) => {
+  //                 const mergedResults: any = [];
+  //                 querySnapshots.forEach((querySnapshot) => {
+  //                   querySnapshot.forEach((doc) => {
+  //                     mergedResults.push(doc.data());
+  //                   });
+  //                 });
+  //                 setUpdateData(mergedResults);
+  //                 setTempArrFalse(mergedResults);
+  //                 // setPinnedChannel(false);
+  //                 // setSoonzeChannel(false);
+  //               })
+  //               .catch((error) => {
+  //                 console.error(error);
+  //               });
+  //             // setPinnedChannel(false);
+  //             // setSoonzeChannel(false);
+  //           });
+  //       } catch (error) {
+  //         console.error(error, "errororo");
+  //       }
+  //       LastPinnedGroups();
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   } else if (value?.key === "View HR Detail Page") {
+  //     window.open(
+  //       `http://3.218.6.134:9093/allhiringrequest/${item?.hrID}`,
+  //       "_blank"
+  //     );
+  //   }
+  // }, []);
 
   let resetCount;
   const pinnedChatsDetails = async (item: any) => {
@@ -332,7 +387,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                {item?.readCount !== 0 && (
+                {item?.readCount > 0 && (
                   <div className={PinChatDetailsStyle.unreadNum}>
                     {item?.readCount}
                   </div>

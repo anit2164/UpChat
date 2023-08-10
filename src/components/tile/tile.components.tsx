@@ -66,71 +66,47 @@ const Tile = ({
   const channelDropdown = useCallback(async (value: any, item: any) => {
     if (value?.key === "PIN Channel") {
       try {
-        // const firestore = firebase.firestore();
-        const collectionRef = firestore
+        // const collectionRef = firestore
+        //   .collection("ChannelUserMapping")
+        //   .doc(item?.enc_channelID)
+        //   .collection("user")
+        //   .where("userEmpId", "==", loginUserId)
+        //   .limit(pageSize)
+        //   .onSnapshot((querySnapshot) => {
+        //     querySnapshot.forEach((doc) => {
+        //       const user = doc.data();
+        //       user.isPinned = true;
+        //       doc.ref.set(user);
+        //     });
+        //   });
+        // listData();
+        // LastPinnedGroups();
+        // return () => {
+        //   collectionRef();
+        // };
+        const docRef = firestore
           .collection("ChannelUserMapping")
           .doc(item?.enc_channelID)
           .collection("user")
-          .where("userEmpId", "==", loginUserId)
-          .limit(pageSize)
-          .onSnapshot((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              const user = doc.data();
-              user.isPinned = true;
-              doc.ref.set(user);
-            });
-          });
+          .where("userEmpId", "==", loginUserId);
 
-        try {
-          // const firestore = firebase.firestore();
-          let tempArr: any = [];
-          const unsubscribe = firestore
-            .collectionGroup(`user`)
-            .where("userEmpId", "==", loginUserId)
-            .where("isPinned", "==", false)
-            .limit(pageSize)
-            .get()
-            .then((snapshot) => {
-              snapshot.forEach((doc) => {
-                const user = doc.data();
-                tempArr.push(user?.channelID.toString());
+        docRef
+          .get()
+          .then((querySnapshot) => {
+            const document = querySnapshot.docs[0];
+            if (document) {
+              const documentRef = document.ref;
+              return documentRef.update({
+                isPinned: true,
               });
-              for (let i = 0; i < tempArr.length; i++) {
-                tempInfo(tempArr[i]);
-              }
-              // channelIdData(tempArr);
-              const collectionRef = firestore.collection("channels");
-              const queryPromises = [];
-
-              while (tempArr?.length > 0) {
-                const batch = tempArr?.splice(0, 30);
-                const query = collectionRef
-                  .where("enc_channelID", "in", batch)
-                  .limit(pageSize)
-                  .get();
-                queryPromises.push(query);
-              }
-
-              Promise.all(queryPromises)
-                .then((querySnapshots) => {
-                  const mergedResults: any = [];
-                  querySnapshots.forEach((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                      mergedResults.push(doc.data());
-                    });
-                  });
-                  setUpdateData(mergedResults);
-                  setTempArr(mergedResults);
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
-            });
-        } catch (error) {
-          console.error(error, "errororo");
-        }
-
-        LastPinnedGroups();
+            }
+          })
+          .then(() => {
+            console.log("Document updated successfully");
+          })
+          .catch((error) => {
+            console.error("Error updating document:", error);
+          });
       } catch (error) {
         console.error(error);
       }
@@ -144,7 +120,7 @@ const Tile = ({
 
         await snapshot.set(snoozeObj);
 
-        const dataArray: any = snapshot?.docs?.map((doc: any) => ({
+        const dataArray = snapshot?.docs?.map((doc: any) => ({
           id: doc.id,
           ...doc.data(),
         }));
@@ -162,6 +138,106 @@ const Tile = ({
       );
     }
   }, []);
+
+  // const channelDropdown = useCallback(async (value: any, item: any) => {
+  //   if (value?.key === "PIN Channel") {
+  //     try {
+  //       // const firestore = firebase.firestore();
+  //       const collectionRef = firestore
+  //         .collection("ChannelUserMapping")
+  //         .doc(item?.enc_channelID)
+  //         .collection("user")
+  //         .where("userEmpId", "==", loginUserId)
+  //         .limit(pageSize)
+  //         .onSnapshot((querySnapshot) => {
+  //           querySnapshot.forEach((doc) => {
+  //             const user = doc.data();
+  //             user.isPinned = true;
+  //             doc.ref.set(user);
+  //           });
+  //         });
+
+  //       try {
+  //         // const firestore = firebase.firestore();
+  //         let tempArr: any = [];
+  //         const unsubscribe = firestore
+  //           .collectionGroup(`user`)
+  //           .where("userEmpId", "==", loginUserId)
+  //           .where("isPinned", "==", false)
+  //           .limit(pageSize)
+  //           .get()
+  //           .then((snapshot) => {
+  //             snapshot.forEach((doc) => {
+  //               const user = doc.data();
+  //               tempArr.push(user?.channelID.toString());
+  //             });
+  //             for (let i = 0; i < tempArr.length; i++) {
+  //               tempInfo(tempArr[i]);
+  //             }
+  //             // channelIdData(tempArr);
+  //             const collectionRef = firestore.collection("channels");
+  //             const queryPromises = [];
+
+  //             while (tempArr?.length > 0) {
+  //               const batch = tempArr?.splice(0, 30);
+  //               const query = collectionRef
+  //                 .where("enc_channelID", "in", batch)
+  //                 .limit(pageSize)
+  //                 .get();
+  //               queryPromises.push(query);
+  //             }
+
+  //             Promise.all(queryPromises)
+  //               .then((querySnapshots) => {
+  //                 const mergedResults: any = [];
+  //                 querySnapshots.forEach((querySnapshot) => {
+  //                   querySnapshot.forEach((doc) => {
+  //                     mergedResults.push(doc.data());
+  //                   });
+  //                 });
+  //                 setUpdateData(mergedResults);
+  //                 setTempArr(mergedResults);
+  //               })
+  //               .catch((error) => {
+  //                 console.error(error);
+  //               });
+  //           });
+  //       } catch (error) {
+  //         console.error(error, "errororo");
+  //       }
+
+  //       LastPinnedGroups();
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   } else if (value?.key === "Snooze") {
+  //     snoozeObj = item;
+  //     snoozeObj.isSnoozed = true;
+  //     try {
+  //       // const firestore = firebase.firestore();
+  //       const collectionRef = firestore.collection("channels");
+  //       const snapshot: any = collectionRef.doc(snoozeObj.id);
+
+  //       await snapshot.set(snoozeObj);
+
+  //       const dataArray: any = snapshot?.docs?.map((doc: any) => ({
+  //         id: doc.id,
+  //         ...doc.data(),
+  //       }));
+
+  //       setDataNew(dataArray);
+  //       setTempArr(dataArray);
+  //       LastSnoozeGroups();
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   } else if (value?.key === "View HR Detail Page") {
+  //     window.open(
+  //       `http://3.218.6.134:9093/allhiringrequest/${item?.hrID}`,
+  //       "_blank"
+  //     );
+  //   }
+  // }, []);
   const items = [
     {
       label: ChannelMenu.PIN_CHANNEL,
@@ -377,7 +453,7 @@ const Tile = ({
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                {item?.readCount !== 0 && (
+                {item?.readCount > 0 && (
                   <div className={TileStyle.unreadNum}>{item?.readCount}</div>
                 )}
                 <Dropdown

@@ -10,6 +10,7 @@ import "firebase/compat/firestore";
 import React, { useEffect, useState } from "react";
 import AddMembers from "./addMembers";
 import ShareInvite from "./shareInvite";
+import axios from "axios";
 // import ShareInvite from "./shareInvite";
 
 firebase.initializeApp(firebaseConfig);
@@ -20,12 +21,20 @@ const MemberListing = (allChannelItem: any) => {
   const [showAddMemberModel, setShowAddMemberModel] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
 
+  var storageToken: any;
+  setTimeout(() => {
+    storageToken = JSON.parse(localStorage.getItem("apiKey") || "{}");
+  }, 0);
+
+  let userName = localStorage.getItem("FullName");
+  let employeeId = localStorage.getItem("EmployeeID");
+
   useEffect(() => {
     setHideMemberModel(false);
   }, [allChannelItem]);
 
   localStorage.setItem("LoginUserName", "Bhuvan UTS AM qa");
-  const loginUser = localStorage.getItem("LoginUserName");
+  const loginUser = localStorage.getItem("FullName");
 
   useEffect(() => {
     try {
@@ -62,14 +71,48 @@ const MemberListing = (allChannelItem: any) => {
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   };
+  // Remove Members API
+  const removeMemberAPI = async (item: any) => {
+    let tempObj = [
+      {
+        userName: item?.userName,
+        userEmpID: item?.userEmpId,
+      },
+    ];
+    // Remove For 2 and leave for 3
+    try {
+      const data = {
+        channelID: allChannelItem?.allChannelItem.enc_channelID,
+        channelActionID: item?.userName === loginUser ? 3 : 2,
+        actionPerformBy_UserName: userName,
+        actionPerformBy_UserEmpID: employeeId,
+        createdByID: 0,
+        userDetails: tempObj,
+      };
+      const response = await axios.post(
+        "http://3.218.6.134:9096/User/UpdateUserHistory",
+        data,
+        {
+          headers: {
+            Authorization: storageToken,
+            "X-API-KEY": "QXBpS2V5TWlkZGxld2FyZQ==",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response, "responseresponse");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  const removerMember = async (id: any) => {
+  const removerMember = async (item: any) => {
     try {
       const firestore = firebase.firestore();
       const collectionRef = firestore.collection(
         `ChannelUserMapping/${allChannelItem?.allChannelItem?.enc_channelID}/user`
       );
-      const snapshot = collectionRef.doc(id);
+      const snapshot = collectionRef.doc(item?.id);
       await snapshot.delete();
       let _data = await collectionRef.get();
       const dataArray = _data?.docs?.map((doc) => ({
@@ -80,6 +123,7 @@ const MemberListing = (allChannelItem: any) => {
     } catch (error) {
       console.error(error);
     }
+    removeMemberAPI(item);
   };
 
   return (
@@ -141,7 +185,7 @@ const MemberListing = (allChannelItem: any) => {
                         <span
                           className={ChatListingStyles.removeLink}
                           onClick={() => {
-                            removerMember(item?.id);
+                            removerMember(item);
                           }}
                         >
                           {item?.userName === loginUser

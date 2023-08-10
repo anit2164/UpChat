@@ -26,6 +26,10 @@ const AddMembers = ({
   const [sortedData, setSortedData] = useState([]);
   const [filteredDataInfo, setFilteredDataInfo] = useState([]);
 
+  // const dispatch: any = useDispatch();
+  // const addMemberListingdata: any = useSelector(
+  //   (state: any) => state?.addMemberListing
+  // );
 
   var storageToken: any;
   setTimeout(() => {
@@ -34,11 +38,6 @@ const AddMembers = ({
 
   let userName = localStorage.getItem("FullName");
   let employeeId = localStorage.getItem("EmployeeID");
-
-  // const dispatch: any = useDispatch();
-  // const addMemberListingdata: any = useSelector(
-  //   (state: any) => state?.addMemberListing
-  // );
 
   // useEffect(() => {
   //   dispatch(addMemberListingHandler());
@@ -138,7 +137,6 @@ const AddMembers = ({
     }
   };
 
-
   let tempArr: any = [];
 
   for (let index = 0; index < showUserName.length; index++) {
@@ -152,7 +150,7 @@ const AddMembers = ({
       (tempObj.userEmpID = element?.userEmpId);
     tempArr.push(tempObj);
   }
-  // Dot Net API call
+  // API Call For Add Members
   const addMemberAPI = async () => {
     try {
       const data = {
@@ -278,9 +276,10 @@ const AddMembers = ({
                 <div className={ChatListingStyles.membersArea}>
                   <div className={ChatListingStyles.membersAreaLeft}>
                     <span
-                      className={` ${ChatListingStyles.circle
-                        } ${getRandomColor()} `}
-                    // style={{ backgroundColor: getRandomColor() }}
+                      className={` ${
+                        ChatListingStyles.circle
+                      } ${getRandomColor()} `}
+                      // style={{ backgroundColor: getRandomColor() }}
                     >
                       {item?.userInitial}
                     </span>
