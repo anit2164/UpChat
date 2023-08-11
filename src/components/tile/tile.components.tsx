@@ -31,6 +31,7 @@ const Tile = ({
   const [listingChats, setListingChats] = useState([]);
   const [allChannelItem, setAllChannelItem] = useState<any>();
   const [readCount, setReadCount] = useState([]);
+  const [isReadInfo, setIsReadInfo] = useState({});
   const firestore = firebase.firestore();
   // const { totalCount }: any = useContext(MyContext);
   const { setTotalCount }: any = useContext(MyContext);
@@ -310,6 +311,19 @@ const Tile = ({
             reduceFirebaseCall = snapshot;
           });
 
+        const isReadCount = firestore
+          .collectionGroup("user_chats")
+          .where("userEmpID", "==", loginUserId)
+          .where("enc_channelID", "==", item?.enc_channelID)
+          .get();
+
+        isReadCount.then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const updatedIsReadInfo = { ...isReadInfo, isRead: true };
+            setIsReadInfo(updatedIsReadInfo);
+          });
+        });
+
         // Reduce firebase call
         if (reduceFirebaseCall.docs.length > 0) {
           lastDocument =
@@ -422,9 +436,8 @@ const Tile = ({
         {updateData?.map((item: any) => {
           return (
             <div
-              className={`${TileStyle.chatItem} ${
-                item?.readCount !== 0 ? TileStyle.unread : ""
-              }`}
+              className={`${TileStyle.chatItem} ${item?.readCount !== 0 ? TileStyle.unread : ""
+                }`}
             >
               <div
                 className={TileStyle.dFlex}

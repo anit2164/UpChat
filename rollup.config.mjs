@@ -13,9 +13,7 @@ export default [
   {
     input: "src/index.ts",
     output: [
-      // {
-      //   dir: "dist",
-      // },
+
       {
         file: packageJson.main,
         format: "cjs",
@@ -24,11 +22,7 @@ export default [
         file: packageJson.module,
         format: "esm",
       },
-      // {
-      //   manualChunks: {
-      //     myContext: ["myContext.tsx"],
-      //   },
-      // },
+
     ],
     plugins: [
       svgr(),

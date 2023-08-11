@@ -10,7 +10,7 @@ import React, {
 import Collapse from "../../components/collapsible/collapsible.components";
 import Header from "../header/header.components";
 import UpTabs from "../../components/upTabs/upTabs.components";
-import { Dropdown, Space } from "antd";
+import { Dropdown, Space, message } from "antd";
 import SendIcon from "../../assets/svg/fiSend.svg";
 import SearchIcon from "../../assets/svg/search.svg";
 // import ArrowIcon from "@SVG/fiArrowRight.svg";
@@ -79,6 +79,8 @@ const ChatListing = ({
   const [loggeInUserDesignation, setLoggedInUserDesignation] = useState("");
   const [totalCount, setTotalCount] = useState(0);
   const [totalCountPinned, setTotalCountPinned] = useState(0);
+  const [messageApi, contextHolder] = message.useMessage();
+
 
   const firestore = firebase.firestore();
 
@@ -209,7 +211,6 @@ const ChatListing = ({
           },
         }
       );
-      console.log(response, "responseresponseresponse");
     } catch (error) {
       console.error(error);
     }
@@ -433,9 +434,20 @@ const ChatListing = ({
     }
   };
 
+  const chatListDropdownInChat = (value: any, item: any) => {
+    if (value.key === ChannelMenu.COPY) {
+      navigator.clipboard.writeText(item);
+      messageApi.open({
+        type: "success",
+        content: "Message coppied successfully",
+      });
+    }
+  };
+
   return (
     <>
       {/* <Provider store={store}> */}
+      {contextHolder}
       {!(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
         <main className={ChatListingStyles.main}>
           {toggle && (
@@ -615,6 +627,9 @@ const ChatListing = ({
                             placement="bottomRight"
                             menu={{
                               items: chatDropdown,
+                              onClick: (value) => {
+                                chatListDropdownInChat(value, item.text);
+                              },
                             }}
                             trigger={["click"]}
                           >

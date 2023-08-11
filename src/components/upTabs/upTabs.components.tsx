@@ -112,7 +112,6 @@ const UpTabs = () => {
   //             const mergedResults = [];
   //             querySnapshot.forEach((doc) => {
   //               mergedResults.push(doc.data());
-  //               console.log(doc.data());
   //               // tempInfo(mergedResults);
   //             });
   //             // mergedResults.map((item)=>{
@@ -121,7 +120,6 @@ const UpTabs = () => {
   //             // })
 
   //             //All channel
-  //             console.log(mergedResults, "mergedResults ===== All Channel");
   //             setAllChannel(mergedResults);
   //             setUnReadCount(mergedResults);
   //             setTempArr(mergedResults);
@@ -193,7 +191,6 @@ const UpTabs = () => {
   //             querySnapshot.forEach((doc) => {
   //               mergedResults.push(doc.data());
   //             });
-  //             console.log(mergedResults, "mergedResults ===== Pin Data");
   //             //Pin Channel Data
   //             setpinData(mergedResults);
   //             setTempArrFalse(mergedResults);
@@ -244,7 +241,6 @@ const UpTabs = () => {
           querySnapshot.forEach((doc) => {
             mergedResults.push(doc.data());
           });
-          console.log(mergedResults, "mergeResult pinnedData");
           setpinData(mergedResults);
           setTempArrFalse(mergedResults);
           setPinnedChannel(false);
@@ -266,7 +262,6 @@ const UpTabs = () => {
         querySnapshot.forEach((doc) => {
           mergedResults.push(doc.data());
         });
-        console.log(mergedResults, "mergeResultUnPinnedData");
         setAllChannel(mergedResults);
         setUnReadCount(mergedResults);
         setTempArr(mergedResults);

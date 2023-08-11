@@ -25,6 +25,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
   const [pinnedChatsItem, setPinnedChatsItem] = useState<any>();
   const [tempArrFalse, setTempArrFalse] = useState([]);
   const [readCountTrue, setReadCountTrue] = useState([]);
+  const [isReadInfo, setIsReadInfo] = useState({});
   const loginUserId = localStorage.getItem("EmployeeID");
   const firestore = firebase.firestore();
 
@@ -116,10 +117,10 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
             }
           })
           .then(() => {
-            console.log("Document updated successfully");
+            // console.log("Document updated successfully");
           })
           .catch((error) => {
-            console.error("Error updating document:", error);
+            // console.error("Error updating document:", error);
           });
       } catch (error) {
         console.error(error);
@@ -234,6 +235,19 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
             const messagesData: any = snapshot.docs.map((doc) => doc.data());
             setListingChats(messagesData);
           });
+
+        const isReadCount = firestore
+          .collectionGroup("user_chats")
+          .where("userEmpID", "==", loginUserId)
+          .where("enc_channelID", "==", item?.enc_channelID)
+          .get();
+
+        isReadCount.then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const updatedIsReadInfo = { ...isReadInfo, isRead: true };
+            setIsReadInfo(updatedIsReadInfo);
+          });
+        });
 
         // Reduce firebase call
         if (reduceFirebaseCall.docs.length > 0) {
@@ -356,9 +370,8 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
         {updateData?.map((item: any) => {
           return (
             <div
-              className={`${PinChatDetailsStyle.chatItem} ${
-                item?.readCount !== 0 ? PinChatDetailsStyle.unreadMsg : ""
-              }`}
+              className={`${PinChatDetailsStyle.chatItem} ${item?.readCount !== 0 ? PinChatDetailsStyle.unreadMsg : ""
+                }`}
             >
               <div
                 className={PinChatDetailsStyle.dFlex}

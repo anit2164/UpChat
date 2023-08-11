@@ -100,7 +100,6 @@ const MemberListing = (allChannelItem: any) => {
           },
         }
       );
-      console.log(response, "responseresponse");
     } catch (error) {
       console.error(error);
     }
