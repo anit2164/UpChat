@@ -10,6 +10,7 @@ import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import SnoozeGroupDetails from "../snoozeList/snoozeGroups";
+import { limits } from "../../constants/constantLimit";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -28,6 +29,7 @@ const UpTabs = () => {
   const [unReadCountPinned, setUnReadCountPinned] = useState([]);
 
   const loginUserId = localStorage.getItem("EmployeeID");
+
   const firestore = firebase.firestore();
 
   const LastPinnedGroups = () => {
@@ -71,7 +73,7 @@ const UpTabs = () => {
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
       .where("userEmpID", "==", loginUserId)
-      .limit(20)
+      .limit(limits.pageSize)
       .onSnapshot((snapshot) => {
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
@@ -144,7 +146,7 @@ const UpTabs = () => {
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
       .where("userEmpID", "==", loginUserId)
-      .limit(10)
+      .limit(limits.pageSize)
       .onSnapshot((snapshot) => {
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
@@ -211,7 +213,7 @@ const UpTabs = () => {
     const unsubscribe = firestore
       .collectionGroup(`user`)
       .where("userEmpId", "==", loginUserId)
-      .limit(10)
+      .limit(limits.pageSize)
       .onSnapshot((snapshot) => {
         snapshot.forEach((doc) => {
           const user = doc.data();
@@ -235,7 +237,7 @@ const UpTabs = () => {
       const batch = tempArr.splice(0, 30);
       const query = collectionRef
         .where("enc_channelID", "in", batch)
-        .limit(10)
+        .limit(limits.pageSize)
         .onSnapshot((querySnapshot) => {
           const mergedResults: any = [];
           querySnapshot.forEach((doc) => {
@@ -255,7 +257,7 @@ const UpTabs = () => {
     const collectionRef = firestore.collection("channels");
     if (tempArr?.length > 0) {
       const batch = tempArr?.splice(0, 30);
-      const query = collectionRef.where("enc_channelID", "in", batch).limit(10);
+      const query = collectionRef.where("enc_channelID", "in", batch).limit(limits.pageSize);
       query.onSnapshot((querySnapshot) => {
         const mergedResults: any = [];
 

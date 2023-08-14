@@ -12,6 +12,8 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import ChatListing from "../chat-list/chatListing";
 import MyContext from "../chat-list/myContext";
+import { limits } from "../../constants/constantLimit"
+
 
 firebase.initializeApp(firebaseConfig);
 
@@ -33,7 +35,6 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
 
   let tempCountData: any = [];
   let lastDocument;
-  let pageSize = 10;
   const tempInfoData = async (data: any) => {
     let countArr: any = {};
     // const firestore = firebase.firestore();
@@ -42,7 +43,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
       .where("isRead", "==", true)
       .where("enc_channelID", "==", data)
       .where("userEmpID", "==", loginUserId);
-    const snapshot1 = await query.limit(pageSize).get();
+    const snapshot1 = await query.limit(limits.pageSize).get();
     countArr.enc_ChannelIDCount = data;
     countArr.readCount = snapshot1?.docs?.length;
     tempCountData.push(countArr);
@@ -274,7 +275,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
             .collectionGroup("user_chats")
             .where("userEmpID", "==", loginUserId)
             .where("enc_channelID", "==", item?.enc_channelID)
-            .limit(pageSize)
+            .limit(limits.pageSize)
             .get();
           querySnapshot.docs.forEach((snapshot) => {
             snapshot.ref.update(tempObj);
@@ -299,7 +300,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
         .collectionGroup(`user`)
         .where("userEmpId", "==", loginUserId)
         .where("isPinned", "==", true)
-        .limit(pageSize)
+        .limit(limits.pageSize)
         .get()
         .then((snapshot) => {
           snapshot.forEach((doc) => {
@@ -319,7 +320,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
             data.set(pinnedChatsItem);
             const query = collectionRef
               .where("enc_channelID", "in", batch)
-              .limit(pageSize)
+              .limit(limits.pageSize)
               .get();
             queryPromises.push(query);
           }

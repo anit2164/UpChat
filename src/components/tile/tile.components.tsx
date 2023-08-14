@@ -12,6 +12,8 @@ import { ChannelMenu } from "../../constants/application";
 import ViewHRDetailsSVG from "../../assets/svg/viewHrDetails.svg";
 import ChatListing from "../chat-list/chatListing";
 import MyContext from "../chat-list/myContext";
+import { limits } from "../../constants/constantLimit"
+
 
 firebase.initializeApp(firebaseConfig);
 
@@ -41,7 +43,6 @@ const Tile = ({
   let tempObj;
   let snoozeObj;
   let lastDocument: any;
-  let pageSize = 10;
 
   const loginUserId = localStorage.getItem("EmployeeID");
 
@@ -103,10 +104,10 @@ const Tile = ({
             }
           })
           .then(() => {
-            console.log("Document updated successfully");
+            // console.log("Document updated successfully");
           })
           .catch((error) => {
-            console.error("Error updating document:", error);
+            // console.error("Error updating document:", error);
           });
       } catch (error) {
         console.error(error);
@@ -115,7 +116,6 @@ const Tile = ({
       snoozeObj = item;
       snoozeObj.isSnoozed = true;
       try {
-        // const firestore = firebase.firestore();
         const collectionRef = firestore.collection("channels");
         const snapshot: any = collectionRef.doc(snoozeObj.id);
 
@@ -350,7 +350,7 @@ const Tile = ({
             .collectionGroup("user_chats")
             .where("userEmpID", "==", loginUserId)
             .where("enc_channelID", "==", item?.enc_channelID)
-            .limit(pageSize)
+            .limit(limits.pageSize)
             .get()
             .then((querySnapshot) => {
               querySnapshot.docs.forEach((snapshot) => {
@@ -377,7 +377,7 @@ const Tile = ({
         .collectionGroup(`user`)
         .where("userEmpId", "==", loginUserId)
         .where("isPinned", "==", false)
-        .limit(pageSize)
+        .limit(limits.pageSize)
         .get()
         .then((snapshot) => {
           snapshot.forEach((doc) => {
@@ -397,10 +397,9 @@ const Tile = ({
             data.set(allChannelItem);
             const query = collectionRef
               .where("enc_channelID", "in", batch)
-              .limit(pageSize)
+              .limit(limits.pageSize)
               .get();
             queryPromises.push(query);
-            console.log(query, "queryqueryquery");
           }
 
           Promise.all(queryPromises)
