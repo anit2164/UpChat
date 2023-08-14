@@ -1,5 +1,5 @@
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Accordion from "../accordion/accordion.components";
 import BriefcaseSVG from "../../assets/svg/briefcase.svg";
 import SearchSVG from "../../assets/svg/search.svg";
@@ -11,6 +11,9 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import SnoozeGroupDetails from "../snoozeList/snoozeGroups";
 import { limits } from "../../constants/constantLimit";
+import ChatSVG from "../../assets/svg/chat.svg";
+import { MyContext } from "../chat-list";
+
 
 firebase.initializeApp(firebaseConfig);
 
@@ -28,7 +31,10 @@ const UpTabs = () => {
   const [unReadCount, setUnReadCount] = useState([]);
   const [unReadCountPinned, setUnReadCountPinned] = useState([]);
 
+
   const loginUserId = localStorage.getItem("EmployeeID");
+  const { showUpChat }: any = useContext(MyContext);
+
 
   const firestore = firebase.firestore();
 
@@ -417,6 +423,13 @@ const UpTabs = () => {
                 readCount={readCount}
               />
             </div>
+
+            {showUpChat === true && (
+              <div className={UpTabsStyle.upChatClose}>
+                <ChatSVG />
+                <div className={UpTabsStyle.label}>Upchat</div>
+              </div>
+            )}
           </TabPanel>
           <TabPanel>
             <div className={UpTabsStyle.searchWrapper}>

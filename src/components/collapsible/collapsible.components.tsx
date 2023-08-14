@@ -7,7 +7,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 firebase.initializeApp(firebaseConfig);
 
-const Collapse = ({ setToggle, toggle }: any) => {
+const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
   const [showClass, setShowClass] = useState(true);
   const [data, setData] = useState([]);
 
@@ -34,22 +34,26 @@ const Collapse = ({ setToggle, toggle }: any) => {
   }, []);
   return (
     <div
-      className={` ${CollapseStyle.container} ${
-        !toggle ? CollapseStyle.toggleClose : ""
-      } `}
+      className={` ${showUpChat ? CollapseStyle.showupChatNone : CollapseStyle.container
+        } ${!toggle ? CollapseStyle.toggleClose : ""} `}
       onClick={() => {
         setToggle(!toggle);
         setShowClass(false);
+        setShowUpChat(!showUpChat);
       }}
     >
-      <div>
-        <ChatSVG />
-        <div className={CollapseStyle.label}>Upchat</div>
-      </div>
-      <div className={CollapseStyle.toggleCloseRight}>
-        {/* <span className={CollapseStyle.unreadNum}>{data?.length}</span> */}
-        <ArrowDownSVG className={CollapseStyle.fiChevronLeft} />
-      </div>
+      {!showUpChat && (
+        <>
+          <div>
+            <ChatSVG />
+            <div className={CollapseStyle.label}>Upchat</div>
+          </div>
+          <div className={CollapseStyle.toggleCloseRight}>
+            {/* <span className={CollapseStyle.unreadNum}>{data?.length}</span> */}
+            <ArrowDownSVG className={CollapseStyle.fiChevronLeft} />
+          </div>
+        </>
+      )}
     </div>
   );
 };

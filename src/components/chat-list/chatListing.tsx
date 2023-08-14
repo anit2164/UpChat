@@ -80,7 +80,7 @@ const ChatListing = ({
   const [totalCount, setTotalCount] = useState(0);
   const [totalCountPinned, setTotalCountPinned] = useState(0);
   const [messageApi, contextHolder] = message.useMessage();
-
+  const [showUpChat, setShowUpChat] = useState<any>(false);
 
   const firestore = firebase.firestore();
 
@@ -452,7 +452,7 @@ const ChatListing = ({
         <main className={ChatListingStyles.main}>
           {toggle && (
             <>
-              <MyContext.Provider
+              {/* <MyContext.Provider
                 value={{
                   totalCount,
                   setTotalCount,
@@ -462,6 +462,35 @@ const ChatListing = ({
               >
                 <Header setToggle={setToggle} />
                 <UpTabs />
+              </MyContext.Provider> */}
+              <MyContext.Provider
+                value={{
+                  totalCount,
+                  setTotalCount,
+                  totalCountPinned,
+                  setTotalCountPinned,
+                  showUpChat,
+                  setShowUpChat,
+                }}
+              >
+                <main className={ChatListingStyles.main}>
+                  {toggle && (
+                    <>
+                      <Header
+                        setToggle={setToggle}
+                        showUpChat={showUpChat}
+                        setShowUpChat={setShowUpChat}
+                      />
+                      <UpTabs />
+                    </>
+                  )}
+                  <Collapse
+                    setToggle={setToggle}
+                    toggle={toggle}
+                    showUpChat={showUpChat}
+                    setShowUpChat={setShowUpChat}
+                  />
+                </main>
               </MyContext.Provider>
             </>
           )}

@@ -8,7 +8,7 @@ import MyContext from "../chat-list/myContext";
 
 firebase.initializeApp(firebaseConfig);
 
-const Header = ({ setToggle }: any) => {
+const Header = ({ setToggle, showUpChat, setShowUpChat }: any) => {
   const [data, setData] = useState([]);
   const [useName, setUsername] = useState("");
   const { totalCount, totalCountPinned }: any = useContext(MyContext);
@@ -44,7 +44,8 @@ const Header = ({ setToggle }: any) => {
   var countDetails = totalCount + totalCountPinned;
 
   return (
-    <div className={HeaderStyle.container} onClick={() => setToggle(false)}>
+
+    <div className={HeaderStyle.container} onClick={() => { setToggle(false); setShowUpChat(!showUpChat); }}>
       <div className={HeaderStyle.containerBody}>
         <img
           src="https://www.w3schools.com/howto/img_avatar.png"

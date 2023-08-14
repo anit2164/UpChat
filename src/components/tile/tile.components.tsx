@@ -429,6 +429,50 @@ const Tile = ({
     setTotalCount(sum);
   }, [updateData]);
 
+
+  useEffect(() => {
+    for (var i = 0; i < updateData.length; i++) {
+      sum += updateData[i]?.readCount;
+    }
+    setTotalCount(sum);
+  }, [updateData]);
+
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 2;
+
+  useEffect(() => {
+    const fetchMoreData = () => {
+      setLoading(true);
+      const startIndex = (page - 2) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const newItems = updateData.slice(startIndex, endIndex);
+      setTimeout(() => {
+        setUpdateData((prevItems: any) => [...prevItems, ...newItems]);
+        setLoading(false);
+      }, 500);
+    };
+
+    fetchMoreData();
+  }, [page]);
+
+  const handleScroll = () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+    const scrollHeight = document.documentElement.scrollHeight;
+
+    if (scrollTop + windowHeight >= scrollHeight - 100 && !loading) {
+      setPage((prevPage) => prevPage + 2);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
       <div className={TileStyle.chatWrapper}>
