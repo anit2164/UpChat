@@ -81,6 +81,9 @@ const ChatListing = ({
   const [totalCountPinned, setTotalCountPinned] = useState(0);
   const [messageApi, contextHolder] = message.useMessage();
   const [showUpChat, setShowUpChat] = useState<any>(false);
+  const [mentionMembers, setMentionMembers] = useState([]);
+  const [memberFilter, setMemberFilter] = useState([]);
+  const [isTagged, setIstagged] = useState(false);
 
   const firestore = firebase.firestore();
 
@@ -442,6 +445,51 @@ const ChatListing = ({
         content: "Message coppied successfully",
       });
     }
+  };
+
+  useEffect(() => {
+    try {
+      const firestore = firebase.firestore();
+      const unsubscribe = firestore
+        .collection(`ChannelUserMapping/${allChannelItem?.enc_channelID}/user`)
+        .onSnapshot((snapshot) => {
+          const userData: any = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          // setUserDataList(userData);
+          setMemberFilter(userData);
+        });
+      return () => {
+        unsubscribe();
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  }, [allChannelItem]);
+
+  const metionUser = (e: any) => {
+    if (e.target.value.includes("@")) {
+      setIstagged(true);
+      let tempShowUserName = e.target.value.slice(1);
+      let memberFilteredData = memberFilter.filter((item: any) => {
+        return item?.userName
+          .toLowerCase()
+          .includes(tempShowUserName.toLowerCase());
+      });
+      setMentionMembers(memberFilteredData);
+      // if (messageHandler.includes("@")) {
+      // setIstagged(false);
+      // }
+    } else {
+      setMentionMembers([]);
+      setIstagged(false);
+    }
+  };
+
+  const taggedMembers = (value: any) => {
+    setMessageHandler("@" + value.userName);
+    setIstagged(false);
   };
 
   return (
@@ -1001,7 +1049,7 @@ const ChatListing = ({
               type="text"
               // placeholder="Please allow me sometime"
               value={messageHandler}
-              onChange={(e: any) => setMessageHandler(e.target.value)}
+              onChange={(e: any) => { setMessageHandler(e.target.value); metionUser(e); }}
               onKeyDown={handleKeyDown}
             />
             <span className={ChatListingStyles.channelAddMedia}>
@@ -1013,6 +1061,47 @@ const ChatListing = ({
             >
               <SendIcon />
             </span>
+
+
+
+
+            {/* User mention popup Starts */}
+            {isTagged === true && (
+              <div
+                className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.userMentionPoup} `}
+                style={{
+                  display: "block",
+                }}
+              >
+                <div className={ChatListingStyles.chatPopupInner}>
+                  {mentionMembers?.map((value: any) => {
+                    return (
+                      <div className={ChatListingStyles.membersArea}>
+                        <div className={ChatListingStyles.membersAreaLeft}>
+                          <div
+                            className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
+                          >
+                            {userInitial(value?.userName)}
+                          </div>
+                          <div
+                            className={ChatListingStyles.profileName}
+                            onClick={() => taggedMembers(value)}
+                          >
+                            {value?.userName}
+                          </div>
+                          <span
+                            className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
+                          >
+                            {value?.userDesignation}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
           </div>
         </div>
       )}

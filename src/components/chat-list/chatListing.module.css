@@ -1004,3 +1004,67 @@
   padding-left: 5px;
   text-align: right;
 }
+/* Common Styles for Popup */
+.chatPopup {
+  z-index: 1001;
+  filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.25));
+}
+.chatPopup:after {
+  content: "";
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25); */
+
+  background: #fff;
+  border-radius: 8px;
+}
+.chatPopup:before {
+  content: "";
+  /* width: 18px;
+  height: 13px; */
+  transform: rotate(180deg);
+  /* box-shadow: 0 1px 8px rgb(0 0 0 / 80%); */
+  /* background: #ffffff; */
+  border-style: solid;
+  border-width: 0 8px 13px 8px;
+  border-color: transparent transparent #fff transparent;
+  /* clip-path: polygon(1.6568542494923806px 100%, 45% 1.6568542494923806px, 14.34314575050762px 100%, 1.6568542494923806px 100%); */
+  position: absolute;
+  z-index: 1001;
+}
+.chatPopup.chatArrowBottom:before {
+  bottom: -12px;
+}
+
+.chatPopupInner {
+  position: relative;
+  z-index: 1002;
+}
+
+/* User Mention Popup */
+.userMentionPoup {
+  position: absolute;
+  bottom: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  min-width: 272px;
+}
+.userMentionPoup::before {
+  left: 50%;
+}
+.userMentionPoup .chatPopupInner {
+  padding: 16px;
+  max-height: 223px;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.userMentionPoup .chatPopupInner .membersArea:not(:last-child) {
+  margin-bottom: 16px;
+}
+/* */
