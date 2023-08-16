@@ -89,6 +89,8 @@ const ChatListing = ({
 
   const bottomToTopRef: any = useRef(null);
   const arrawScroll = useRef(null);
+  const commentRef: any = useRef();
+
 
   const loginUserId = localStorage.getItem("EmployeeID");
   var storageToken: any;
@@ -198,7 +200,7 @@ const ChatListing = ({
     try {
       const data = {
         id: allChannelItem?.hrID,
-        note: messageHandler,
+        note: commentRef.current.innerText,
       };
 
       const response = await axios.post(
@@ -219,7 +221,7 @@ const ChatListing = ({
     }
   };
   const sendMessage = async (e: any) => {
-    if (messageHandler) {
+    if (messageHandler || commentRef.current.innerText) {
       setMessageHandler("");
       setSenderClass(true);
       setScrollDown(true);
@@ -231,7 +233,7 @@ const ChatListing = ({
           hrID: allChannelItem?.hrID,
           isActivity: false,
           senderEmpID: "",
-          text: messageHandler,
+          text: commentRef.current.innerText,
           isNotes: true,
           remark: "",
           senderDesignation: loggeInUserDesignation,
@@ -247,6 +249,7 @@ const ChatListing = ({
           note: messageHandler,
         };
         // const firestore = firebase.firestore();
+        commentRef.current.innerText = "";
         const collectionRef = firestore.collection(
           `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
         );
@@ -276,7 +279,7 @@ const ChatListing = ({
 
   const handleKeyDown = async (e: any) => {
     if (e.key === "Enter") {
-      if (messageHandler) {
+      if (messageHandler || commentRef.current.innerText) {
         setMessageHandler("");
         setSenderClass(true);
         setScrollDown(true);
@@ -288,7 +291,7 @@ const ChatListing = ({
             hrID: allChannelItem?.hrID,
             isActivity: false,
             senderEmpID: "",
-            text: messageHandler,
+            text: commentRef.current.innerText,
             isNotes: true,
             remark: "",
             senderDesignation: loggeInUserDesignation,
@@ -304,6 +307,7 @@ const ChatListing = ({
             note: messageHandler,
           };
           // const firestore = firebase.firestore();
+          commentRef.current.innerText = "";
           const collectionRef = firestore.collection(
             `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
           );
@@ -468,29 +472,54 @@ const ChatListing = ({
     }
   }, [allChannelItem]);
 
-  const metionUser = (e: any) => {
-    if (e.target.value.includes("@")) {
-      setIstagged(true);
-      let tempShowUserName = e.target.value.slice(1);
-      let memberFilteredData = memberFilter.filter((item: any) => {
-        return item?.userName
-          .toLowerCase()
-          .includes(tempShowUserName.toLowerCase());
-      });
-      setMentionMembers(memberFilteredData);
-      // if (messageHandler.includes("@")) {
-      // setIstagged(false);
-      // }
-    } else {
-      setMentionMembers([]);
+  // const metionUser = (e: any) => {
+  //   if (e.target.value.includes("@")) {
+  //     setIstagged(true);
+  //     let tempShowUserName = e.target.value.slice(1);
+  //     let memberFilteredData = memberFilter.filter((item: any) => {
+  //       return item?.userName
+  //         .toLowerCase()
+  //         .includes(tempShowUserName.toLowerCase());
+  //     });
+  //     setMentionMembers(memberFilteredData);
+  //     // if (messageHandler.includes("@")) {
+  //     // setIstagged(false);
+  //     // }
+  //   } else {
+  //     setMentionMembers([]);
+  //     setIstagged(false);
+  //   }
+  // };
+
+  // const taggedMembers = (value: any) => {
+  //   setMessageHandler("@" + value.userName);
+  //   setIstagged(false);
+  // };
+
+  const onKeyPressHandler = (e: any) => {
+    let tempString = commentRef.current.innerText;
+    if (e.ctrlKey && e.which === 65) {
       setIstagged(false);
+    }
+    if (tempString.length === 0) setIstagged(false);
+    if (e.shiftKey && e.which === 50) {
+      setIstagged(true);
+    } else if (e.which === 8) {
+      if (
+        tempString[tempString.length - 1] === "@" ||
+        tempString[tempString.length] === 0
+      )
+        setIstagged(false);
+      else if (tempString.length > 0 && tempString.includes("@"))
+        setIstagged(true);
+      else if (tempString.length > 0 && !tempString.includes("@"))
+        setIstagged(false);
     }
   };
 
-  const taggedMembers = (value: any) => {
-    setMessageHandler("@" + value.userName);
-    setIstagged(false);
-  };
+
+
+
 
   return (
     <>
@@ -553,7 +582,6 @@ const ChatListing = ({
         >
           <div className={ChatListingStyles.channelWindowHeader}>
             <div className={ChatListingStyles.channelHeaderLeft}>
-              {/* {activeUser === true ? "Online" : "Offline"} */}
               <div
                 className={` ${ChatListingStyles.chatInitialThumb} ${ChatListingStyles.blueThumb} `}
               >
@@ -638,7 +666,7 @@ const ChatListing = ({
               {filterData?.map((item: any, key: any) => {
                 return (
                   <>
-                    {item?.isActivity === true ? (
+                    {item?.isActivity === true && item?.isNotes == false ? (
                       <div
                         className={ChatListingStyles.channelMessageMain}
                         ref={bottomToTopRef}
@@ -652,6 +680,25 @@ const ChatListing = ({
                           <span
                             className={ChatListingStyles.systemGeneratedDate}
                           >
+                            {GFG_Fun1(item?.date?.seconds)} |{" "}
+                            {item?.date?.seconds
+                              ? new Date(item?.date?.seconds * 1000)
+                                .toLocaleTimeString()
+                                .replace(
+                                  /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                  "$1$3"
+                                )
+                              : item?.date}
+                          </span>
+                        </div>
+                      </div>
+                    ) : item?.isNotes === true && item?.isActivity === true ? (
+                      <div className={ChatListingStyles.channelMessageMain}>
+                        <div
+                          className={ChatListingStyles.systemGeneratedIsNotes}
+                        >
+                          <span>{item?.text} | Action By: {item?.senderName}</span>
+                          <span>
                             {GFG_Fun1(item?.date?.seconds)} |{" "}
                             {item?.date?.seconds
                               ? new Date(item?.date?.seconds * 1000)
@@ -1045,13 +1092,42 @@ const ChatListing = ({
             </div>
           </div>
           <div className={ChatListingStyles.channelWindowFooter}>
-            <input
+            {/* <input
               type="text"
               // placeholder="Please allow me sometime"
               value={messageHandler}
               onChange={(e: any) => { setMessageHandler(e.target.value); metionUser(e); }}
               onKeyDown={handleKeyDown}
-            />
+            /> */}
+            <div
+              ref={commentRef}
+              id="Please allow me sometime"
+              className={ChatListingStyles.commentBox}
+              contentEditable={true}
+              placeholder="text @....."
+              onKeyDown={(e: any) => {
+                onKeyPressHandler(e);
+                handleKeyDown(e);
+              }}
+              onInput={(e: any) => {
+                if (isTagged) {
+                  let text = e.target.innerText.split("@");
+                  let userFilter = memberFilter.filter((item: any) => {
+                    return item.userName
+                      .toLowerCase()
+                      .includes(text[text.length - 1]);
+                  });
+
+                  if (userFilter.length > 0 && userFilter) {
+                    setMentionMembers(userFilter);
+                  } else {
+                    setIstagged(false);
+                  }
+                }
+              }}
+              suppressContentEditableWarning={true}
+            ></div>
+
             <span className={ChatListingStyles.channelAddMedia}>
               <span className={ChatListingStyles.mediaPlus}></span>
             </span>
@@ -1061,9 +1137,6 @@ const ChatListing = ({
             >
               <SendIcon />
             </span>
-
-
-
 
             {/* User mention popup Starts */}
             {isTagged === true && (
@@ -1085,7 +1158,16 @@ const ChatListing = ({
                           </div>
                           <div
                             className={ChatListingStyles.profileName}
-                            onClick={() => taggedMembers(value)}
+                            onClick={() => {
+                              let tempInnerHTML =
+                                commentRef.current.innerHTML.split("@");
+                              let spanTag = `&nbsp;<span id=${value?.userName} contentEditable="false" class=${ChatListingStyles.personTaggedValue}>
+                                ${value?.userName} </span>&nbsp;`;
+                              tempInnerHTML[tempInnerHTML.length - 1] = spanTag;
+                              commentRef.current.innerHTML =
+                                tempInnerHTML.join("");
+                              setIstagged(false);
+                            }}
                           >
                             {value?.userName}
                           </div>
