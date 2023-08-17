@@ -517,10 +517,6 @@ const ChatListing = ({
     }
   };
 
-
-
-
-
   return (
     <>
       {/* <Provider store={store}> */}
@@ -1092,42 +1088,43 @@ const ChatListing = ({
             </div>
           </div>
           <div className={ChatListingStyles.channelWindowFooter}>
-            {/* <input
+            <div className={ChatListingStyles.channelTextWrapper}>
+              {/* <input
               type="text"
               // placeholder="Please allow me sometime"
               value={messageHandler}
               onChange={(e: any) => { setMessageHandler(e.target.value); metionUser(e); }}
               onKeyDown={handleKeyDown}
             /> */}
-            <div
-              ref={commentRef}
-              id="Please allow me sometime"
-              className={ChatListingStyles.commentBox}
-              contentEditable={true}
-              placeholder="text @....."
-              onKeyDown={(e: any) => {
-                onKeyPressHandler(e);
-                handleKeyDown(e);
-              }}
-              onInput={(e: any) => {
-                if (isTagged) {
-                  let text = e.target.innerText.split("@");
-                  let userFilter = memberFilter.filter((item: any) => {
-                    return item.userName
-                      .toLowerCase()
-                      .includes(text[text.length - 1]);
-                  });
+              <div
+                ref={commentRef}
+                id="Please allow me sometime"
+                className={ChatListingStyles.commentBox}
+                contentEditable={true}
+                placeholder="text @....."
+                onKeyDown={(e: any) => {
+                  onKeyPressHandler(e);
+                  handleKeyDown(e);
+                }}
+                onInput={(e: any) => {
+                  if (isTagged) {
+                    let text = e.target.innerText.split("@");
+                    let userFilter = memberFilter.filter((item: any) => {
+                      return item.userName
+                        .toLowerCase()
+                        .includes(text[text.length - 1]);
+                    });
 
-                  if (userFilter.length > 0 && userFilter) {
-                    setMentionMembers(userFilter);
-                  } else {
-                    setIstagged(false);
+                    if (userFilter.length > 0 && userFilter) {
+                      setMentionMembers(userFilter);
+                    } else {
+                      setIstagged(false);
+                    }
                   }
-                }
-              }}
-              suppressContentEditableWarning={true}
-            ></div>
-
+                }}
+                suppressContentEditableWarning={true}
+              ></div>
+            </div>
             <span className={ChatListingStyles.channelAddMedia}>
               <span className={ChatListingStyles.mediaPlus}></span>
             </span>

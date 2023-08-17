@@ -11,6 +11,9 @@
   background-image: url(../../assets/images/frost-background.png);
   background-repeat: no-repeat;
 }
+.showupChatNone {
+  display: none;
+}
 .container > div {
   display: flex;
   align-items: center;

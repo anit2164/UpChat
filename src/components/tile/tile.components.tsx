@@ -34,6 +34,9 @@ const Tile = ({
   const [allChannelItem, setAllChannelItem] = useState<any>();
   const [readCount, setReadCount] = useState([]);
   const [isReadInfo, setIsReadInfo] = useState({});
+  const [loadedCount, setLoadedCount] = useState(0);
+  const [showScroll, setShowScroll] = useState(false);
+
   const firestore = firebase.firestore();
   // const { totalCount }: any = useContext(MyContext);
   const { setTotalCount }: any = useContext(MyContext);
@@ -280,7 +283,7 @@ const Tile = ({
     for (let i = 0; i < data.length; i++) {
       data[i][color] = getRandomColor();
     }
-    setUpdateData(data);
+    setUpdateData(data.slice(0, 6));
   }, [data]);
 
   let resetCount;
@@ -437,40 +440,32 @@ const Tile = ({
     setTotalCount(sum);
   }, [updateData]);
 
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 2;
-
   useEffect(() => {
-    const fetchMoreData = () => {
-      setLoading(true);
-      const startIndex = (page - 2) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      const newItems = updateData.slice(startIndex, endIndex);
-      setTimeout(() => {
-        setUpdateData((prevItems: any) => [...prevItems, ...newItems]);
-        setLoading(false);
-      }, 500);
-    };
+    if (showScroll) {
+      loadMoreData(data);
+    }
+  }, [data, showScroll]);
 
-    fetchMoreData();
-  }, [page]);
+  const loadMoreData = (dataup: any) => {
+    setShowScroll(false);
+    const newData = dataup.slice(0, loadedCount + 10);
+
+    setUpdateData(newData);
+    setLoadedCount(loadedCount + 10);
+  };
 
   const handleScroll = () => {
-    const scrollTop = document.documentElement.scrollTop;
-    const windowHeight = window.innerHeight;
-    const scrollHeight = document.documentElement.scrollHeight;
-
-    if (scrollTop + windowHeight >= scrollHeight - 100 && !loading) {
-      setPage((prevPage) => prevPage + 2);
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+      document.documentElement.offsetHeight - 100
+    ) {
+      setShowScroll(true);
     }
   };
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, true);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (

@@ -294,6 +294,11 @@
 .channelWindow .profileName {
   font-size: 14px;
   font-weight: 500;
+  line-height: 26px;
+}
+.userprofileName {
+  font-size: 14px;
+  font-weight: 600;
 }
 .profileDesignation {
   margin-left: 8px;
@@ -359,12 +364,28 @@
   border-top: 1px solid #cecccc;
   display: flex;
 }
+.channelTextWrapper {
+  flex: 1;
+  text-align: left;
+  position: relative;
+}
 .channelWindowFooter input[type="text"] {
+  /* opacity: 0; */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(100% - 32px);
+}
+.channelWindowFooter input[type="text"],
+.channelWindowFooter .channelText {
   flex: 1;
   max-height: 52px;
   border: none;
   padding: 16px;
   font-size: 12px;
+}
+.textMention {
+  font-weight: 700;
 }
 .channelAddMedia {
   padding: 8px;
@@ -1057,15 +1078,24 @@
 .userMentionPoup::before {
   left: 50%;
 }
+.userMentionPoup::after {
+  background: transparent;
+}
 .userMentionPoup .chatPopupInner {
-  padding: 16px;
+  padding: 0;
   max-height: 223px;
+  background: #fff;
+  border-radius: 8px;
+  text-align: left;
 
   overflow-x: hidden;
   overflow-y: auto;
 }
+.userMentionPoup .chatPopupInner .membersArea:hover {
+  background-color: #fff9e1;
+}
 .userMentionPoup .chatPopupInner .membersArea:not(:last-child) {
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 /* */
 .systemGeneratedIsNotes {
@@ -1095,9 +1125,9 @@
   transition: all 0.2s ease-in;
 }
 .commentBox {
-  padding: 14px 10px;
+  padding: 14px 16px;
   word-wrap: break-word;
   outline: none;
-  width: 88%;
-  font-size: 1rem;
+  font-size: 12px;
+  line-height: 20px;
 }
