@@ -114,7 +114,7 @@ const ChatListing = ({
     {
       label: ChannelMenu.BOOKMARKS,
       key: ChannelMenu.BOOKMARKS,
-      icon: <BookmarkIconDark width="12" />,
+      icon: <FiBookmarkOutlinedSVG width="12" />,
     },
     {
       label: ChannelMenu.CHANNEL_LIBRARY,
@@ -223,6 +223,7 @@ const ChatListing = ({
   const sendMessage = async (e: any) => {
     if (messageHandler || commentRef.current.innerText) {
       setMessageHandler("");
+      sendMessageAPI();
       setSenderClass(true);
       setScrollDown(true);
       try {
@@ -250,6 +251,7 @@ const ChatListing = ({
         };
         // const firestore = firebase.firestore();
         commentRef.current.innerText = "";
+
         const collectionRef = firestore.collection(
           `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
         );
@@ -260,17 +262,12 @@ const ChatListing = ({
         await snapshot.set(obj);
         await collectionRef.get();
 
-        // await collectionRef.add(obj);
-        // const d = await collectionRef.get();
 
-        // localStorage.setItem("sendername", username);
-        // getSenderName = localStorage.getItem("sendername");
         scrollToBottom();
         // updateChannel(new Date());
         updateChannelDateTime(allChannelItem?.enc_channelID);
         createCollection(tempEnc_ID.id);
         // dispatch(sendMessageHandler(apiObj));
-        sendMessageAPI();
       } catch (error) {
         console.error(error);
       }
@@ -281,6 +278,7 @@ const ChatListing = ({
     if (e.key === "Enter") {
       if (messageHandler || commentRef.current.innerText) {
         setMessageHandler("");
+        sendMessageAPI();
         setSenderClass(true);
         setScrollDown(true);
         try {
@@ -306,7 +304,6 @@ const ChatListing = ({
             id: allChannelItem?.hrID,
             note: messageHandler,
           };
-          // const firestore = firebase.firestore();
           commentRef.current.innerText = "";
           const collectionRef = firestore.collection(
             `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
@@ -319,17 +316,12 @@ const ChatListing = ({
           await snapshot.set(obj);
           await collectionRef.get();
 
-          // await collectionRef.add(obj);
-          // const d = await collectionRef.get();
 
-          // localStorage.setItem("sendername", username);
-          // getSenderName = localStorage.getItem("sendername");
           scrollToBottom();
           // updateChannel(new Date());
           updateChannelDateTime(allChannelItem?.enc_channelID);
           createCollection(tempEnc_ID.id);
           // dispatch(sendMessageHandler(apiObj));
-          sendMessageAPI();
         } catch (error) {
           console.error(error);
         }
@@ -584,8 +576,10 @@ const ChatListing = ({
                 {allChannelItem?.companyInitial}
               </div>
               <div className={ChatListingStyles.channelName}>
-                {allChannelItem?.role} | {allChannelItem?.companyName} |{" "}
-                {allChannelItem?.hrNumber}
+                <div>
+                  {allChannelItem?.role} | {allChannelItem?.companyName}
+                </div>
+                <div>{allChannelItem?.hrNumber}</div>
               </div>
             </div>
             <div className={ChatListingStyles.channelHeaderRight}>
@@ -694,7 +688,9 @@ const ChatListing = ({
                           className={ChatListingStyles.systemGeneratedIsNotes}
                         >
                           <span>{item?.text} | Action By: {item?.senderName}</span>
-                          <span>
+                          <span
+                            className={ChatListingStyles.systemGeneratedDate}
+                          >
                             {GFG_Fun1(item?.date?.seconds)} |{" "}
                             {item?.date?.seconds
                               ? new Date(item?.date?.seconds * 1000)
