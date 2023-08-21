@@ -509,6 +509,11 @@ const ChatListing = ({
     }
   };
 
+  const nameRegex = new RegExp(
+    mentionMembers?.map((item: any) => item.userName).join("|"),
+    "g"
+  );
+
   return (
     <>
       {/* <Provider store={store}> */}
@@ -764,7 +769,16 @@ const ChatListing = ({
                             : "null"
                             } `}
                         >
-                          <p>{item?.text}</p>
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: item.text.replace(
+                                nameRegex,
+                                (match: any) => `<b>${match}</b>`
+                              ),
+                            }}
+                          >
+                            {/* {item?.text} */}
+                          </p>
                           {/* <div className={ChatListingStyles.chatReaction}>
                               <div
                                 className={ChatListingStyles.chatReactionInner}
