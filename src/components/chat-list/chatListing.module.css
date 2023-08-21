@@ -214,14 +214,14 @@
   display: flex;
   flex-direction: column;
   /* align-items: end; */
-  height: 455px;
+  height: 506px;
   background: #fff;
   overflow-x: hidden;
   overflow-y: auto;
 }
 @media screen and (max-height: 700px) {
   .channelWindowInner {
-    height: 355px;
+    height: 406px;
   }
 }
 
