@@ -24,6 +24,8 @@ const Tile = ({
   LastSnoozeGroups,
   setData,
   channelIdData,
+  setUpChat,
+  upChat
 }: any) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
@@ -36,10 +38,11 @@ const Tile = ({
   const [isReadInfo, setIsReadInfo] = useState({});
   const [loadedCount, setLoadedCount] = useState(0);
   const [showScroll, setShowScroll] = useState(false);
+  const [isTileChat, setIsTileChat] = useState(false);
 
   const firestore = firebase.firestore();
-  // const { totalCount }: any = useContext(MyContext);
-  const { setTotalCount }: any = useContext(MyContext);
+
+  const { setTotalCount, setPinChat, tileChat, setTileChat }: any = useContext(MyContext);
 
   updateData?.sort((a: any, b: any) => b?.lastMessageTime - a?.lastMessageTime);
 
@@ -289,6 +292,11 @@ const Tile = ({
   let resetCount;
 
   const showChatList = async (item: any) => {
+    setUpChat("tilechat");
+    setIsTileChat(true);
+    setPinChat(false);
+    setTileChat(true);
+
     if (item?.enc_channelID !== allChannelItem?.enc_channelID) {
       resetCount = item;
       resetCount.readCount = 0;
@@ -531,7 +539,7 @@ const Tile = ({
           <span className={TileStyle.noDataFound}>No data found</span>
         )}
       </div>
-      {showChat === true && (
+      {tileChat === true && isTileChat === true && (
         <ChatListing
           showChatList={showChatList}
           showChat={showChat}
@@ -542,6 +550,9 @@ const Tile = ({
           setShowList={setShowList}
           activeUser={activeUser}
           setActiveUser={setActiveUser}
+          setUpChat={setUpChat}
+          upChat={upChat}
+          setIsTileChat={setIsTileChat}
         />
       )}
     </>

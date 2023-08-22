@@ -18,6 +18,8 @@ const Accordion = ({
   LastSnoozeGroups,
   setData,
   readCount,
+  setUpChat,
+  upChat
 }: any) => {
   const [showBody, setShowBody] = useState(true);
   const [collapseClass, setCollapseClass] = useState(false);
@@ -51,6 +53,8 @@ const Accordion = ({
           LastSnoozeGroups={LastSnoozeGroups}
           setData={setData}
           readCount={readCount}
+          setUpChat={setUpChat}
+          upChat={upChat}
         />
       )}
     </Fragment>

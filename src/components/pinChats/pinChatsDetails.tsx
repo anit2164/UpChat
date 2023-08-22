@@ -17,7 +17,7 @@ import { limits } from "../../constants/constantLimit"
 
 firebase.initializeApp(firebaseConfig);
 
-const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
+const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, upChat }: any) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
   const [activeUser, setActiveUser] = useState(false);
@@ -28,10 +28,12 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
   const [tempArrFalse, setTempArrFalse] = useState([]);
   const [readCountTrue, setReadCountTrue] = useState([]);
   const [isReadInfo, setIsReadInfo] = useState({});
+  const [isPinChat, setIsPinChat] = useState(false);
+
   const loginUserId = localStorage.getItem("EmployeeID");
   const firestore = firebase.firestore();
 
-  const { setTotalCountPinned }: any = useContext(MyContext);
+  const { setTotalCountPinned, pinChat, setPinChat, tileChat, setTileChat }: any = useContext(MyContext);
 
   let tempCountData: any = [];
   let lastDocument;
@@ -220,6 +222,11 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
 
   let resetCount;
   const pinnedChatsDetails = async (item: any) => {
+    setUpChat("pinchat");
+    setIsPinChat(true);
+    setTileChat(false);
+    setPinChat(true);
+
     if (item?.enc_channelID !== pinnedChatsItem?.enc_channelID) {
       resetCount = item;
       resetCount.readCount = 0;
@@ -430,7 +437,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
           <span className={PinChatDetailsStyle.noDataFound}>No data found</span>
         )}
       </div>
-      {showPinnedChatsList === true && (
+      {pinChat === true && isPinChat === true && (
         <ChatListing
           pinnedChatsDetails={pinnedChatsDetails}
           showPinnedChatsList={showPinnedChatsList}
@@ -442,6 +449,9 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse }: any) => {
           setPinnedChatsItem={setPinnedChatsItem}
           setActiveUser={setActiveUser}
           updateChannelDateTime={updateChannelDateTime}
+          setUpChat={setUpChat}
+          upChat={upChat}
+          setIsPinChat={setIsPinChat}
         />
       )}
     </>

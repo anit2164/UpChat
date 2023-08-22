@@ -6,6 +6,7 @@ import React, {
   useState,
   useContext,
   createContext,
+
 } from "react";
 import Collapse from "../../components/collapsible/collapsible.components";
 import Header from "../header/header.components";
@@ -63,6 +64,10 @@ const ChatListing = ({
   setAllChannelItem,
   setPinnedChatsItem,
   updateChannelDateTime,
+  setIsTileChat,
+  setIsPinChat,
+  setUpChat,
+  upChat,
 }: any) => {
   // const dispatch: any = useDispatch();
   const [toggle, setToggle] = useState(false);
@@ -84,6 +89,10 @@ const ChatListing = ({
   const [mentionMembers, setMentionMembers] = useState([]);
   const [memberFilter, setMemberFilter] = useState([]);
   const [isTagged, setIstagged] = useState(false);
+  const [tileChat, setTileChat] = useState(false);
+  const [pinChat, setPinChat] = useState(false);
+
+
 
   const firestore = firebase.firestore();
 
@@ -361,15 +370,14 @@ const ChatListing = ({
     }
   };
   const closeModal = () => {
-    if (showChat) {
-      setShowList(!showChat);
-      setAllChannelItem();
-    } else if (showPinnedChatsList) {
-      setShowPinnedChatsList(!showPinnedChatsList);
-      setPinnedChatsItem();
-    } else if (showSnoozeChatsList) {
-      setShowSnoozeChatsList(!showSnoozeChatsList);
-      setAllChannelItem();
+    if (upChat == "tilechat") {
+      setIsTileChat(false);
+      setTileChat(false);
+      setUpChat("");
+    } else if (upChat == "pinchat") {
+      setIsPinChat(false);
+      setPinChat(false);
+      setUpChat("");
     }
   };
 
@@ -541,6 +549,10 @@ const ChatListing = ({
                   setTotalCountPinned,
                   showUpChat,
                   setShowUpChat,
+                  pinChat,
+                  setPinChat,
+                  tileChat,
+                  setTileChat,
                 }}
               >
                 <main className={ChatListingStyles.main}>

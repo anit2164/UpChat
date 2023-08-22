@@ -17,6 +17,8 @@ const PinAccordian = ({
   dataFalse,
   LastPinnedGroups,
   setDataFalse,
+  setUpChat,
+  upChat
 }: any) => {
   const [showBody, setShowBody] = useState(true);
   const [collapseClass, setCollapseClass] = useState(false);
@@ -50,6 +52,8 @@ const PinAccordian = ({
           dataFalse={dataFalse}
           LastPinnedGroups={LastPinnedGroups}
           setDataFalse={setDataFalse}
+          setUpChat={setUpChat}
+          upChat={upChat}
         />
       )}
     </>

@@ -30,6 +30,7 @@ const UpTabs = () => {
   const [totalCount, setTotalCount] = useState("");
   const [unReadCount, setUnReadCount] = useState([]);
   const [unReadCountPinned, setUnReadCountPinned] = useState([]);
+  const [upChat, setUpChat] = useState("");
 
 
   const loginUserId = localStorage.getItem("EmployeeID");
@@ -410,6 +411,8 @@ const UpTabs = () => {
                 dataFalse={unReadCountPinned}
                 setDataFalse={setpinData}
                 LastPinnedGroups={LastPinnedGroups}
+                setUpChat={setUpChat}
+                upChat={upChat}
               />
               <Accordion
                 icon={<BriefcaseSVG />}
@@ -421,6 +424,8 @@ const UpTabs = () => {
                 setData={setAllChannel}
                 LastSnoozeGroups={LastSnoozeGroups}
                 readCount={readCount}
+                setUpChat={setUpChat}
+                upChat={upChat}
               />
             </div>
 
