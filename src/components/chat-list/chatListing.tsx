@@ -230,7 +230,7 @@ const ChatListing = ({
     }
   };
   const sendMessage = async (e: any) => {
-    if (messageHandler || commentRef.current.innerText) {
+    if (messageHandler || commentRef.current.innerText.length > 0) {
       setMessageHandler("");
       sendMessageAPI();
       setSenderClass(true);
@@ -285,7 +285,7 @@ const ChatListing = ({
 
   const handleKeyDown = async (e: any) => {
     if (e.key === "Enter") {
-      if (messageHandler || commentRef.current.innerText) {
+      if (messageHandler || commentRef.current.innerText.length > 0) {
         setMessageHandler("");
         sendMessageAPI();
         setSenderClass(true);

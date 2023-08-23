@@ -94,7 +94,6 @@ input:focus {
   left: 0;
   bottom: 0;
   padding: 7px 16px;
-  gap: 8px;
   cursor: pointer;
   width: 100%;
   background: rgb(206 204 204 / 50%);
