@@ -209,7 +209,7 @@ const ChatListing = ({
     try {
       const data = {
         id: allChannelItem?.hrID,
-        note: commentRef.current.innerText,
+        note: commentRef.current.innerHTML.replace(/\s+/g, " "),
       };
 
       const response = await axios.post(
@@ -285,6 +285,7 @@ const ChatListing = ({
 
   const handleKeyDown = async (e: any) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       if (messageHandler || commentRef.current.innerText.length > 0) {
         setMessageHandler("");
         sendMessageAPI();
@@ -1180,7 +1181,7 @@ const ChatListing = ({
                             onClick={() => {
                               let tempInnerHTML =
                                 commentRef.current.innerHTML.split("@");
-                              let spanTag = `&nbsp;<span id=${value?.userName} contentEditable="false" class=${ChatListingStyles.personTaggedValue}>
+                              let spanTag = `&nbsp;<span id=${value?.userEmpId} contentEditable="false" class=${ChatListingStyles.personTaggedValue}>
                                 ${value?.userName} </span>&nbsp;`;
                               tempInnerHTML[tempInnerHTML.length - 1] = spanTag;
                               commentRef.current.innerHTML =

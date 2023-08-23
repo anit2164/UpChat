@@ -42,7 +42,7 @@ input:focus {
   border-radius: 0px 0px 6px 6px;
 }
 
-@media screen and (max-height: 700px) {
+@media screen and (max-height: 650px) {
   .chatListWrapper {
     height: 377px;
   }

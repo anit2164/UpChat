@@ -219,7 +219,7 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
-@media screen and (max-height: 700px) {
+@media screen and (max-height: 650px) {
   .channelWindowInner {
     height: 406px;
   }
@@ -368,6 +368,8 @@
   flex: 1;
   text-align: left;
   position: relative;
+  max-height: 48px;
+  overflow-y: auto;
 }
 .channelWindowFooter input[type="text"] {
   /* opacity: 0; */
