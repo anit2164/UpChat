@@ -38,13 +38,13 @@ input:focus {
   padding: 5px 2px 43px 8px;
   overflow-x: hidden;
   overflow-y: auto;
-  height: 477px;
+  height: 521px;
   border-radius: 0px 0px 6px 6px;
 }
 
 @media screen and (max-height: 650px) {
   .chatListWrapper {
-    height: 377px;
+    height: 421px;
   }
 }
 
