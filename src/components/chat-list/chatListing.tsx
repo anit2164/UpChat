@@ -442,9 +442,13 @@ const ChatListing = ({
     }
   };
 
-  const chatListDropdownInChat = (value: any, item: any) => {
-    if (value.key === ChannelMenu.COPY) {
-      navigator.clipboard.writeText(item);
+  const chatListDropdownInChat = async (value: any, item: any) => {
+    if (
+      value.key === ChannelMenu.COPY &&
+      window.isSecureContext &&
+      navigator.clipboard
+    ) {
+      await navigator.clipboard.writeText(item);
       messageApi.open({
         type: "success",
         content: "Message coppied successfully",
