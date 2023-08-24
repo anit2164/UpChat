@@ -1,6 +1,6 @@
 {
   "name": "widget-demo-chat",
-  "version": "5.0.17",
+  "version": "5.0.21",
   "description": "A Component Library for Building React Applications faster",
   "scripts": {
     "rollup-build-lib": "rollup -c"
@@ -16,6 +16,7 @@
     "@rollup/plugin-typescript": "^11.0.0",
     "@svgr/rollup": "^8.0.1",
     "@types/react": "^18.0.27",
+    "@types/react-show-more-text": "^1.4.2",
     "postcss": "^8.4.25",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -47,6 +48,7 @@
     "moment": "^2.29.4",
     "path-browserify": "^1.0.1",
     "react-redux": "^8.1.2",
+    "react-show-more-text": "^1.6.2",
     "react-tabs": "^6.0.1",
     "rollup-plugin-copy": "^3.4.0",
     "util": "^0.12.5",

@@ -43,6 +43,8 @@ import store from "../../redux_toolkit/store/store";
 import moment from "moment";
 import MyContext from "./myContext";
 import axios from "axios";
+import ShowMoreText from "react-show-more-text";
+
 
 firebase.initializeApp(firebaseConfig);
 
@@ -705,11 +707,13 @@ const ChatListing = ({
                         </div>
                       </div>
                     ) : item?.isNotes === true && item?.isActivity === true ? (
-                      <div className={ChatListingStyles.channelMessageMain}>
+                      <div
+                        className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} ${ChatListingStyles.lightGreyBg} `}
+                      >
                         <div
-                          className={ChatListingStyles.systemGeneratedIsNotes}
+                          className={ChatListingStyles.systemGeneratedHeader}
                         >
-                          <span>{item?.text} | Action By: {item?.senderName}</span>
+                          <span>Action By: {item.senderName}</span>
                           <span
                             className={ChatListingStyles.systemGeneratedDate}
                           >
@@ -722,6 +726,27 @@ const ChatListing = ({
                                   "$1$3"
                                 )
                               : item?.date}
+                          </span>
+                        </div>
+                        <div
+                          className={ChatListingStyles.systemGeneratedIsNotes}
+                        >
+                          <span>
+                            <ShowMoreText
+                              lines={1}
+                              more="read more"
+                              less="read less"
+                              className="content-css"
+                              anchorClass={
+                                ChatListingStyles.show_more_less_clickable
+                              }
+                              // onClick={executeOnClick}
+                              expanded={false}
+                              width={280}
+                              truncatedEndingComponent={"... "}
+                            >
+                              {item?.text}
+                            </ShowMoreText>
                           </span>
                         </div>
                       </div>
