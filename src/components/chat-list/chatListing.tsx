@@ -44,6 +44,7 @@ import moment from "moment";
 import MyContext from "./myContext";
 import axios from "axios";
 import ShowMoreText from "react-show-more-text";
+import DOMPurify from "dompurify";
 
 
 firebase.initializeApp(firebaseConfig);
@@ -101,6 +102,7 @@ const ChatListing = ({
   const bottomToTopRef: any = useRef(null);
   const arrawScroll = useRef(null);
   const commentRef: any = useRef();
+  const sanitizer = DOMPurify.sanitize;
 
 
   const loginUserId = localStorage.getItem("EmployeeID");
@@ -529,6 +531,12 @@ const ChatListing = ({
     "g"
   );
 
+
+  const displayNotes = (notes: any) => {
+    const notesTemplate = new DOMParser().parseFromString(notes, "text/html");
+    return notesTemplate.body;
+  };
+
   return (
     <>
       {/* <Provider store={store}> */}
@@ -821,8 +829,13 @@ const ChatListing = ({
                               ? ChatListingStyles.channelMessageRight
                               : "null"
                               } `}
+                            dangerouslySetInnerHTML={{
+                              __html: sanitizer(
+                                displayNotes(item?.text).innerHTML
+                              ),
+                            }}
                           >
-                            <p
+                            {/* <p
                               dangerouslySetInnerHTML={{
                                 __html: item.text.replace(
                                   nameRegex,
@@ -830,8 +843,8 @@ const ChatListing = ({
                                 ),
                               }}
                             >
-                              {/* {item?.text} */}
-                            </p>
+
+                            </p> */}
                             {/* <div className={ChatListingStyles.chatReaction}>
                               <div
                                 className={ChatListingStyles.chatReactionInner}
