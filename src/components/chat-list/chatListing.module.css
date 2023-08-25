@@ -1127,8 +1127,8 @@
 }
 
 .personTaggedValue:hover {
-  box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.4);
-  background-color: var(--color-sunlight);
+  /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.4);
+  background-color: var(--color-sunlight); */
   transition: all 0.2s ease-in;
 }
 .commentBox {
