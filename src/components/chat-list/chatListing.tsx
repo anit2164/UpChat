@@ -681,153 +681,158 @@ const ChatListing = ({
                 return (
                   <>
                     {item?.isActivity === true && item?.isNotes == false ? (
-                      <div
-                        className={ChatListingStyles.channelMessageMain}
-                        ref={bottomToTopRef}
-                      >
+                      <div className={ChatListingStyles.channelMessageWrapper}>
                         <div
-                          className={ChatListingStyles.systemGeneratedHeader}
+                          className={ChatListingStyles.channelMessageMain}
+                          ref={bottomToTopRef}
                         >
-                          <span>
-                            {item?.text} | Action By: {item?.senderName}
-                          </span>
-                          <span
-                            className={ChatListingStyles.systemGeneratedDate}
+                          <div
+                            className={ChatListingStyles.systemGeneratedHeader}
                           >
-                            {GFG_Fun1(item?.date?.seconds)} |{" "}
-                            {item?.date?.seconds
-                              ? new Date(item?.date?.seconds * 1000)
-                                .toLocaleTimeString()
-                                .replace(
-                                  /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                  "$1$3"
-                                )
-                              : item?.date}
-                          </span>
+                            <span>
+                              {item?.text} | Action By: {item?.senderName}
+                            </span>
+                            <span
+                              className={ChatListingStyles.systemGeneratedDate}
+                            >
+                              {GFG_Fun1(item?.date?.seconds)} |{" "}
+                              {item?.date?.seconds
+                                ? new Date(item?.date?.seconds * 1000)
+                                  .toLocaleTimeString()
+                                  .replace(
+                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                    "$1$3"
+                                  )
+                                : item?.date}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     ) : item?.isNotes === true && item?.isActivity === true ? (
-                      <div
-                        className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} ${ChatListingStyles.lightGreyBg} `}
-                      >
+                      <div className={ChatListingStyles.channelMessageWrapper}>
                         <div
-                          className={ChatListingStyles.systemGeneratedHeader}
+                          className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} ${ChatListingStyles.lightGreyBg} `}
                         >
-                          <span>Action By: {item.senderName}</span>
-                          <span
-                            className={ChatListingStyles.systemGeneratedDate}
+                          <div
+                            className={ChatListingStyles.systemGeneratedHeader}
                           >
-                            {GFG_Fun1(item?.date?.seconds)} |{" "}
-                            {item?.date?.seconds
-                              ? new Date(item?.date?.seconds * 1000)
-                                .toLocaleTimeString()
-                                .replace(
-                                  /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                  "$1$3"
-                                )
-                              : item?.date}
-                          </span>
-                        </div>
-                        <div
-                          className={ChatListingStyles.systemGeneratedIsNotes}
-                        >
-                          <span>
-                            <ShowMoreText
-                              lines={1}
-                              more="read more"
-                              less="read less"
-                              className="content-css"
-                              anchorClass={
-                                ChatListingStyles.show_more_less_clickable
-                              }
-                              // onClick={executeOnClick}
-                              expanded={false}
-                              width={280}
-                              truncatedEndingComponent={"... "}
+                            <span>Action By: {item.senderName}</span>
+                            <span
+                              className={ChatListingStyles.systemGeneratedDate}
                             >
-                              {item?.text}
-                            </ShowMoreText>
-                          </span>
+                              {GFG_Fun1(item?.date?.seconds)} |{" "}
+                              {item?.date?.seconds
+                                ? new Date(item?.date?.seconds * 1000)
+                                  .toLocaleTimeString()
+                                  .replace(
+                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                    "$1$3"
+                                  )
+                                : item?.date}
+                            </span>
+                          </div>
+                          <div
+                            className={ChatListingStyles.systemGeneratedIsNotes}
+                          >
+                            <span>
+                              <ShowMoreText
+                                lines={1}
+                                more="read more"
+                                less="read less"
+                                className="content-css"
+                                anchorClass={
+                                  ChatListingStyles.show_more_less_clickable
+                                }
+                                // onClick={executeOnClick}
+                                expanded={false}
+                                width={280}
+                                truncatedEndingComponent={"... "}
+                              >
+                                {item?.text}
+                              </ShowMoreText>
+                            </span>
+                          </div>
                         </div>
                       </div>
                     ) : (
-                      <div
-                        className={ChatListingStyles.channelMessageMain}
-                        ref={bottomToTopRef}
-                      >
-                        <div className={ChatListingStyles.channelMessageInner}>
-                          <div
-                            className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
-                          >
-                            {userInitial(item?.senderName)}
-                          </div>
-                          {/* <img
+                      <div className={ChatListingStyles.channelMessageWrapper}>
+                        <div
+                          className={ChatListingStyles.channelMessageMain}
+                          ref={bottomToTopRef}
+                        >
+                          <div className={ChatListingStyles.channelMessageInner}>
+                            <div
+                              className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
+                            >
+                              {userInitial(item?.senderName)}
+                            </div>
+                            {/* <img
                               className={ChatListingStyles.profileAvtar}
                               src="https://i.pravatar.cc/40"
                               width="30"
                               height="30"
                             /> */}
-                          <div className={ChatListingStyles.profileName}>
-                            {item?.senderName}
+                            <div className={ChatListingStyles.profileName}>
+                              {item?.senderName}
+                            </div>
+                            <span
+                              className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
+                            >
+                              {item?.senderDesignation}
+                            </span>
+                            <span className={ChatListingStyles.timeStamp}>
+                              {item?.date?.seconds
+                                ? new Date(item?.date?.seconds * 1000)
+                                  .toLocaleTimeString()
+                                  .replace(
+                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                    "$1$3"
+                                  )
+                                : item?.date}
+                            </span>
+                            <Dropdown
+                              className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
+                              placement="bottomRight"
+                              menu={{
+                                items: chatDropdown,
+                                onClick: (value) => {
+                                  chatListDropdownInChat(
+                                    value,
+                                    item.text
+                                      .replace(/&nbsp;/g, " ")
+                                      .replace(/<span[^>]*>(.*?)<\/span>/g, "$1")
+                                      .replace(/\s+/g, " ")
+                                  );
+                                },
+                              }}
+                              trigger={["click"]}
+                            >
+                              <a onClick={(e) => e.preventDefault()}>
+                                <Space>
+                                  <span
+                                    className={ChatListingStyles.dotMenu}
+                                  ></span>
+                                </Space>
+                              </a>
+                            </Dropdown>
                           </div>
-                          <span
-                            className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
+                          <div
+                            className={` ${ChatListingStyles.channelMessageBox} ${username === item?.senderName
+                              ? ChatListingStyles.channelMessageRight
+                              : "null"
+                              } `}
                           >
-                            {item?.senderDesignation}
-                          </span>
-                          <span className={ChatListingStyles.timeStamp}>
-                            {item?.date?.seconds
-                              ? new Date(item?.date?.seconds * 1000)
-                                .toLocaleTimeString()
-                                .replace(
-                                  /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                  "$1$3"
-                                )
-                              : item?.date}
-                          </span>
-                          <Dropdown
-                            className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
-                            placement="bottomRight"
-                            menu={{
-                              items: chatDropdown,
-                              onClick: (value) => {
-                                chatListDropdownInChat(
-                                  value,
-                                  item.text
-                                    .replace(/&nbsp;/g, " ")
-                                    .replace(/<span[^>]*>(.*?)<\/span>/g, "$1")
-                                    .replace(/\s+/g, " ")
-                                );
-                              },
-                            }}
-                            trigger={["click"]}
-                          >
-                            <a onClick={(e) => e.preventDefault()}>
-                              <Space>
-                                <span
-                                  className={ChatListingStyles.dotMenu}
-                                ></span>
-                              </Space>
-                            </a>
-                          </Dropdown>
-                        </div>
-                        <div
-                          className={` ${ChatListingStyles.channelMessageBox} ${username === item?.senderName
-                            ? ChatListingStyles.channelMessageRight
-                            : "null"
-                            } `}
-                        >
-                          <p
-                            dangerouslySetInnerHTML={{
-                              __html: item.text.replace(
-                                nameRegex,
-                                (match: any) => `<b>${match}</b>`
-                              ),
-                            }}
-                          >
-                            {/* {item?.text} */}
-                          </p>
-                          {/* <div className={ChatListingStyles.chatReaction}>
+                            <p
+                              dangerouslySetInnerHTML={{
+                                __html: item.text.replace(
+                                  nameRegex,
+                                  (match: any) => `<b>${match}</b>`
+                                ),
+                              }}
+                            >
+                              {/* {item?.text} */}
+                            </p>
+                            {/* <div className={ChatListingStyles.chatReaction}>
                               <div
                                 className={ChatListingStyles.chatReactionInner}
                               >
@@ -881,6 +886,7 @@ const ChatListing = ({
                                 </div>
                               </div>
                             </div> */}
+                          </div>
                         </div>
                       </div>
                     )}

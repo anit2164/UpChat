@@ -349,8 +349,13 @@
   background: #e5f3ff;
   border-top-right-radius: 0;
 }
-.channelMessageBox b {
+.channelMessageBox .personTaggedValue {
+  border-radius: 0;
+  padding: 0;
   font-weight: 700;
+  background: transparent;
+  font-size: inherit;
+  text-align: left;
 }
 .channelMessageBox p {
   margin: 0;
