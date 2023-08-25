@@ -791,7 +791,13 @@ const ChatListing = ({
                             menu={{
                               items: chatDropdown,
                               onClick: (value) => {
-                                chatListDropdownInChat(value, item.text);
+                                chatListDropdownInChat(
+                                  value,
+                                  item.text
+                                    .replace(/&nbsp;/g, " ")
+                                    .replace(/<span[^>]*>(.*?)<\/span>/g, "$1")
+                                    .replace(/\s+/g, " ")
+                                );
                               },
                             }}
                             trigger={["click"]}
