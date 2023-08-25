@@ -756,7 +756,10 @@ const ChatListing = ({
                                 width={280}
                                 truncatedEndingComponent={"... "}
                               >
-                                {item?.text}
+                                {item?.text
+                                  .replace(/&nbsp;/g, " ")
+                                  .replace(/<span[^>]*>(.*?)<\/span>/g, "$1")
+                                  .replace(/\s+/g, " ")}
                               </ShowMoreText>
                             </span>
                           </div>
