@@ -286,7 +286,8 @@ const Tile = ({
     for (let i = 0; i < data.length; i++) {
       data[i][color] = getRandomColor();
     }
-    setUpdateData(data.slice(0, 6));
+    setUpdateData(data);
+    setTempArr(data);
   }, [data]);
 
   let resetCount;
