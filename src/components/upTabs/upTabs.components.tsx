@@ -13,6 +13,9 @@ import SnoozeGroupDetails from "../snoozeList/snoozeGroups";
 import { limits } from "../../constants/constantLimit";
 import ChatSVG from "../../assets/svg/chat.svg";
 import { MyContext } from "../chat-list";
+import { AiOutlineLeft } from "react-icons/ai";
+import { AiOutlineRight } from "react-icons/ai";
+
 
 
 firebase.initializeApp(firebaseConfig);
@@ -31,6 +34,9 @@ const UpTabs = () => {
   const [unReadCount, setUnReadCount] = useState([]);
   const [unReadCountPinned, setUnReadCountPinned] = useState([]);
   const [upChat, setUpChat] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const dataPerPage = 10;
 
 
   const loginUserId = localStorage.getItem("EmployeeID");
@@ -70,6 +76,19 @@ const UpTabs = () => {
 
   //   fetchData();
   // }, [updatePinnedChannel, updateSoonzeChannel]);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+      // getUnpinData(tempArr);
+    }
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+    // getUnpinData(tempArr);
+  };
+
 
   let tempCount: any = [];
   const tempInfo = async (data: any) => {
@@ -233,10 +252,10 @@ const UpTabs = () => {
           }
         });
         getPinData(tempArrPin);
-        getUnpinData(tempArrUnPin);
+        getUnpinData(tempArrUnPin, currentPage);
       });
     return () => unsubscribe();
-  }, [updatePinnedChannel, updateSoonzeChannel]);
+  }, [updatePinnedChannel, updateSoonzeChannel, currentPage]);
 
   const getPinData = (tempArr: any) => {
     const collectionRef = firestore.collection("channels");
@@ -260,25 +279,51 @@ const UpTabs = () => {
     }
   };
 
-  const getUnpinData = (tempArr: any) => {
-    const collectionRef = firestore.collection("channels");
-    if (tempArr?.length > 0) {
-      const batch = tempArr?.splice(0, 30);
-      const query = collectionRef.where("enc_channelID", "in", batch).limit(limits.pageSize);
-      query.onSnapshot((querySnapshot) => {
-        const mergedResults: any = [];
+  // const getUnpinData = (tempArr: any) => {
+  //   const collectionRef = firestore.collection("channels");
+  //   if (tempArr?.length > 0) {
+  //     const batch = tempArr?.splice(0, 30);
+  //     const query = collectionRef.where("enc_channelID", "in", batch).limit(limits.pageSize);
+  //     query.onSnapshot((querySnapshot) => {
+  //       const mergedResults: any = [];
 
-        querySnapshot.forEach((doc) => {
-          mergedResults.push(doc.data());
-        });
+  //       querySnapshot.forEach((doc) => {
+  //         mergedResults.push(doc.data());
+  //       });
+  //       setAllChannel(mergedResults);
+  //       setUnReadCount(mergedResults);
+  //       setTempArr(mergedResults);
+  //       setPinnedChannel(false);
+  //       setSoonzeChannel(false);
+  //     });
+  //   } else {
+  //     setUnReadCount([]);
+  //   }
+  // };
+  const getUnpinData = async (tempArr: any, pageNo: any) => {
+    try {
+      const collectionRef = firestore.collection("channels");
+      if (tempArr?.length > 0) {
+        const startIndex = (pageNo - 1) * dataPerPage;
+        console.log('startIndex', startIndex, startIndex + dataPerPage);
+        const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
+
+        const querySnapshot = await collectionRef
+          .where("enc_channelID", "in", batch)
+          .limit(dataPerPage)
+          .get();
+
+        const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
         setAllChannel(mergedResults);
         setUnReadCount(mergedResults);
         setTempArr(mergedResults);
         setPinnedChannel(false);
         setSoonzeChannel(false);
-      });
-    } else {
-      setUnReadCount([]);
+      } else {
+        setUnReadCount([]);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -414,27 +459,52 @@ const UpTabs = () => {
                 setUpChat={setUpChat}
                 upChat={upChat}
               />
-              <Accordion
-                icon={<BriefcaseSVG />}
-                label={"All Channels"}
-                isCollapsible={true}
-                search={search}
-                data={unReadCount}
-                LastPinnedGroups={LastPinnedGroups}
-                setData={setAllChannel}
-                LastSnoozeGroups={LastSnoozeGroups}
-                readCount={readCount}
-                setUpChat={setUpChat}
-                upChat={upChat}
-              />
-            </div>
 
-            {showUpChat === true && (
-              <div className={UpTabsStyle.upChatClose}>
-                <ChatSVG />
-                <div className={UpTabsStyle.label}>Upchat</div>
+              <div className={UpTabsStyle.dropPaginationArrow}>
+                <div className={UpTabsStyle.dropPagArrow}>
+                  <div className={UpTabsStyle.PginationArrowWrap}>
+                    <span
+                      className={`${UpTabsStyle.Prev} ${currentPage === 1 && UpTabsStyle.iconDisabled
+                        }`}
+                      onClick={handlePreviousPage}
+                    >
+                      <AiOutlineLeft />
+                    </span>
+                    <span className={UpTabsStyle.CounterPagi}>
+                      {currentPage}
+                    </span>
+                    <span
+                      className={`${UpTabsStyle.Next} ${allChannel?.length < 10 && UpTabsStyle.iconDisabled
+                        }`}
+                      onClick={handleNextPage}
+                    >
+                      <AiOutlineRight />
+                    </span>
+                  </div>
+                </div>
+
+
+                <Accordion
+                  icon={<BriefcaseSVG />}
+                  label={"All Channels"}
+                  isCollapsible={true}
+                  search={search}
+                  data={unReadCount}
+                  LastPinnedGroups={LastPinnedGroups}
+                  setData={setAllChannel}
+                  LastSnoozeGroups={LastSnoozeGroups}
+                  readCount={readCount}
+                  setUpChat={setUpChat}
+                  upChat={upChat}
+                />
               </div>
-            )}
+
+              {showUpChat === true && (
+                <div className={UpTabsStyle.upChatClose}>
+                  <ChatSVG />
+                  <div className={UpTabsStyle.label}>Upchat</div>
+                </div>
+              )}
           </TabPanel>
           <TabPanel>
             <div className={UpTabsStyle.searchWrapper}>

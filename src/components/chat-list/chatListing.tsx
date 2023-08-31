@@ -77,6 +77,7 @@ const ChatListing = ({
   const [messageHandler, setMessageHandler] = useState("");
   const [smileIcon, setSmileIcon] = useState(false);
   const [chatMapKey, setChatMapKey] = useState();
+  const [replyMessageSection, setReplyMessageSection] = useState(false);
   const [search, setSearch] = useState("");
   const [senderClass, setSenderClass] = useState(false);
   const [memberRead, setMemberRead] = useState([]);
@@ -94,8 +95,7 @@ const ChatListing = ({
   const [isTagged, setIstagged] = useState(false);
   const [tileChat, setTileChat] = useState(false);
   const [pinChat, setPinChat] = useState(false);
-
-
+  const [replyMessage, setReplyMessage] = useState<any>({});
 
   const firestore = firebase.firestore();
 
@@ -248,17 +248,21 @@ const ChatListing = ({
           enc_chatID: "",
           hrID: allChannelItem?.hrID,
           isActivity: false,
-          senderEmpID: "",
+          senderEmpID: replyMessageSection === true ? loginUserId : "",
           text: commentRef.current.innerText,
           isNotes: true,
           remark: "",
           senderDesignation: loggeInUserDesignation,
           senderName: username,
           talentName: "",
-          Replied: "",
-          isRepliedTo: "",
+          Replied: replyMessageSection === true
+            ? commentRef.current.innerText.trim()
+            : "",
+          isRepliedTo: replyMessageSection === true ? "Shreyash Zinzuvadia" : "",
           msgRepliedId: "",
           userInitial: initials1,
+          reply_enc_ID:
+            replyMessageSection === true ? replyMessage?.enc_chatID : "",
         };
         let apiObj = {
           id: allChannelItem?.hrID,
@@ -266,17 +270,19 @@ const ChatListing = ({
         };
         // const firestore = firebase.firestore();
         commentRef.current.innerText = "";
+        setReplyMessageSection(false);
+        setReplyMessage({});
 
         const collectionRef = firestore.collection(
           `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
         );
         const tempEnc_ID: any = await collectionRef.add(obj);
-        obj.enc_chatID = tempEnc_ID.id;
+        obj.enc_chatID = replyMessageSection === true ? tempEnc_ID.id : tempEnc_ID.id;
+        obj.msgRepliedId = replyMessageSection === true ? tempEnc_ID.id : "";
         const snapshot = collectionRef.doc(tempEnc_ID.id);
 
         await snapshot.set(obj);
         await collectionRef.get();
-
 
         scrollToBottom();
         // updateChannel(new Date());
@@ -304,29 +310,38 @@ const ChatListing = ({
             enc_chatID: "",
             hrID: allChannelItem?.hrID,
             isActivity: false,
-            senderEmpID: "",
+            senderEmpID: replyMessageSection === true ? loginUserId : "",
             text: commentRef.current.innerText,
             isNotes: true,
             remark: "",
             senderDesignation: loggeInUserDesignation,
             senderName: username,
             talentName: "",
-            Replied: "",
-            isRepliedTo: "",
+            Replied: replyMessageSection === true
+              ? commentRef.current.innerText.trim()
+              : "",
+            isRepliedTo: replyMessageSection === true ? "Shreyash Zinzuvadia" : "",
             msgRepliedId: "",
             userInitial: initials1,
+            reply_enc_ID:
+              replyMessageSection === true ? replyMessage?.enc_chatID : "",
           };
           let apiObj = {
             id: allChannelItem?.hrID,
             note: messageHandler,
           };
           commentRef.current.innerText = "";
+          setReplyMessageSection(false);
+          setReplyMessage({});
+
           const collectionRef = firestore.collection(
             `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
           );
 
           const tempEnc_ID: any = await collectionRef.add(obj);
-          obj.enc_chatID = tempEnc_ID.id;
+          // obj.enc_chatID = tempEnc_ID.id;
+          obj.enc_chatID = replyMessageSection === true ? tempEnc_ID.id : tempEnc_ID.id;
+          obj.msgRepliedId = replyMessageSection === true ? tempEnc_ID.id : "";
           const snapshot = collectionRef.doc(tempEnc_ID.id);
 
           await snapshot.set(obj);
@@ -386,6 +401,9 @@ const ChatListing = ({
       setPinChat(false);
       setUpChat("");
     }
+  };
+  const closeReplyMessage = () => {
+    setReplyMessageSection(false);
   };
 
   useEffect(() => {
@@ -459,6 +477,10 @@ const ChatListing = ({
         type: "success",
         content: "Message coppied successfully",
       });
+    }
+    if (value.key === ChannelMenu.REPLY) {
+      setReplyMessageSection(true);
+      setReplyMessage(item);
     }
   };
 
@@ -537,6 +559,12 @@ const ChatListing = ({
   const displayNotes = (notes: any) => {
     const notesTemplate = new DOMParser().parseFromString(notes, "text/html");
     return notesTemplate.body;
+  };
+  const ReplyMessage = (value: any) => {
+    const infoTemp = filterData.filter((item: any) => {
+      return item?.enc_chatID == value;
+    });
+    return infoTemp;
   };
 
   return (
@@ -797,6 +825,44 @@ const ChatListing = ({
                           </div>
                         </div>
                       </div>
+                    ) : item?.reply_enc_ID ? (
+                      ReplyMessage(item.reply_enc_ID)?.length > 0 && (
+                        <div
+                          className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageRight} `}
+                        >
+                          <div className={ChatListingStyles.quotedMessage}>
+                            <p>
+                              {ReplyMessage(item?.enc_chatID)?.[0]?.Replied}
+                            </p>
+                            <div
+                              className={ChatListingStyles.quotedMessageChild}
+                            >
+                              <FiReplySVG width="10" height="16" />
+                              {ReplyMessage(item?.enc_chatID)?.[0]?.senderName}
+                              <span>Today at 12:31PM</span>
+                            </div>
+                          </div>
+                          <p>{item?.text}</p>
+                          <div className={ChatListingStyles.chatReaction}>
+                            <div
+                              className={ChatListingStyles.chatReactionInner}
+                            >
+                              <div
+                                className={ChatListingStyles.chatReactionCircle}
+                              >
+                                {/* <span
+                                 className={
+                                   ChatListingStyles.chatReactionSmile
+                                 }
+                               >
+                                 {/ <SmileIcon /> /}
+                               </span> */}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      )
                     ) : (
                       <div className={ChatListingStyles.channelMessageWrapper}>
                         <div
@@ -1138,8 +1204,27 @@ const ChatListing = ({
                   </p>
                 </div>
               </div>
-
-              <div className={ChatListingStyles.channelMessageMain}>
+              {/* Reply To Message Feature Starts */}
+              {replyMessageSection === true && (
+                <div className={ChatListingStyles.replyToWrapper}>
+                  <div className={ChatListingStyles.replyToTop}>
+                    <FiReplySVG />
+                    Replying to {replyMessage?.senderName},
+                    <span>Today at 12:31PM</span>
+                    <span
+                      className={ChatListingStyles.chatWindowClose}
+                      onClick={closeReplyMessage}
+                    ></span>
+                  </div>
+                  <div className={ChatListingStyles.replyToMessage}>
+                    {/* <p>
+                      {replyMessage}
+                    </p> */}
+                    <p>{replyMessage?.text}</p>
+                  </div>
+                </div>
+              )}
+              {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
                     className={ChatListingStyles.profileAvtar}
