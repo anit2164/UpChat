@@ -1,8 +1,8 @@
 .container {
   display: flex;
-  padding: 7px 16px;
+  padding: 11px 10px;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 8px;
   background: #f7f7f7;
   border-top: 1px solid #cecccc;
@@ -10,6 +10,7 @@
   cursor: pointer;
   background-image: url(../../assets/images/frost-background.png);
   background-repeat: no-repeat;
+  position: relative;
 }
 .showupChatNone {
   display: none;
@@ -30,17 +31,17 @@
 }
 
 .container.toggleClose {
-  border-radius: 8px;
+  border-radius: 30px;
   border: none;
 }
 
 .toggleClose {
-  justify-content: space-between;
+  /* justify-content: space-between; */
   background: rgb(220, 231, 237);
   background: linear-gradient(
     90deg,
-    rgba(220, 231, 237, 0.36) 0%,
-    rgba(228, 138, 23, 0.36) 100%
+    rgba(220, 231, 237, 0.5) 0%,
+    rgba(228, 138, 23, 0.5) 100%
   );
 }
 .toggleClose .unreadNum {
@@ -63,4 +64,8 @@
 }
 .toggleClose .toggleCloseRight {
   display: flex;
+
+  position: absolute;
+  right: -6px;
+  top: -6px;
 }

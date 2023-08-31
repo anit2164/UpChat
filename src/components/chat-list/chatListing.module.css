@@ -2,7 +2,7 @@
   position: fixed;
   bottom: 10px;
   right: 10px;
-  width: 470px;
+  /* width: 470px; */
   border: 0.8px solid #cecccc;
   border-radius: 8px;
   background: #fff;
@@ -1145,4 +1145,48 @@
 }
 .systemGeneratedMain.lightGreyBg {
   background: #ede8e8;
+}
+/* Chat Listing Expanded/Collapsed */
+.chatListingExpanded {
+  width: 470px;
+}
+.chatListingCollapsed {
+  border-radius: 30px;
+  width: 42px;
+}
+.channelWindowInner .divider {
+  text-align: center;
+  position: relative;
+  width: 100%;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.channelWindowInner .divider:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 0;
+
+  border-top: 1px solid #e2e2e2;
+}
+.channelWindowInner .divider span {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+  padding: 5px;
+  color: #929090;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 10px;
+  border-radius: 4px;
+}
+.channelWindowInner .divider .dividerInner {
+  border: 1px solid #cecccc;
+  color: #232323;
 }

@@ -46,11 +46,11 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
         <>
           <div>
             <ChatSVG />
-            <div className={CollapseStyle.label}>Upchat</div>
+            {/* <div className={CollapseStyle.label}>Upchat</div> */}
           </div>
           <div className={CollapseStyle.toggleCloseRight}>
-            {/* <span className={CollapseStyle.unreadNum}>{data?.length}</span> */}
-            <ArrowDownSVG className={CollapseStyle.fiChevronLeft} />
+            <span className={CollapseStyle.unreadNum}>12</span>
+            {/* <ArrowDownSVG className={CollapseStyle.fiChevronLeft} /> */}
           </div>
         </>
       )}

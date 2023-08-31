@@ -41,7 +41,7 @@ import { ChannelMenu } from "../../constants/application";
 // import Tile from "../tile/tile.components";
 import store from "../../redux_toolkit/store/store";
 import moment from "moment";
-import MyContext from "./myContext";
+import MyContext from "./MyContext";
 import axios from "axios";
 import ShowMoreText from "react-show-more-text";
 import DOMPurify from "dompurify";
@@ -103,6 +103,8 @@ const ChatListing = ({
   const arrawScroll = useRef(null);
   const commentRef: any = useRef();
   const sanitizer = DOMPurify.sanitize;
+  let currentChatDate: any = null;
+
 
 
   const loginUserId = localStorage.getItem("EmployeeID");
@@ -542,7 +544,8 @@ const ChatListing = ({
       {/* <Provider store={store}> */}
       {contextHolder}
       {!(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
-        <main className={ChatListingStyles.main}>
+        <main className={`${ChatListingStyles.main} ${toggle ? ChatListingStyles.chatListingExpanded : ""
+          } ${toggle ? "" : ChatListingStyles.chatListingCollapsed}`}>
           {toggle && (
             <>
               {/* <MyContext.Provider
@@ -686,8 +689,40 @@ const ChatListing = ({
               id="content"
             >
               {filterData?.map((item: any, key: any) => {
+
+
+                const messageDate = item?.date?.seconds
+                  ? new Date(item?.date?.seconds * 1000)
+                  : null;
+
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(today.getDate() - 1);
+
+                let dateString = "";
+                if (messageDate) {
+                  if (messageDate.toDateString() === today.toDateString()) {
+                    dateString = "Today";
+                  } else if (
+                    messageDate.toDateString() === yesterday.toDateString()
+                  ) {
+                    dateString = "Yesterday";
+                  } else {
+                    dateString = messageDate.toDateString();
+                  }
+                }
+
+                const showDateSeparator = dateString !== currentChatDate;
+                currentChatDate = dateString; // Update currentDate
+
+
                 return (
                   <>
+                    {showDateSeparator && (
+                      <div className={ChatListingStyles.divider}>
+                        <span>{dateString}</span>
+                      </div>
+                    )}
                     {item?.isActivity === true && item?.isNotes == false ? (
                       <div className={ChatListingStyles.channelMessageWrapper}>
                         <div
@@ -756,10 +791,7 @@ const ChatListing = ({
                                 width={280}
                                 truncatedEndingComponent={"... "}
                               >
-                                {item?.text
-                                  .replace(/&nbsp;/g, " ")
-                                  .replace(/<span[^>]*>(.*?)<\/span>/g, "$1")
-                                  .replace(/\s+/g, " ")}
+                                {item?.text}
                               </ShowMoreText>
                             </span>
                           </div>
