@@ -101,3 +101,46 @@ input:focus {
   border-radius: 0px 0px 6px 6px;
   border-top: 0.8px solid #cecccc;
 }
+
+.dropPagArrow {
+  position: relative;
+  bottom: -38px;
+  display: flex;
+  justify-content: end;
+  padding-right: 48px;
+}
+
+.dropPaginationArrow .PginationArrowWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropPaginationArrow .PginationArrowWrap .Next,
+.dropPaginationArrow .PginationArrowWrap .Prev {
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-flex;
+}
+
+.dropPaginationArrow .PginationArrowWrap .Prev.iconDisabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.dropPaginationArrow .PginationArrowWrap .CounterPagi {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 30px;
+  font-weight: 400;
+  background-color: #ffda31;
+  color: #000;
+  font-size: 12px;
+}
+.dropPaginationArrow .PginationArrowWrap .Next.iconDisabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

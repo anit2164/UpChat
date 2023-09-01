@@ -235,7 +235,7 @@
     overflow-y: auto; */
 }
 .channelWindowMessages > div:first-child:not(.searchInChatWrapper) {
-  padding-top: 24px;
+  margin-top: 24px;
 }
 
 .bookmarkIcon {
