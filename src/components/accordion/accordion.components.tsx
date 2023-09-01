@@ -19,7 +19,11 @@ const Accordion = ({
   setData,
   readCount,
   setUpChat,
-  upChat
+  upChat,
+  currentPage,
+  handleNextPage,
+  handlePreviousPage,
+  totalPages
 }: any) => {
   const [showBody, setShowBody] = useState(true);
   const [collapseClass, setCollapseClass] = useState(false);
@@ -55,6 +59,10 @@ const Accordion = ({
           readCount={readCount}
           setUpChat={setUpChat}
           upChat={upChat}
+          currentPage={currentPage}
+          handleNextPage={handleNextPage}
+          handlePreviousPage={handlePreviousPage}
+          totalPages={totalPages}
         />
       )}
     </Fragment>

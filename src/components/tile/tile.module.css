@@ -150,3 +150,52 @@
   font-weight: 600;
   font-family: "Montserrat", sans-serif;
 }
+
+.dropPagArrow {
+  position: relative;
+  text-align: left;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin: 10px 0;
+}
+
+.PginationArrowWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.PginationArrowWrap .Prev svg {
+  transform: rotate(180deg);
+}
+.PginationArrowWrap .Next,
+.PginationArrowWrap .Prev {
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-flex;
+}
+
+.PginationArrowWrap .Prev.iconDisabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.PginationArrowWrap .Next.iconDisabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.PginationArrowWrap .CounterPagi {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 30px;
+  font-weight: 400;
+  background-color: #ffda31;
+  color: #000;
+  font-size: 12px;
+}

@@ -11,8 +11,9 @@ import "firebase/compat/firestore";
 import { ChannelMenu } from "../../constants/application";
 import ViewHRDetailsSVG from "../../assets/svg/viewHrDetails.svg";
 import ChatListing from "../chat-list/chatListing";
-import MyContext from "../chat-list/myContext";
+import MyContext from "../chat-list/MyContext";
 import { limits } from "../../constants/constantLimit"
+import ScrollToBottomSVG from "../../assets/svg/scrollToBottom.svg";
 
 
 firebase.initializeApp(firebaseConfig);
@@ -25,7 +26,11 @@ const Tile = ({
   setData,
   channelIdData,
   setUpChat,
-  upChat
+  upChat,
+  currentPage,
+  handleNextPage,
+  handlePreviousPage,
+  totalPages
 }: any) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
@@ -539,6 +544,14 @@ const Tile = ({
         {updateData?.length === 0 && (
           <span className={TileStyle.noDataFound}>No data found</span>
         )}
+      </div>
+
+      <div className={TileStyle.dropPagArrow}>
+        <div className={TileStyle.PginationArrowWrap}>
+          <span className={`${TileStyle.Prev} ${currentPage === 1 && TileStyle.iconDisabled}`} onClick={handlePreviousPage}><ScrollToBottomSVG /></span>
+
+          <span className={`${TileStyle.Next} ${currentPage == totalPages && TileStyle.iconDisabled}`} onClick={handleNextPage} ><ScrollToBottomSVG /></span>
+        </div>
       </div>
       {tileChat === true && isTileChat === true && (
         <ChatListing

@@ -35,6 +35,7 @@ const UpTabs = () => {
   const [unReadCountPinned, setUnReadCountPinned] = useState([]);
   const [upChat, setUpChat] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const dataPerPage = 10;
 
@@ -461,7 +462,7 @@ const UpTabs = () => {
               />
 
               <div className={UpTabsStyle.dropPaginationArrow}>
-                <div className={UpTabsStyle.dropPagArrow}>
+                {/* <div className={UpTabsStyle.dropPagArrow}>
                   <div className={UpTabsStyle.PginationArrowWrap}>
                     <span
                       className={`${UpTabsStyle.Prev} ${currentPage === 1 && UpTabsStyle.iconDisabled
@@ -481,7 +482,7 @@ const UpTabs = () => {
                       <AiOutlineRight />
                     </span>
                   </div>
-                </div>
+                </div> */}
 
 
                 <Accordion
@@ -496,6 +497,10 @@ const UpTabs = () => {
                   readCount={readCount}
                   setUpChat={setUpChat}
                   upChat={upChat}
+                  currentPage={currentPage}
+                  handleNextPage={handleNextPage}
+                  handlePreviousPage={handlePreviousPage}
+                  totalPages={totalPages}
                 />
               </div>
 
