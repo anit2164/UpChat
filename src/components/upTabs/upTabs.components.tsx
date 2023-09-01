@@ -505,6 +505,7 @@ const UpTabs = () => {
                   <div className={UpTabsStyle.label}>Upchat</div>
                 </div>
               )}
+            </div>
           </TabPanel>
           <TabPanel>
             <div className={UpTabsStyle.searchWrapper}>
