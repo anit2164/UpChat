@@ -80,14 +80,16 @@ const UpTabs = () => {
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
-      setCurrentPage((prevPage) => prevPage - 1);
-      // getUnpinData(tempArr);
+      setCurrentPage(prevPage => prevPage - 1);
+      // getUnpinData(tempArr, currentPage - 1);
     }
   };
 
   const handleNextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
-    // getUnpinData(tempArr);
+    if (currentPage < totalPages) {
+      setCurrentPage(prevPage => prevPage + 1);
+      // getUnpinData(tempArr, currentPage + 1);
+    }
   };
 
 
@@ -253,6 +255,7 @@ const UpTabs = () => {
           }
         });
         getPinData(tempArrPin);
+        setTotalPages(Math.ceil(tempArrUnPin.length / dataPerPage))
         getUnpinData(tempArrUnPin, currentPage);
       });
     return () => unsubscribe();

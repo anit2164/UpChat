@@ -13,7 +13,7 @@ import ViewHRDetailsSVG from "../../assets/svg/viewHrDetails.svg";
 import ChatListing from "../chat-list/chatListing";
 import MyContext from "../chat-list/MyContext";
 import { limits } from "../../constants/constantLimit"
-import ScrollToBottomSVG from "../../assets/svg/scrollToBottom.svg";
+import PaginationArrow from "../../assets/svg/paginationArrow.svg";
 
 
 firebase.initializeApp(firebaseConfig);
@@ -548,9 +548,9 @@ const Tile = ({
 
       <div className={TileStyle.dropPagArrow}>
         <div className={TileStyle.PginationArrowWrap}>
-          <span className={`${TileStyle.Prev} ${currentPage === 1 && TileStyle.iconDisabled}`} onClick={handlePreviousPage}><ScrollToBottomSVG /></span>
+          <span className={`${TileStyle.Prev} ${currentPage === 1 && TileStyle.iconDisabled}`} onClick={handlePreviousPage}><PaginationArrow /></span>
 
-          <span className={`${TileStyle.Next} ${currentPage == totalPages && TileStyle.iconDisabled}`} onClick={handleNextPage} ><ScrollToBottomSVG /></span>
+          <span className={`${TileStyle.Next} ${currentPage == totalPages && TileStyle.iconDisabled}`} onClick={handleNextPage} ><PaginationArrow /></span>
         </div>
       </div>
       {tileChat === true && isTileChat === true && (
