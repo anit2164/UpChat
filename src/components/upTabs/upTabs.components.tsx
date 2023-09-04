@@ -36,6 +36,7 @@ const UpTabs = () => {
   const [upChat, setUpChat] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [unpinData, setUnpinData] = useState([]);
 
   const dataPerPage = 10;
 
@@ -255,6 +256,7 @@ const UpTabs = () => {
           }
         });
         getPinData(tempArrPin);
+        setUnpinData(tempArrUnPin);
         setTotalPages(Math.ceil(tempArrUnPin.length / dataPerPage))
         getUnpinData(tempArrUnPin, currentPage);
       });
@@ -330,6 +332,32 @@ const UpTabs = () => {
       console.error("Error fetching data:", error);
     }
   };
+  const fetchdata = () => {
+    if (search) {
+      const collectionRef = firestore.collection("channels");
+      let filteredData: any = [];
+      collectionRef
+        .where("enc_channelID", "in", unpinData)
+        .get()
+        .then((res) => {
+          let filterdata = res.docs.map((doc) => doc.data());
+          filteredData = filterdata?.filter((item) => {
+            return (
+              item?.role?.toLowerCase()?.includes(search?.toLowerCase()) ||
+              item?.companyName.toLowerCase().includes(search?.toLowerCase()) ||
+              item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase())
+            );
+          });
+          setAllChannel(filteredData);
+        });
+    } else {
+      setAllChannel(tempArr);
+    }
+  };
+
+  useEffect(() => {
+    fetchdata();
+  }, [search]);
 
   useEffect(() => {
     if (search) {

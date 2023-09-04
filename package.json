@@ -1,6 +1,6 @@
 {
   "name": "widget-demo-chat",
-  "version": "5.0.50",
+  "version": "5.1.0",
   "description": "A Component Library for Building React Applications faster",
   "scripts": {
     "rollup-build-lib": "rollup -c"
