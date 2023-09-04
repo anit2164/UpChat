@@ -23,7 +23,8 @@ const Accordion = ({
   currentPage,
   handleNextPage,
   handlePreviousPage,
-  totalPages
+  totalPages,
+  unpinData,
 }: any) => {
   const [showBody, setShowBody] = useState(true);
   const [collapseClass, setCollapseClass] = useState(false);
@@ -63,6 +64,7 @@ const Accordion = ({
           handleNextPage={handleNextPage}
           handlePreviousPage={handlePreviousPage}
           totalPages={totalPages}
+          unpinData={unpinData}
         />
       )}
     </Fragment>

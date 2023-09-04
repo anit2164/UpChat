@@ -532,6 +532,7 @@ const UpTabs = () => {
                   handleNextPage={handleNextPage}
                   handlePreviousPage={handlePreviousPage}
                   totalPages={totalPages}
+                  unpinData={unpinData}
                 />
               </div>
 
