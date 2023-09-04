@@ -545,7 +545,7 @@ const Tile = ({
           <span className={TileStyle.noDataFound}>No data found</span>
         )}
       </div>
-      {updateData.length > 0 && (
+      {updateData?.length > 0 && (
         <div className={TileStyle.dropPagArrow}>
           <div className={TileStyle.PginationArrowWrap}>
             <span className={`${TileStyle.Prev} ${currentPage === 1 && TileStyle.iconDisabled}`} onClick={handlePreviousPage}><PaginationArrow /></span>
