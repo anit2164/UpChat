@@ -11,7 +11,7 @@ import "firebase/compat/firestore";
 import { ChannelMenu } from "../../constants/application";
 import ViewHRDetailsSVG from "../../assets/svg/viewHrDetails.svg";
 import ChatListing from "../chat-list/chatListing";
-import MyContext from "../chat-list/MyContext";
+import MyContext from "../chat-list/myContext";
 import { limits } from "../../constants/constantLimit"
 import PaginationArrow from "../../assets/svg/paginationArrow.svg";
 

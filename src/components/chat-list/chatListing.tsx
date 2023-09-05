@@ -41,7 +41,7 @@ import { ChannelMenu } from "../../constants/application";
 // import Tile from "../tile/tile.components";
 import store from "../../redux_toolkit/store/store";
 import moment from "moment";
-import MyContext from "./MyContext";
+import MyContext from "./myContext";
 import axios from "axios";
 import ShowMoreText from "react-show-more-text";
 import DOMPurify from "dompurify";
@@ -601,29 +601,30 @@ const ChatListing = ({
                   setTileChat,
                 }}
               >
-                <main className={ChatListingStyles.main}>
-                  {toggle && (
-                    <>
-                      <Header
-                        setToggle={setToggle}
-                        showUpChat={showUpChat}
-                        setShowUpChat={setShowUpChat}
-                      />
-                      <UpTabs />
-                    </>
-                  )}
-                  <Collapse
-                    setToggle={setToggle}
-                    toggle={toggle}
-                    showUpChat={showUpChat}
-                    setShowUpChat={setShowUpChat}
-                  />
-                </main>
+                {/* <main className={ChatListingStyles.main}> */}
+                {toggle && (
+                  <>
+                    <Header
+                      setToggle={setToggle}
+                      showUpChat={showUpChat}
+                      setShowUpChat={setShowUpChat}
+                    />
+                    <UpTabs />
+                  </>
+                )}
+                <Collapse
+                  setToggle={setToggle}
+                  toggle={toggle}
+                  showUpChat={showUpChat}
+                  setShowUpChat={setShowUpChat}
+                />
+                {/* </main> */}
               </MyContext.Provider>
             </>
           )}
 
-          <Collapse setToggle={setToggle} toggle={toggle} />
+          <Collapse setToggle={setToggle} toggle={toggle} showUpChat={showUpChat}
+            setShowUpChat={setShowUpChat} />
         </main>
       )}
 

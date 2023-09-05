@@ -296,10 +296,10 @@
   font-weight: 500;
   line-height: 26px;
 }
-.userprofileName {
+/* .userprofileName {
   font-size: 14px;
   font-weight: 600;
-}
+} */
 .profileDesignation {
   margin-left: 8px;
   padding: 4px;
@@ -689,6 +689,11 @@
   line-height: 19px;
   text-align: left;
 }
+.systemGeneratedDate {
+  min-width: 130px;
+  padding-left: 5px;
+  text-align: right;
+}
 .systemGeneratedInner a {
   color: #405cc0;
   text-decoration: underline;
@@ -1027,11 +1032,11 @@
   font-size: 12px;
 }
 
-.systemGeneratedDate {
-  min-width: 130px;
-  padding-left: 5px;
-  text-align: right;
+.channelName {
+  display: flex;
+  flex-direction: column;
 }
+
 /* Common Styles for Popup */
 .chatPopup {
   z-index: 1001;

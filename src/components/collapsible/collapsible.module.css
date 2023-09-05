@@ -12,9 +12,7 @@
   background-repeat: no-repeat;
   position: relative;
 }
-.showupChatNone {
-  display: none;
-}
+
 .container > div {
   display: flex;
   align-items: center;
@@ -68,4 +66,7 @@
   position: absolute;
   right: -6px;
   top: -6px;
+}
+.showupChatNone {
+  display: none;
 }
