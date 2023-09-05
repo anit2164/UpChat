@@ -321,7 +321,7 @@ const UpTabs = () => {
 
         const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
         setAllChannel(mergedResults);
-        setUnReadCount(mergedResults);
+        // setUnReadCount(mergedResults);
         setTempArr(mergedResults);
         setPinnedChannel(false);
         setSoonzeChannel(false);
@@ -336,22 +336,57 @@ const UpTabs = () => {
     if (search) {
       const collectionRef = firestore.collection("channels");
       let filteredData: any = [];
-      collectionRef
-        .where("enc_channelID", "in", unpinData)
-        .get()
-        .then((res) => {
-          let filterdata = res.docs.map((doc) => doc.data());
-          filteredData = filterdata?.filter((item) => {
+      const batchedQueries = [];
+      const batchSize = 30; // Number of values per batch
+
+      for (let i = 0; i < unpinData.length; i += batchSize) {
+        const batch = unpinData.slice(i, i + batchSize);
+        const query = collectionRef.where("enc_channelID", "in", batch).get();
+        batchedQueries.push(query);
+      }
+      Promise.all(batchedQueries)
+        .then((results) => {
+          // Merge and process the results from all the queries
+          let mergedResults: any = [];
+          results.forEach((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              mergedResults.push(doc.data());
+            });
+          });
+          mergedResults = mergedResults?.filter((item: any) => {
             return (
-              item?.role?.toLowerCase()?.includes(search?.toLowerCase()) ||
-              item?.companyName.toLowerCase().includes(search?.toLowerCase()) ||
-              item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase())
+              item?.role
+                ?.toLowerCase()
+                ?.includes(search?.toLowerCase().trim()) ||
+              item?.companyName
+                .toLowerCase()
+                .includes(search?.toLowerCase().trim()) ||
+              item?.hrNumber
+                ?.toLowerCase()
+                ?.includes(search?.toLowerCase().trim())
             );
           });
-          setAllChannel(filteredData);
+          setAllChannel(mergedResults);
+        })
+        .catch((error) => {
+          console.error("error", error);
         });
+      // collectionRef
+      //   .where("enc_channelID", "in", unpinData)
+      //   .get()
+      //   .then((res) => {
+      //     let filterdata = res.docs.map((doc) => doc.data());
+      //     filteredData = filterdata?.filter((item) => {
+      //       return (
+      //         item?.role?.toLowerCase()?.includes(search?.toLowerCase()) ||
+      //         item?.companyName.toLowerCase().includes(search?.toLowerCase()) ||
+      //         item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase())
+      //       );
+      //     });
+      //     setAllChannel(filteredData);
+      //   });
     } else {
-      setAllChannel(tempArr);
+      setCurrentPage(1);
     }
   };
 
