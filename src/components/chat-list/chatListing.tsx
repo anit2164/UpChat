@@ -472,7 +472,10 @@ const ChatListing = ({
       window.isSecureContext &&
       navigator.clipboard
     ) {
-      await navigator.clipboard.writeText(item);
+      await navigator.clipboard.writeText(item.text
+        .replace(/&nbsp;/g, " ")
+        .replace(/<span[^>]*>(.*?)<\/span>/g, "$1")
+        .replace(/\s+/g, " "));
       messageApi.open({
         type: "success",
         content: "Message coppied successfully",
@@ -820,7 +823,14 @@ const ChatListing = ({
                                 width={280}
                                 truncatedEndingComponent={"... "}
                               >
-                                {item?.text}
+                                {/* {item?.text} */}
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: sanitizer(
+                                      displayNotes(item?.text).innerHTML
+                                    ),
+                                  }}
+                                ></span>
                               </ShowMoreText>
                             </span>
                           </div>
@@ -908,10 +918,7 @@ const ChatListing = ({
                                 onClick: (value) => {
                                   chatListDropdownInChat(
                                     value,
-                                    item.text
-                                      .replace(/&nbsp;/g, " ")
-                                      .replace(/<span[^>]*>(.*?)<\/span>/g, "$1")
-                                      .replace(/\s+/g, " ")
+                                    item
                                   );
                                 },
                               }}
