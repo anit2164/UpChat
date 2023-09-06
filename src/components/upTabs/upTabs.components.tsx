@@ -37,6 +37,8 @@ const UpTabs = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [unpinData, setUnpinData] = useState([]);
+  const [localData, setLocalData] = useState<any>({});
+
 
   const dataPerPage = 10;
 
@@ -54,6 +56,21 @@ const UpTabs = () => {
   const LastSnoozeGroups = () => {
     setSoonzeChannel(true);
   };
+
+
+  const isDataAvailableLocally = (pageNo: any) => {
+    return localData.hasOwnProperty(pageNo);
+  };
+
+  const storeLocalData = (pageNo: any, data: any) => {
+    // Update the local state with the data for the given pageNo
+    setLocalData({ ...localData, [pageNo]: data });
+  };
+
+  const getLocalData = (pageNo: any) => {
+    return localData[pageNo] || []; // Return an empty array if data doesn't exist
+  };
+
 
   // useEffect(() => {
   //   // Retrive Data
@@ -306,32 +323,76 @@ const UpTabs = () => {
   //     setUnReadCount([]);
   //   }
   // };
+  // const getUnpinData = async (tempArr: any, pageNo: any) => {
+  //   try {
+  //     const collectionRef = firestore.collection("channels");
+  //     if (tempArr?.length > 0) {
+  //       const startIndex = (pageNo - 1) * dataPerPage;
+  //       console.log('startIndex', startIndex, startIndex + dataPerPage);
+  //       const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
+
+  //       const querySnapshot = await collectionRef
+  //         .where("enc_channelID", "in", batch)
+  //         .limit(dataPerPage)
+  //         .get();
+
+  //       const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
+  //       setAllChannel(mergedResults);
+  //       // setUnReadCount(mergedResults);
+  //       setTempArr(mergedResults);
+  //       setPinnedChannel(false);
+  //       setSoonzeChannel(false);
+  //     } else {
+  //       setUnReadCount([]);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+
   const getUnpinData = async (tempArr: any, pageNo: any) => {
     try {
-      const collectionRef = firestore.collection("channels");
       if (tempArr?.length > 0) {
-        const startIndex = (pageNo - 1) * dataPerPage;
-        console.log('startIndex', startIndex, startIndex + dataPerPage);
-        const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
+        // Check if data is available locally
+        if (isDataAvailableLocally(pageNo)) {
+          // Use local data
+          const localData = getLocalData(pageNo);
+          setAllChannel(localData);
+          setTempArr(localData);
+          setPinnedChannel(false);
+          setSoonzeChannel(false);
+          return;
+        }
 
+        const collectionRef = firestore.collection("channels");
+        const startIndex = (pageNo - 1) * dataPerPage;
+        const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
         const querySnapshot = await collectionRef
           .where("enc_channelID", "in", batch)
           .limit(dataPerPage)
           .get();
 
         const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
+
+        // Store the fetched data locally
+        storeLocalData(pageNo, mergedResults);
+
+        // Update the state with the fetched data
         setAllChannel(mergedResults);
-        // setUnReadCount(mergedResults);
         setTempArr(mergedResults);
         setPinnedChannel(false);
         setSoonzeChannel(false);
       } else {
-        setUnReadCount([]);
+        // Handle the case when tempArr is empty
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
+
+
   const fetchdata = () => {
     if (search) {
       const collectionRef = firestore.collection("channels");

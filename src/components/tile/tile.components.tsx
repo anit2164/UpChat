@@ -307,18 +307,14 @@ const Tile = ({
     if (item?.enc_channelID !== allChannelItem?.enc_channelID) {
       resetCount = item;
       resetCount.readCount = 0;
-      const clickedChannel = updateData.find(
-        (ele: any) => ele.enc_channelID === item.enc_channelID
-      );
+      setAllChannelItem(item);
+      // localStorage.setItem("showPinnedChat", true);
+      setShowList(true);
       for (var i = 0; i < updateData.length; i++) {
         sum += updateData[i]?.readCount;
       }
       setTotalCount(sum);
-      setActiveUser(true);
-      setAllChannelItem(item);
-      setShowList(true);
       try {
-        // const firestore = firebase.firestore();
         let reduceFirebaseCall: any = [];
         const unsubscribe = firestore
           .collection(`ChannelChatsMapping/${item?.enc_channelID}/chats`)
@@ -343,9 +339,9 @@ const Tile = ({
         });
 
         // Reduce firebase call
-        if (reduceFirebaseCall.docs.length > 0) {
+        if (reduceFirebaseCall?.docs?.length > 0) {
           lastDocument =
-            reduceFirebaseCall.docs[reduceFirebaseCall.docs.length - 1];
+            reduceFirebaseCall?.docs[reduceFirebaseCall?.docs?.length - 1];
         }
 
         const userChats = firestore
@@ -375,7 +371,6 @@ const Tile = ({
                 snapshot.ref.update(tempObj);
               });
             });
-          // setUpdateData(resetCount);
         }
 
         return () => {
