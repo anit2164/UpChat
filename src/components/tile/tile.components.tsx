@@ -304,82 +304,82 @@ const Tile = ({
     setPinChat(false);
     setTileChat(true);
 
-    if (item?.enc_channelID !== allChannelItem?.enc_channelID) {
-      resetCount = item;
-      resetCount.readCount = 0;
-      setAllChannelItem(item);
-      // localStorage.setItem("showPinnedChat", true);
-      setShowList(true);
-      for (var i = 0; i < updateData.length; i++) {
-        sum += updateData[i]?.readCount;
-      }
-      setTotalCount(sum);
-      try {
-        let reduceFirebaseCall: any = [];
-        const unsubscribe = firestore
-          .collection(`ChannelChatsMapping/${item?.enc_channelID}/chats`)
-          .orderBy("date", "asc")
-          .onSnapshot((snapshot) => {
-            const messagesData: any = snapshot.docs.map((doc) => doc.data());
-            setListingChats(messagesData);
-            reduceFirebaseCall = snapshot;
-          });
+    // if (item?.enc_channelID !== allChannelItem?.enc_channelID) {
+    resetCount = item;
+    resetCount.readCount = 0;
+    setAllChannelItem(item);
+    // localStorage.setItem("showPinnedChat", true);
+    setShowList(true);
+    for (var i = 0; i < updateData.length; i++) {
+      sum += updateData[i]?.readCount;
+    }
+    setTotalCount(sum);
+    try {
+      let reduceFirebaseCall: any = [];
+      const unsubscribe = firestore
+        .collection(`ChannelChatsMapping/${item?.enc_channelID}/chats`)
+        .orderBy("date", "asc")
+        .onSnapshot((snapshot) => {
+          const messagesData: any = snapshot.docs.map((doc) => doc.data());
+          setListingChats(messagesData);
+          reduceFirebaseCall = snapshot;
+        });
 
-        const isReadCount = firestore
+      const isReadCount = firestore
+        .collectionGroup("user_chats")
+        .where("userEmpID", "==", loginUserId)
+        .where("enc_channelID", "==", item?.enc_channelID)
+        .get();
+
+      isReadCount.then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const updatedIsReadInfo = { ...isReadInfo, isRead: true };
+          setIsReadInfo(updatedIsReadInfo);
+        });
+      });
+
+      // Reduce firebase call
+      if (reduceFirebaseCall?.docs?.length > 0) {
+        lastDocument =
+          reduceFirebaseCall?.docs[reduceFirebaseCall?.docs?.length - 1];
+      }
+
+      const userChats = firestore
+        .collectionGroup("user_chats")
+        .where("userEmpID", "==", loginUserId)
+        .where("enc_channelID", "==", item?.enc_channelID);
+
+      const tempUserchats = await userChats.get();
+
+      const dataArray = tempUserchats?.docs?.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      for (let i = 0; i < dataArray.length; i++) {
+        let tempObj: any = dataArray[i];
+        tempObj.isRead = true;
+
+        firestore
           .collectionGroup("user_chats")
           .where("userEmpID", "==", loginUserId)
           .where("enc_channelID", "==", item?.enc_channelID)
-          .get();
-
-        isReadCount.then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const updatedIsReadInfo = { ...isReadInfo, isRead: true };
-            setIsReadInfo(updatedIsReadInfo);
-          });
-        });
-
-        // Reduce firebase call
-        if (reduceFirebaseCall?.docs?.length > 0) {
-          lastDocument =
-            reduceFirebaseCall?.docs[reduceFirebaseCall?.docs?.length - 1];
-        }
-
-        const userChats = firestore
-          .collectionGroup("user_chats")
-          .where("userEmpID", "==", loginUserId)
-          .where("enc_channelID", "==", item?.enc_channelID);
-
-        const tempUserchats = await userChats.get();
-
-        const dataArray = tempUserchats?.docs?.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        for (let i = 0; i < dataArray.length; i++) {
-          let tempObj: any = dataArray[i];
-          tempObj.isRead = true;
-
-          firestore
-            .collectionGroup("user_chats")
-            .where("userEmpID", "==", loginUserId)
-            .where("enc_channelID", "==", item?.enc_channelID)
-            .limit(limits.pageSize)
-            .get()
-            .then((querySnapshot) => {
-              querySnapshot.docs.forEach((snapshot) => {
-                snapshot.ref.update(tempObj);
-              });
+          .limit(limits.pageSize)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.docs.forEach((snapshot) => {
+              snapshot.ref.update(tempObj);
             });
-        }
-
-        return () => {
-          unsubscribe();
-        };
-      } catch (error) {
-        console.error(error);
+          });
       }
+
+      return () => {
+        unsubscribe();
+      };
+    } catch (error) {
+      console.error(error);
     }
+    // }
   };
 
   const updateChannelDateTime = (enc_channelID: any) => {
