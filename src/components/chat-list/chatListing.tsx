@@ -838,40 +838,105 @@ const ChatListing = ({
                       </div>
                     ) : item?.reply_enc_ID ? (
                       ReplyMessage(item.reply_enc_ID)?.length > 0 && (
-                        <div
-                          className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageRight} `}
-                        >
-                          <div className={ChatListingStyles.quotedMessage}>
-                            <p>
-                              {ReplyMessage(item?.enc_chatID)?.[0]?.Replied}
-                            </p>
+                        <div className={ChatListingStyles.channelMessageMain}>
+                          <div
+                            className={ChatListingStyles.channelMessageInner}
+                          >
                             <div
-                              className={ChatListingStyles.quotedMessageChild}
+                              className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
                             >
-                              <FiReplySVG width="10" height="16" />
-                              {ReplyMessage(item?.enc_chatID)?.[0]?.senderName}
-                              <span>Today at 12:31PM</span>
+                              {userInitial(item?.senderName)}
                             </div>
-                          </div>
-                          <p>{item?.text}</p>
-                          <div className={ChatListingStyles.chatReaction}>
-                            <div
-                              className={ChatListingStyles.chatReactionInner}
+                            {/* <img
+                                className={ChatListingStyles.profileAvtar}
+                                src="https://i.pravatar.cc/40"
+                                width="30"
+                                height="30"
+                              /> */}
+                            <div className={ChatListingStyles.profileName}>
+                              {item?.senderName}
+                            </div>
+                            <span
+                              className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
                             >
-                              <div
-                                className={ChatListingStyles.chatReactionCircle}
-                              >
-                                {/* <span
+                              {item?.senderDesignation}
+                            </span>
+                            <span className={ChatListingStyles.timeStamp}>
+                              {item?.date?.seconds
+                                ? new Date(item?.date?.seconds * 1000)
+                                  .toLocaleTimeString()
+                                  .replace(
+                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                    "$1$3"
+                                  )
+                                : item?.date}
+                            </span>
+                            <Dropdown
+                              className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
+                              placement="bottomRight"
+                              menu={{
+                                items: chatDropdown,
+                                onClick: (value) => {
+                                  chatListDropdownInChat(value, item);
+                                },
+                              }}
+                              trigger={["click"]}
+                            >
+                              <a onClick={(e) => e.preventDefault()}>
+                                <Space>
+                                  <span
+                                    className={ChatListingStyles.dotMenu}
+                                  ></span>
+                                </Space>
+                              </a>
+                            </Dropdown>
+
+                            {/* {showBookMark?.IsBookMark === true ? (
+                              <BookmarkIconSVG
+                                className={ChatListingStyles.bookmarkIcon}
+                              />
+                            ) : (
+                              ""
+                            )} */}
+                          </div>
+                          <div className={ChatListingStyles.channelMessageBoxWrap}>
+                            <div
+                              className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageRight} `}
+                            >
+                              <div className={ChatListingStyles.quotedMessage}>
+                                <p>
+                                  {ReplyMessage(item?.enc_chatID)?.[0]?.Replied}
+                                </p>
+                                <div
+                                  className={ChatListingStyles.quotedMessageChild}
+                                >
+                                  <FiReplySVG width="10" height="16" />
+                                  {ReplyMessage(item?.enc_chatID)?.[0]?.senderName}
+                                  <span>Today at 12:31PM</span>
+                                </div>
+                              </div>
+                              <p>{item?.text}</p>
+                              <div className={ChatListingStyles.chatReaction}>
+                                <div
+                                  className={ChatListingStyles.chatReactionInner}
+                                >
+                                  <div
+                                    className={ChatListingStyles.chatReactionCircle}
+                                  >
+                                    {/* <span
                                  className={
                                    ChatListingStyles.chatReactionSmile
                                  }
                                >
                                  {/ <SmileIcon /> /}
                                </span> */}
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
+
 
                       )
                     ) : (

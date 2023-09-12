@@ -338,7 +338,9 @@
   font-weight: 400;
   line-height: 20px;
   text-align: left;
+
   display: inline-flex;
+  flex-direction: column;
   background: #f5f5f5;
 }
 .channelMessageBox.channelMessageLeft {
@@ -1121,6 +1123,9 @@
   font-weight: 500;
   line-height: 16px;
   color: #000000;
+}
+.systemGeneratedIsNotes span {
+  word-break: break-word;
 }
 .personTaggedValue {
   border-radius: 10px;
