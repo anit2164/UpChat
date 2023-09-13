@@ -1,5 +1,5 @@
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import Accordion from "../accordion/accordion.components";
 import BriefcaseSVG from "../../assets/svg/briefcase.svg";
 import SearchSVG from "../../assets/svg/search.svg";
@@ -22,7 +22,7 @@ firebase.initializeApp(firebaseConfig);
 
 const UpTabs = () => {
   const [search, setSearch] = useState("");
-  const [allChannel, setAllChannel] = useState([]);
+  const [allChannel, setAllChannel] = useState<any>([]);
   const [tempArr, setTempArr] = useState([]);
   const [pinData, setpinData] = useState([]);
   const [tempArrFalse, setTempArrFalse] = useState([]);
@@ -38,6 +38,7 @@ const UpTabs = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [unpinData, setUnpinData] = useState([]);
   const [localData, setLocalData] = useState<any>({});
+  const [scrolling, setScrolling] = useState(false);
 
 
   const dataPerPage = 10;
@@ -45,6 +46,7 @@ const UpTabs = () => {
 
   const loginUserId = localStorage.getItem("EmployeeID");
   const { showUpChat }: any = useContext(MyContext);
+  const arrawScroll = useRef(null);
 
 
   const firestore = firebase.firestore();
@@ -379,7 +381,9 @@ const UpTabs = () => {
         storeLocalData(pageNo, mergedResults);
 
         // Update the state with the fetched data
-        setAllChannel(mergedResults);
+        // setAllChannel(mergedResults);
+        setAllChannel([...allChannel, ...mergedResults]);
+
         setTempArr(mergedResults);
         setPinnedChannel(false);
         setSoonzeChannel(false);
@@ -391,6 +395,22 @@ const UpTabs = () => {
     }
   };
 
+  const handleScroll = () => {
+    const element: any = arrawScroll.current;
+    if (element) {
+      if (
+        Math.round(element.scrollTop + element.clientHeight) ===
+        element.scrollHeight
+      ) {
+        if (currentPage < totalPages) {
+          setCurrentPage((prevPage) => prevPage + 1);
+        }
+        setScrolling(true);
+      } else {
+        setScrolling(false);
+      }
+    }
+  };
 
 
   const fetchdata = () => {
@@ -575,7 +595,8 @@ const UpTabs = () => {
               />
             </div>
 
-            <div className={UpTabsStyle.chatListWrapper}>
+            <div ref={arrawScroll}
+              onScroll={handleScroll} className={UpTabsStyle.chatListWrapper}>
               <PinAccordian
                 icon={<PinnedGroupsSVG />}
                 label={"Pinned Groups"}

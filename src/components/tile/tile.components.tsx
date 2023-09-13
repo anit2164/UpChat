@@ -541,7 +541,7 @@ const Tile = ({
           <span className={TileStyle.noDataFound}>No data found</span>
         )}
       </div>
-      {updateData?.length > 0 && unpinData?.length > 10 && (
+      {/* {updateData?.length > 0 && unpinData?.length > 10 && (
         <div className={TileStyle.dropPagArrow}>
           <div className={TileStyle.PginationArrowWrap}>
             <span className={`${TileStyle.Prev} ${currentPage === 1 && TileStyle.iconDisabled}`} onClick={handlePreviousPage}><PaginationArrow /></span>
@@ -549,7 +549,7 @@ const Tile = ({
             <span className={`${TileStyle.Next} ${currentPage == totalPages && TileStyle.iconDisabled}`} onClick={handleNextPage} ><PaginationArrow /></span>
           </div>
         </div>
-      )}
+      )} */}
       {tileChat === true && isTileChat === true && (
         <ChatListing
           showChatList={showChatList}

@@ -256,7 +256,7 @@ const ChatListing = ({
           senderName: username,
           talentName: "",
           Replied: replyMessageSection === true
-            ? replyMessage.text
+            ? replyMessage.text.trim()
             : "",
           isRepliedTo: replyMessageSection === true ? "Shreyash Zinzuvadia" : "",
           msgRepliedId: "",
@@ -318,7 +318,7 @@ const ChatListing = ({
             senderName: username,
             talentName: "",
             Replied: replyMessageSection === true
-              ? replyMessage.text
+              ? replyMessage.text.trim()
               : "",
             isRepliedTo: replyMessageSection === true ? "Shreyash Zinzuvadia" : "",
             msgRepliedId: "",
