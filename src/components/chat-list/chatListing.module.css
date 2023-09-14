@@ -1115,7 +1115,7 @@
 .systemGeneratedIsNotes {
   display: flex;
   justify-content: space-between;
-  /* background: #ede8e8; */
+  background: #ede8e8 !important;
   border-radius: 8px;
   text-align: left;
   padding: 8px 10px;
