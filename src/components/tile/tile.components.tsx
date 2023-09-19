@@ -31,7 +31,7 @@ const Tile = ({
   handleNextPage,
   handlePreviousPage,
   totalPages,
-  unpinData,
+  // unpinData,
 }: any) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState([]);
@@ -40,11 +40,13 @@ const Tile = ({
   const [showChat, setShowList] = useState(false);
   const [listingChats, setListingChats] = useState([]);
   const [allChannelItem, setAllChannelItem] = useState<any>();
-  const [readCount, setReadCount] = useState([]);
+  const [readCount, setReadCount] = useState<any>([]);
   const [isReadInfo, setIsReadInfo] = useState({});
   const [loadedCount, setLoadedCount] = useState(0);
   const [showScroll, setShowScroll] = useState(false);
   const [isTileChat, setIsTileChat] = useState(false);
+  const [unPinData, setUnpinData] = useState([]);
+  const dataPerPage: any = 10
 
   const firestore = firebase.firestore();
 
@@ -59,22 +61,128 @@ const Tile = ({
   const loginUserId = localStorage.getItem("EmployeeID");
 
   let tempCount: any = [];
+  // const tempInfo = async (data: any) => {
+  //   let countArr: any = {};
+  //   // const firestore = firebase.firestore();
+  //   const readOrUnread = firestore.collectionGroup("user_chats");
+  //   const query = readOrUnread
+  //     .where("isRead", "==", false)
+  //     .where("enc_channelID", "==", data)
+  //     .where("userEmpID", "==", loginUserId)
+  //     .onSnapshot((snapshot) => {
+  //       countArr.enc_ChannelIDCount = data;
+  //       countArr.readCount = snapshot?.docs?.length;
+  //       tempCount.push(countArr);
+  //       setReadCount(tempCount);
+  //     });
+  // };
   const tempInfo = async (data: any) => {
-    let countArr: any = {};
-    // const firestore = firebase.firestore();
-    const readOrUnread = firestore.collectionGroup("user_chats");
-    const query = readOrUnread
-      .where("isRead", "==", false)
-      .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", loginUserId)
-      .onSnapshot((snapshot) => {
-        countArr.enc_ChannelIDCount = data;
-        countArr.readCount = snapshot?.docs?.length;
-        tempCount.push(countArr);
-        setReadCount(tempCount);
-      });
+    try {
+      const readOrUnread = firestore.collectionGroup("user_chats");
+
+      readOrUnread
+        .where("isRead", "==", false)
+        .where("enc_channelID", "==", data)
+        .where("userEmpID", "==", loginUserId)
+        .onSnapshot((snapshot) => {
+          const newTempCount: any = [];
+
+          if (snapshot.docs.length > 0) {
+            snapshot.forEach((doc) => {
+              const user = doc.data();
+              const countArr = {
+                enc_ChannelIDCount: data,
+                readCount: snapshot.docs.length,
+              };
+
+              newTempCount.push(countArr);
+            });
+            console.log(
+              "snapshotsnapshotsnapshotsnapshotsnapshotwidget",
+              snapshot
+            );
+
+            setReadCount((prevState: any) => {
+              const updatedCounts = prevState.map((countItem: any) => {
+                if (countItem.enc_ChannelIDCount === data) {
+                  countItem.readCount = 0; // Reset count to zero when chat is opened
+                }
+                return countItem;
+              });
+
+              const uniqueItemsMap = new Map();
+              for (const item of [...updatedCounts, ...newTempCount]) {
+                uniqueItemsMap.set(item.enc_ChannelIDCount, item);
+              }
+              const mergedState = Array.from(uniqueItemsMap.values());
+              return mergedState;
+            });
+          } else {
+            setReadCount((prevState: any) =>
+              prevState.filter(
+                (countItem: any) => countItem.enc_ChannelIDCount !== data
+              )
+            );
+          }
+        });
+    } catch (error) {
+      console.error("Error in tempInfo:", error);
+    }
   };
 
+  const getUnpinData = async (tempArr: any, pageNo: any) => {
+    try {
+      const collectionRef = firestore.collection("channels");
+      if (tempArr?.length > 0) {
+        const startIndex: any = (pageNo - 1) * dataPerPage;
+        const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
+
+        // Create a reference to the listener
+        collectionRef
+          .where("enc_channelID", "in", batch)
+          .limit(dataPerPage)
+          .onSnapshot((querySnapshot) => {
+            const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
+
+            setData([...data, ...mergedResults]);
+            // setUnReadCount(mergedResults);
+            setTempArr(mergedResults);
+            // setPinnedChannel(false);
+            // setSoonzeChannel(false);
+          });
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  let tempArrUnPin: any = [];
+  useEffect(() => {
+    // let tempArrPin = [];
+
+    const unsubscribe = firestore
+      .collectionGroup(`user`)
+      .where("userEmpId", "==", loginUserId)
+      .limit(limits.pageSize)
+      .onSnapshot((snapshot) => {
+        snapshot.forEach((doc) => {
+          const user = doc.data();
+          if (!user.isPinned) {
+            //   tempArrPin.push(user?.channelID.toString());
+            //   tempInfoData(user?.channelID.toString());
+            // } else {
+            tempArrUnPin.push(user?.channelID.toString());
+            tempInfo(user?.channelID.toString());
+          }
+        });
+
+        // getPinData(tempArrPin);
+        setUnpinData(tempArrUnPin);
+
+        getUnpinData(tempArrUnPin, currentPage);
+      });
+    return () => unsubscribe();
+  }, []);
   var sum = 0;
 
   const channelDropdown = useCallback(async (value: any, item: any) => {
@@ -514,9 +622,24 @@ const Tile = ({
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                {item?.readCount > 0 && (
-                  <div className={TileStyle.unreadNum}>{item?.readCount}</div>
-                )}
+                {readCount.some(
+                  (countItem: any) =>
+                    countItem.enc_ChannelIDCount === item.enc_channelID
+                ) ? (
+                  <>
+                    {
+                      <div className={TileStyle.unreadNum}>
+                        {
+                          readCount.find(
+                            (countItem: any) =>
+                              countItem.enc_ChannelIDCount ===
+                              item.enc_channelID
+                          )?.readCount
+                        }
+                      </div>
+                    }
+                  </>
+                ) : null}
                 <Dropdown
                   className={TileStyle.dotMenuMain}
                   menu={{

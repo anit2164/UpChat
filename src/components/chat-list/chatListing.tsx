@@ -97,28 +97,31 @@ const ChatListing = ({
   const [pinChat, setPinChat] = useState(false);
   const [replyMessage, setReplyMessage] = useState<any>({});
 
-  const firestore = firebase.firestore();
-
   const bottomToTopRef: any = useRef(null);
   const arrawScroll = useRef(null);
   const commentRef: any = useRef();
+  const loginUserId = localStorage.getItem("EmployeeID");
+  const initializeApp: any = localStorage.getItem("initializeApp") || "";
+  let name: any = loginUserId;
+  let lastChatMessage;
+
+  let firestore: any;
+  if (allChannelItem && initializeApp === "true") {
+    firebase.initializeApp(firebaseConfig);
+    firestore = firebase.firestore();
+  }
+
   const sanitizer = DOMPurify.sanitize;
   let currentChatDate: any = null;
-
-
-
-  const loginUserId = localStorage.getItem("EmployeeID");
   var storageToken: any;
+
   setTimeout(() => {
     storageToken = JSON.parse(localStorage.getItem("apiKey") || "{}");
   }, 0);
 
-  let name: any = loginUserId;
   let initials1 = name
     ?.split(" ")
     .reduce((acc: any, subname: any) => acc + subname[0], "");
-
-  let lastChatMessage;
 
   const channelMainDropdown: any = [
     {
@@ -407,28 +410,31 @@ const ChatListing = ({
   };
 
   useEffect(() => {
-    try {
-      const unsubscribe = firestore
-        .collection(`ChannelUserMapping/${allChannelItem?.enc_channelID}/user`)
-        .onSnapshot((snapshot) => {
-          const userData: any = snapshot.docs.map((doc) => {
-            const userEmpId = doc.get("userEmpId");
-            return {
-              // id: doc.id,
-              enc_channelID: allChannelItem?.enc_channelID,
-              isRead: loginUserId === userEmpId ? true : false,
-              userEmpID: userEmpId,
-              IsBookMark: false,
-            };
+    if (initializeApp === "true" || allChannelItem) {
+      try {
+        const unsubscribe = firestore
+          .collection(`ChannelUserMapping/${allChannelItem?.enc_channelID}/user`)
+          .onSnapshot((snapshot: any) => {
+            const userData: any = snapshot.docs.map((doc: any) => {
+              const userEmpId = doc.get("userEmpId");
+              return {
+                // id: doc.id,
+                enc_channelID: allChannelItem?.enc_channelID,
+                isRead: loginUserId === userEmpId ? true : false,
+                userEmpID: userEmpId,
+                IsBookMark: false,
+              };
+            });
+            setUserDataList(userData);
           });
-          setUserDataList(userData);
-        });
-      return () => {
-        unsubscribe();
-      };
-    } catch (error) {
-      console.error(error);
+        return () => {
+          unsubscribe();
+        };
+      } catch (error) {
+        console.error(error);
+      }
     }
+
   }, [allChannelItem]);
 
   const chatListDropdown = (value: any) => {
@@ -488,23 +494,25 @@ const ChatListing = ({
   };
 
   useEffect(() => {
-    try {
-      const firestore = firebase.firestore();
-      const unsubscribe = firestore
-        .collection(`ChannelUserMapping/${allChannelItem?.enc_channelID}/user`)
-        .onSnapshot((snapshot) => {
-          const userData: any = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          // setUserDataList(userData);
-          setMemberFilter(userData);
-        });
-      return () => {
-        unsubscribe();
-      };
-    } catch (error) {
-      console.error(error);
+    if (initializeApp === "true" || allChannelItem) {
+      try {
+        const firestore = firebase.firestore();
+        const unsubscribe = firestore
+          .collection(`ChannelUserMapping/${allChannelItem?.enc_channelID}/user`)
+          .onSnapshot((snapshot) => {
+            const userData: any = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            // setUserDataList(userData);
+            setMemberFilter(userData);
+          });
+        return () => {
+          unsubscribe();
+        };
+      } catch (error) {
+        console.error(error);
+      }
     }
   }, [allChannelItem]);
 
@@ -572,24 +580,12 @@ const ChatListing = ({
 
   return (
     <>
-      {/* <Provider store={store}> */}
       {contextHolder}
       {!(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
         <main className={`${ChatListingStyles.main} ${toggle ? ChatListingStyles.chatListingExpanded : ""
           } ${toggle ? "" : ChatListingStyles.chatListingCollapsed}`}>
-          {toggle && (
+          {toggle && initializeApp === "true" && (
             <>
-              {/* <MyContext.Provider
-                value={{
-                  totalCount,
-                  setTotalCount,
-                  totalCountPinned,
-                  setTotalCountPinned,
-                }}
-              >
-                <Header setToggle={setToggle} />
-                <UpTabs />
-              </MyContext.Provider> */}
               <MyContext.Provider
                 value={{
                   totalCount,
@@ -604,8 +600,7 @@ const ChatListing = ({
                   setTileChat,
                 }}
               >
-                {/* <main className={ChatListingStyles.main}> */}
-                {toggle && (
+                {toggle && initializeApp === "true" && (
                   <>
                     <Header
                       setToggle={setToggle}
@@ -621,7 +616,6 @@ const ChatListing = ({
                   showUpChat={showUpChat}
                   setShowUpChat={setShowUpChat}
                 />
-                {/* </main> */}
               </MyContext.Provider>
             </>
           )}
@@ -1454,7 +1448,6 @@ const ChatListing = ({
           </div>
         </div>
       )}
-      {/* </Provider> */}
     </>
   );
 };

@@ -29,6 +29,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
   const [readCountTrue, setReadCountTrue] = useState([]);
   const [isReadInfo, setIsReadInfo] = useState({});
   const [isPinChat, setIsPinChat] = useState(false);
+  const [readCount, setReadCount] = useState<any>([]);
 
   const loginUserId = localStorage.getItem("EmployeeID");
   const firestore = firebase.firestore();
@@ -37,21 +38,108 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
 
   let tempCountData: any = [];
   let lastDocument;
+  // const tempInfoData = async (data: any) => {
+  //   let countArr: any = {};
+  //   // const firestore = firebase.firestore();
+  //   const readOrUnread = firestore.collectionGroup("user_chats");
+  //   const query = readOrUnread
+  //     .where("isRead", "==", true)
+  //     .where("enc_channelID", "==", data)
+  //     .where("userEmpID", "==", loginUserId);
+  //   const snapshot1 = await query.limit(limits.pageSize).get();
+  //   countArr.enc_ChannelIDCount = data;
+  //   countArr.readCount = snapshot1?.docs?.length;
+  //   tempCountData.push(countArr);
+  //   setReadCountTrue(tempCountData);
+  // };
   const tempInfoData = async (data: any) => {
-    let countArr: any = {};
-    // const firestore = firebase.firestore();
+    let countArr = {};
     const readOrUnread = firestore.collectionGroup("user_chats");
-    const query = readOrUnread
-      .where("isRead", "==", true)
+    readOrUnread
+      .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", loginUserId);
-    const snapshot1 = await query.limit(limits.pageSize).get();
-    countArr.enc_ChannelIDCount = data;
-    countArr.readCount = snapshot1?.docs?.length;
-    tempCountData.push(countArr);
-    setReadCountTrue(tempCountData);
+      .where("userEmpID", "==", loginUserId)
+      .limit(limits.pageSize)
+      .onSnapshot((snapshot) => {
+        const newTempCount: any = [];
+
+        if (snapshot.docs.length > 0) {
+          snapshot.forEach((doc) => {
+            const user = doc.data();
+            const countArr = {
+              enc_ChannelIDCount: data,
+              readCount: snapshot.docs.length,
+            };
+
+            newTempCount.push(countArr);
+          });
+          // countArr.enc_ChannelIDCount = data;
+          // countArr.readCount = snapshot?.docs?.length;
+          // tempCountData.push(countArr);
+          // setReadCountTrue(tempCountData);
+
+          setReadCount((prevState: any) => {
+            const updatedCounts = prevState.map((countItem: any) => {
+              if (countItem.enc_ChannelIDCount === data) {
+                countItem.readCount = 0; // Reset count to zero when chat is opened
+              }
+              return countItem;
+            });
+
+            const uniqueItemsMap = new Map();
+            for (const item of [...updatedCounts, ...newTempCount]) {
+              uniqueItemsMap.set(item.enc_ChannelIDCount, item);
+            }
+            const mergedState = Array.from(uniqueItemsMap.values());
+            return mergedState;
+          });
+        } else {
+          setReadCount((prevState: any) =>
+            prevState.filter(
+              (countItem: any) => countItem.enc_ChannelIDCount !== data
+            )
+          );
+        }
+      });
   };
 
+  const getPinData = (tempArr: any) => {
+    const collectionRef = firestore.collection("channels");
+    if (tempArr?.length > 0) {
+      const batch = tempArr.splice(0, 30);
+      const query = collectionRef
+        .where("enc_channelID", "in", batch)
+        .limit(limits.pageSize)
+        .onSnapshot((querySnapshot) => {
+          const mergedResults: any = [];
+          querySnapshot.forEach((doc) => {
+            mergedResults.push(doc.data());
+          });
+          setDataFalse(mergedResults);
+          setTempArrFalse(mergedResults);
+        });
+    }
+  };
+
+  useEffect(() => {
+    let tempArrPin: any = [];
+    const unsubscribe = firestore
+      .collectionGroup(`user`)
+      .where("userEmpId", "==", loginUserId)
+      .limit(limits.pageSize)
+      .onSnapshot((snapshot) => {
+        snapshot.forEach((doc) => {
+          const user = doc.data();
+          if (user.isPinned) {
+            tempArrPin.push(user?.channelID.toString());
+            tempInfoData(user?.channelID.toString());
+          }
+        });
+
+        getPinData(tempArrPin);
+      });
+    return () => unsubscribe();
+  }, []);
   const items = [
     {
       label: ChannelMenu.UNPIN_CHANNEL,
@@ -408,11 +496,24 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
-                {item?.readCount > 0 && (
-                  <div className={PinChatDetailsStyle.unreadNum}>
-                    {item?.readCount}
-                  </div>
-                )}
+                {readCount.some(
+                  (countItem: any) =>
+                    countItem.enc_ChannelIDCount === item.enc_channelID
+                ) ? (
+                  <>
+                    {
+                      <div className={PinChatDetailsStyle.unreadNum}>
+                        {
+                          readCount.find(
+                            (countItem: any) =>
+                              countItem.enc_ChannelIDCount ===
+                              item.enc_channelID
+                          )?.readCount
+                        }
+                      </div>
+                    }
+                  </>
+                ) : null}
                 <Dropdown
                   className={PinChatDetailsStyle.dotMenuMain}
                   menu={{

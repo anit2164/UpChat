@@ -5,6 +5,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import firebaseConfig from "../../firebase";
 import MyContext from "../chat-list/myContext";
+import { limits } from "../../constants/constantLimit";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -12,26 +13,125 @@ const Header = ({ setToggle, showUpChat, setShowUpChat }: any) => {
   const [data, setData] = useState([]);
   const [useName, setUsername] = useState("");
   const { totalCount, totalCountPinned }: any = useContext(MyContext);
-  useEffect(() => {
-    // Retrive Data
-    const fetchData = async () => {
-      try {
-        const firestore = firebase.firestore();
-        const collectionRef = firestore.collection("channels");
-        const snapshot = await collectionRef.get();
+  const firestore = firebase.firestore();
+  const [unreadCounts, setUnreadCounts] = useState<any>({});
+  const [count, setCount] = useState(0);
+  const [readCountTrue, setReadCountTrue] = useState([]);
+  let tempCountData: any = [];
 
-        const dataArray: any = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
+  // useEffect(() => {
+  //   // Retrive Data
+  //   const fetchData = async () => {
+  //     try {
+  //       const firestore = firebase.firestore();
+  //       const collectionRef = firestore.collection("channels");
+  //       const snapshot = await collectionRef.get();
+
+  //       const dataArray: any = snapshot.docs.map((doc) => ({
+  //         id: doc.id,
+  //         ...doc.data(),
+  //       }));
+
+  //       setData(dataArray);
+  //     } catch (error: any) {
+  //       console.error(error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+  const loginUserId = localStorage.getItem("EmployeeID");
+
+  const tempInfoData = async (data: any) => {
+    let countArr: any = {};
+    const readOrUnread = firestore.collectionGroup("user_chats");
+    readOrUnread
+      .where("isRead", "==", false)
+      .where("enc_channelID", "==", data)
+      .where("userEmpID", "==", loginUserId)
+      .limit(limits.pageSize)
+      .onSnapshot((snapshot: any) => {
+        const unreadCount = snapshot.docs.length;
+
+        setUnreadCounts((prevCounts: any) => ({
+          ...prevCounts,
+          [data]: unreadCount,
         }));
+        countArr.enc_ChannelIDCount = data;
+        countArr.readCount = snapshot?.docs?.length;
+        tempCountData.push(countArr);
+        setReadCountTrue(tempCountData);
+      });
+  };
 
-        setData(dataArray);
-      } catch (error: any) {
-        console.error(error);
-      }
-    };
+  const getData: any = (tempArr: any) => {
+    const collectionRef = firestore.collection("channels");
+    if (tempArr?.length > 0) {
+      const batch = tempArr.splice(0, 30);
+      collectionRef
+        .where("enc_channelID", "in", batch)
+        .limit(limits.pageSize)
+        .onSnapshot((querySnapshot: any) => {
+          const mergedResults: any = [];
+          querySnapshot.forEach((doc: any) => {
+            const channelData = doc.data();
+            channelData.unreadCount =
+              unreadCounts[channelData.enc_channelID] || 0;
+            mergedResults.push(channelData);
+          });
 
-    fetchData();
+          setData(mergedResults);
+        });
+    }
+  };
+  useEffect(() => {
+    let result: any = [];
+
+    data?.map((item: any) => {
+      const data2: any = readCountTrue.find(
+        (temp: any) => item.enc_channelID === temp.enc_ChannelIDCount
+      );
+
+      setTimeout(() => {
+        if (data2) {
+          item.readCount = data2.readCount;
+        }
+        result.push(item);
+      });
+    }, 500);
+
+    setTimeout(() => {
+      const totalReadCount = result.reduce(
+        (total: any, item: any) => total + item.readCount,
+        0
+      );
+
+      setCount(totalReadCount);
+    }, 600);
+
+    // setUpdateData(result);
+    // setData(data);
+  }, [data, readCountTrue, unreadCounts]);
+
+  useEffect(() => {
+    let tempArr: any = [];
+    const unsubscribe = firestore
+      .collectionGroup(`user`)
+      .where("userEmpId", "==", loginUserId)
+      .limit(limits.pageSize)
+      .onSnapshot((snapshot) => {
+        snapshot.forEach((doc) => {
+          const user = doc.data();
+
+          tempArr.push(user?.channelID.toString());
+          tempInfoData(user?.channelID.toString());
+        });
+
+        // getData(tempArr);
+        setTimeout(getData(tempArr), 60000);
+      });
+
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -41,7 +141,7 @@ const Header = ({ setToggle, showUpChat, setShowUpChat }: any) => {
     setUsername(loggedInData?.FullName);
   }, []);
 
-  var countDetails = totalCount + totalCountPinned;
+
 
   return (
 
@@ -58,8 +158,8 @@ const Header = ({ setToggle, showUpChat, setShowUpChat }: any) => {
         <div className={HeaderStyle.title}>{useName}</div>
       </div>
       <div className={HeaderStyle.titleRight}>
-        {!isNaN(countDetails) && countDetails !== 0 && (
-          <span className={HeaderStyle.unreadNum}>{countDetails}</span>
+        {!isNaN(count) && count !== 0 && (
+          <span className={HeaderStyle.unreadNum}>{count}</span>
         )}
         <ArrowDownSVG />
       </div>

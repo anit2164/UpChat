@@ -6,7 +6,7 @@ import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { limits } from "../../constants/constantLimit";
-firebase.initializeApp(firebaseConfig);
+// firebase.initializeApp(firebaseConfig);
 
 const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
   const firestore = firebase.firestore();
@@ -15,24 +15,30 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
   const [readCountTrue, setReadCountTrue] = useState([]);
   const [count, setCount] = useState(0);
   const [data, setData] = useState([]);
+  const initializeApp = localStorage.getItem("initializeApp");
 
+  if (initializeApp === "true") {
+    firebase.initializeApp(firebaseConfig);
+  }
   useEffect(() => {
-    let tempArr: any = [];
-    const unsubscribe = firestore
-      .collectionGroup(`user`)
-      .where("userEmpId", "==", loginUserId)
-      .limit(limits.pageSize)
-      .onSnapshot((snapshot) => {
-        snapshot.forEach((doc) => {
-          const user = doc.data();
-          tempArr.push(user?.channelID.toString());
-          tempInfoData(user?.channelID.toString());
+
+    if (initializeApp === "true") {
+      let tempArr: any = [];
+      const unsubscribe = firestore
+        .collectionGroup(`user`)
+        .where("userEmpId", "==", loginUserId)
+        .limit(limits.pageSize)
+        .onSnapshot((snapshot) => {
+          snapshot.forEach((doc) => {
+            const user = doc.data();
+            tempArr.push(user?.channelID.toString());
+            tempInfoData(user?.channelID.toString());
+          });
+
+          getData(tempArr);
         });
-
-        getData(tempArr);
-      });
-
-    return () => unsubscribe();
+      return () => unsubscribe();
+    }
   }, [showUpChat]);
 
   let tempCountData: any = [];
@@ -97,6 +103,7 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
       className={` ${showUpChat ? CollapseStyle.showupChatNone : CollapseStyle.container
         } ${!toggle ? CollapseStyle.toggleClose : ""} `}
       onClick={() => {
+        localStorage.setItem("initializeApp", "true");
         setToggle(!toggle);
         setShowClass(false);
         setShowUpChat(!showUpChat);
