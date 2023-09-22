@@ -346,7 +346,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
       });
 
       // Reduce firebase call
-      if (reduceFirebaseCall.docs.length > 0) {
+      if (reduceFirebaseCall?.docs?.length > 0) {
         lastDocument =
           reduceFirebaseCall.docs[reduceFirebaseCall.docs.length - 1];
       }

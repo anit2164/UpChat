@@ -97,10 +97,7 @@ const Tile = ({
 
               newTempCount.push(countArr);
             });
-            console.log(
-              "snapshotsnapshotsnapshotsnapshotsnapshotwidget",
-              snapshot
-            );
+
 
             setReadCount((prevState: any) => {
               const updatedCounts = prevState.map((countItem: any) => {
