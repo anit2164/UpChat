@@ -99,16 +99,20 @@ const Header = ({ setToggle, showUpChat, setShowUpChat }: any) => {
         result.push(item);
       });
     }, 500);
+    const scrollDown = localStorage.getItem("scrollDown");
+    if (scrollDown == "false" || scrollDown == "null") {
 
-    setTimeout(() => {
-      const totalReadCount = result.reduce(
-        (total: any, item: any) => total + item.readCount,
-        0
-      );
+      setTimeout(() => {
+        const totalReadCount = result.reduce(
+          (total: any, item: any) => total + item.readCount,
+          0
+        );
 
-      setCount(totalReadCount);
-    }, 600);
-
+        setCount(totalReadCount);
+      }, 600);
+    } else {
+      setCount(0);
+    }
     // setUpdateData(result);
     // setData(data);
   }, [data, readCountTrue, unreadCounts]);
@@ -122,7 +126,6 @@ const Header = ({ setToggle, showUpChat, setShowUpChat }: any) => {
       .onSnapshot((snapshot) => {
         snapshot.forEach((doc) => {
           const user = doc.data();
-
           tempArr.push(user?.channelID.toString());
           tempInfoData(user?.channelID.toString());
         });

@@ -33,6 +33,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
 
   const loginUserId = localStorage.getItem("EmployeeID");
   const firestore = firebase.firestore();
+  const scrollDown = localStorage.getItem("scrollDown");
 
   const { setTotalCountPinned, pinChat, setPinChat, tileChat, setTileChat }: any = useContext(MyContext);
 
@@ -61,44 +62,46 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
       .where("userEmpID", "==", loginUserId)
       .limit(limits.pageSize)
       .onSnapshot((snapshot) => {
-        const newTempCount: any = [];
+        if (scrollDown == "false" || scrollDown == null) {
+          const newTempCount: any = [];
 
-        if (snapshot.docs.length > 0) {
-          snapshot.forEach((doc) => {
-            const user = doc.data();
-            const countArr = {
-              enc_ChannelIDCount: data,
-              readCount: snapshot.docs.length,
-            };
+          if (snapshot.docs.length > 0) {
+            snapshot.forEach((doc) => {
+              const user = doc.data();
+              const countArr = {
+                enc_ChannelIDCount: data,
+                readCount: snapshot.docs.length,
+              };
 
-            newTempCount.push(countArr);
-          });
-          // countArr.enc_ChannelIDCount = data;
-          // countArr.readCount = snapshot?.docs?.length;
-          // tempCountData.push(countArr);
-          // setReadCountTrue(tempCountData);
-
-          setReadCount((prevState: any) => {
-            const updatedCounts = prevState.map((countItem: any) => {
-              if (countItem.enc_ChannelIDCount === data) {
-                countItem.readCount = 0; // Reset count to zero when chat is opened
-              }
-              return countItem;
+              newTempCount.push(countArr);
             });
+            // countArr.enc_ChannelIDCount = data;
+            // countArr.readCount = snapshot?.docs?.length;
+            // tempCountData.push(countArr);
+            // setReadCountTrue(tempCountData);
 
-            const uniqueItemsMap = new Map();
-            for (const item of [...updatedCounts, ...newTempCount]) {
-              uniqueItemsMap.set(item.enc_ChannelIDCount, item);
-            }
-            const mergedState = Array.from(uniqueItemsMap.values());
-            return mergedState;
-          });
-        } else {
-          setReadCount((prevState: any) =>
-            prevState.filter(
-              (countItem: any) => countItem.enc_ChannelIDCount !== data
-            )
-          );
+            setReadCount((prevState: any) => {
+              const updatedCounts = prevState.map((countItem: any) => {
+                if (countItem.enc_ChannelIDCount === data) {
+                  countItem.readCount = 0; // Reset count to zero when chat is opened
+                }
+                return countItem;
+              });
+
+              const uniqueItemsMap = new Map();
+              for (const item of [...updatedCounts, ...newTempCount]) {
+                uniqueItemsMap.set(item.enc_ChannelIDCount, item);
+              }
+              const mergedState = Array.from(uniqueItemsMap.values());
+              return mergedState;
+            });
+          } else {
+            setReadCount((prevState: any) =>
+              prevState.filter(
+                (countItem: any) => countItem.enc_ChannelIDCount !== data
+              )
+            );
+          }
         }
       });
   };

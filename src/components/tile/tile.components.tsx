@@ -76,6 +76,7 @@ const Tile = ({
   //       setReadCount(tempCount);
   //     });
   // };
+  const scrollDown = localStorage.getItem("scrollDown");
   const tempInfo = async (data: any) => {
     try {
       const readOrUnread = firestore.collectionGroup("user_chats");
@@ -85,41 +86,43 @@ const Tile = ({
         .where("enc_channelID", "==", data)
         .where("userEmpID", "==", loginUserId)
         .onSnapshot((snapshot) => {
-          const newTempCount: any = [];
+          if (scrollDown == "false" || scrollDown == "null") {
+            const newTempCount: any = [];
 
-          if (snapshot.docs.length > 0) {
-            snapshot.forEach((doc) => {
-              const user = doc.data();
-              const countArr = {
-                enc_ChannelIDCount: data,
-                readCount: snapshot.docs.length,
-              };
+            if (snapshot.docs.length > 0) {
+              snapshot.forEach((doc) => {
+                const user = doc.data();
+                const countArr = {
+                  enc_ChannelIDCount: data,
+                  readCount: snapshot.docs.length,
+                };
 
-              newTempCount.push(countArr);
-            });
-
-
-            setReadCount((prevState: any) => {
-              const updatedCounts = prevState.map((countItem: any) => {
-                if (countItem.enc_ChannelIDCount === data) {
-                  countItem.readCount = 0; // Reset count to zero when chat is opened
-                }
-                return countItem;
+                newTempCount.push(countArr);
               });
 
-              const uniqueItemsMap = new Map();
-              for (const item of [...updatedCounts, ...newTempCount]) {
-                uniqueItemsMap.set(item.enc_ChannelIDCount, item);
-              }
-              const mergedState = Array.from(uniqueItemsMap.values());
-              return mergedState;
-            });
-          } else {
-            setReadCount((prevState: any) =>
-              prevState.filter(
-                (countItem: any) => countItem.enc_ChannelIDCount !== data
-              )
-            );
+
+              setReadCount((prevState: any) => {
+                const updatedCounts = prevState.map((countItem: any) => {
+                  if (countItem.enc_ChannelIDCount === data) {
+                    countItem.readCount = 0; // Reset count to zero when chat is opened
+                  }
+                  return countItem;
+                });
+
+                const uniqueItemsMap = new Map();
+                for (const item of [...updatedCounts, ...newTempCount]) {
+                  uniqueItemsMap.set(item.enc_ChannelIDCount, item);
+                }
+                const mergedState = Array.from(uniqueItemsMap.values());
+                return mergedState;
+              });
+            } else {
+              setReadCount((prevState: any) =>
+                prevState.filter(
+                  (countItem: any) => countItem.enc_ChannelIDCount !== data
+                )
+              );
+            }
           }
         });
     } catch (error) {

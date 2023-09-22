@@ -123,6 +123,9 @@ const ChatListing = ({
     ?.split(" ")
     .reduce((acc: any, subname: any) => acc + subname[0], "");
 
+
+
+
   const channelMainDropdown: any = [
     {
       label: ChannelMenu.SEARCH_IN_CHAT,
@@ -186,6 +189,65 @@ const ChatListing = ({
   const currentTimeIST = currentDate.toLocaleTimeString("en-IN", {
     timeZone: "Asia/Kolkata",
   });
+  const getIsReadUser = async () => {
+    const collectionRef = firestore.collection(
+      `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
+    );
+    const query = collectionRef.orderBy("date", "desc").limit(1);
+
+    try {
+      const querySnapshot = await query.get();
+
+      if (!querySnapshot.empty) {
+        const lastChatDoc = querySnapshot.docs[0];
+        const lastChatID = lastChatDoc.id;
+        console.log("Last chat ID:", lastChatID);
+        const subcollectionRef = firestore.collection(
+          `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats/${lastChatID}/user_chats/`
+        );
+        subcollectionRef
+          .where("userEmpID", "==", loginUserId)
+          .get()
+          .then((querySnapshot: any) => {
+            querySnapshot.forEach((doc: any) => {
+              // Update the specific document within the subcollection
+              const docRef = subcollectionRef.doc(doc.id);
+              docRef
+                .update({
+                  // Update the fields you want here
+                  // For example, you can add a new field like "isRead" with a value of true
+                  isRead: true,
+                })
+                .then(() => {
+                  // console.log(`Document ${doc.id} updated.`);
+                })
+                .catch((error: any) => {
+                  console.error(`Error updating document ${doc.id}:`, error);
+                });
+            });
+          })
+          .catch((error: any) => {
+            console.error("Error getting user chats data:", error);
+          });
+        // for (let i = 0; i < userDataList.length; i++) {
+        //  await collectionRef.update(userDataList[i]);
+        // }
+      } else {
+        // console.log("No chat documents found.");
+      }
+    } catch (error) {
+      console.error("Error getting last chat ID:", error);
+    }
+  };
+  useEffect(() => {
+    if (scrollDown === true) {
+      localStorage.setItem("scrollDown", "true")
+      getIsReadUser();
+    }
+    // console.log("allChannelItemallChannelItem",userDataListuserDataListuserDataList)
+    //
+
+  }, [scrollDown])
 
   useEffect(() => {
     const loggedInData = JSON.parse(

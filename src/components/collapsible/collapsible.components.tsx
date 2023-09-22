@@ -104,6 +104,8 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
         } ${!toggle ? CollapseStyle.toggleClose : ""} `}
       onClick={() => {
         localStorage.setItem("initializeApp", "true");
+        localStorage.setItem("scrollDown", "false");
+
         setToggle(!toggle);
         setShowClass(false);
         setShowUpChat(!showUpChat);
