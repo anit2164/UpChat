@@ -14,8 +14,13 @@ import UpTabs from "../../components/upTabs/upTabs.components";
 import { Dropdown, Space, message } from "antd";
 import SendIcon from "../../assets/svg/fiSend.svg";
 import SearchIcon from "../../assets/svg/search.svg";
+import FiChevronLeftSVG from "../../assets/svg/fiChevronLeft.svg";
+import FiFolderPlusSVG from "../../assets/svg/FiFolderPlusSVG.svg";
 // import ArrowIcon from "@SVG/fiArrowRight.svg";
 import SmileIcon from "../../assets/svg/fiSmile.svg";
+import FiImageSVG from "../../assets/svg/FiImageSVG.svg";
+import ChannelLibrary from "../ChannelLibrary/ChannelLibrary";
+
 import SmileIcon1 from "../../assets/svg/smileIcon-1.svg";
 import SmileIcon2 from "../../assets/svg/smileIcon-2.svg";
 import SmileIcon3 from "../../assets/svg/smileIcon-3.svg";
@@ -31,6 +36,7 @@ import FiCopySVG from "../../assets/svg/fiCopy.svg";
 import FiBookmarkOutlinedSVG from "../../assets/svg/fiBookmarkOutlined.svg";
 import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
+import "firebase/compat/storage";
 import "firebase/compat/firestore";
 // import { useDispatch, useSelector } from "react-redux";
 import { sendMessageHandler } from "../../redux_toolkit/slices/sendMessage";
@@ -96,6 +102,12 @@ const ChatListing = ({
   const [tileChat, setTileChat] = useState(false);
   const [pinChat, setPinChat] = useState(false);
   const [replyMessage, setReplyMessage] = useState<any>({});
+  const [selectedFile, setSelectedFile] = useState<any>([]);
+  const [selectedImage, setSelectedImage] = useState<boolean>(false);
+  const [channelLibrary, setChannelLibrary] = useState(false);
+  const [enc_channelID, setenc_channelID] = useState("");
+  const [seeAttachment, setSeeAttachment] = useState(false);
+
 
   const bottomToTopRef: any = useRef(null);
   const arrawScroll = useRef(null);
@@ -106,9 +118,11 @@ const ChatListing = ({
   let lastChatMessage;
 
   let firestore: any;
+  let storage: any;
   if (allChannelItem && initializeApp === "true") {
     firebase.initializeApp(firebaseConfig);
     firestore = firebase.firestore();
+    storage = firebase.storage();
   }
 
   const sanitizer = DOMPurify.sanitize;
@@ -300,12 +314,45 @@ const ChatListing = ({
       console.error(error);
     }
   };
+
+  const handleFileSelect = (e: any) => {
+    const fileSelect = e.target.files;
+    setSelectedImage(true);
+    setSelectedFile([...selectedFile, ...fileSelect]);
+  };
+  const handleFileClose = (items: any) => {
+    const updatedItems = selectedFile.filter((item: any) => item !== items);
+    setSelectedFile(updatedItems);
+  };
   const sendMessage = async (e: any) => {
     if (messageHandler || commentRef.current.innerText.length > 0) {
       setMessageHandler("");
       sendMessageAPI();
       setSenderClass(true);
       setScrollDown(true);
+      let UploadedFiles = [];
+      if (selectedFile.length > 0) {
+        for (const file of selectedFile) {
+          const currentDate = new Date().toISOString().split("T")[0];
+
+          // const currentDate = "2023-08-21";
+          const filename = `${currentDate}-${file.name}`;
+
+          const storageRef = storage.ref(
+            `images/${allChannelItem.enc_channelID}`
+          );
+          const fileRef = storageRef.child(filename);
+
+          try {
+            await fileRef.put(file);
+            const downloadURL = await fileRef.getDownloadURL();
+            UploadedFiles.push(downloadURL);
+          } catch (error) {
+            console.error("Error uploading file: ", error);
+          }
+        }
+      }
+
       try {
         let obj = {
           date: new Date(),
@@ -323,6 +370,7 @@ const ChatListing = ({
           Replied: replyMessageSection === true
             ? replyMessage.text.trim()
             : "",
+          images: UploadedFiles.length > 0 ? UploadedFiles : "",
           isRepliedTo: replyMessageSection === true ? "Shreyash Zinzuvadia" : "",
           msgRepliedId: "",
           userInitial: initials1,
@@ -353,6 +401,8 @@ const ChatListing = ({
         // updateChannel(new Date());
         updateChannelDateTime(allChannelItem?.enc_channelID);
         createCollection(tempEnc_ID.id);
+        setSelectedFile([]);
+        setSeeAttachment(false)
         // dispatch(sendMessageHandler(apiObj));
       } catch (error) {
         console.error(error);
@@ -368,6 +418,28 @@ const ChatListing = ({
         sendMessageAPI();
         setSenderClass(true);
         setScrollDown(true);
+        let UploadedFiles = [];
+        if (selectedFile.length > 0) {
+          for (const file of selectedFile) {
+            const currentDate = new Date().toISOString().split("T")[0];
+
+            // const currentDate = "2023-08-21";
+            const filename = `${currentDate}-${file.name}`;
+
+            const storageRef = storage.ref(
+              `images/${allChannelItem.enc_channelID}`
+            );
+            const fileRef = storageRef.child(filename);
+
+            try {
+              await fileRef.put(file);
+              const downloadURL = await fileRef.getDownloadURL();
+              UploadedFiles.push(downloadURL);
+            } catch (error) {
+              console.error("Error uploading file: ", error);
+            }
+          }
+        }
         try {
           let obj = {
             date: new Date(),
@@ -385,6 +457,7 @@ const ChatListing = ({
             Replied: replyMessageSection === true
               ? replyMessage.text.trim()
               : "",
+            images: UploadedFiles.length > 0 ? UploadedFiles : "",
             isRepliedTo: replyMessageSection === true ? "Shreyash Zinzuvadia" : "",
             msgRepliedId: "",
             userInitial: initials1,
@@ -415,6 +488,8 @@ const ChatListing = ({
 
           scrollToBottom();
           // updateChannel(new Date());
+          setSelectedFile([]);
+          setSeeAttachment(false)
           updateChannelDateTime(allChannelItem?.enc_channelID);
           createCollection(tempEnc_ID.id);
           // dispatch(sendMessageHandler(apiObj));
@@ -691,45 +766,100 @@ const ChatListing = ({
         <div
           className={` ${ChatListingStyles.channelWindow} ${ChatListingStyles.chatListingWindow} `}
         >
-          <div className={ChatListingStyles.channelWindowHeader}>
-            <div className={ChatListingStyles.channelHeaderLeft}>
-              <div
-                className={` ${ChatListingStyles.chatInitialThumb} ${ChatListingStyles.blueThumb} `}
-              >
-                {allChannelItem?.companyInitial}
-              </div>
-              <div className={ChatListingStyles.channelName}>
-                <div>
-                  {allChannelItem?.role} | {allChannelItem?.companyName}
+          {channelLibrary === true ? (
+            <>
+              <div className={ChatListingStyles.channelWindowHeader}>
+                <div className={ChatListingStyles.channelHeaderLeft}>
+                  <div
+                    className={` ${ChatListingStyles.chatInitialThumb} ${ChatListingStyles.blueThumb} `}
+                  >
+                    {allChannelItem?.companyInitial}
+                  </div>
+                  <div className={ChatListingStyles.channelName}>
+                    {allChannelItem?.role} | {allChannelItem?.companyName}|
+                    {allChannelItem?.hrNumber}
+                  </div>
                 </div>
-                <div>{allChannelItem?.hrNumber}</div>
+                <div className={ChatListingStyles.channelHeaderRight}>
+                  <Dropdown
+                    className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
+                    placement="bottomRight"
+                    menu={{
+                      items: channelMainDropdown,
+                      onClick: (value) => {
+                        chatListDropdown(value);
+                      },
+                    }}
+                    trigger={["click"]}
+                  >
+                    <a onClick={(e) => e.preventDefault()}>
+                      <Space>
+                        <span className={ChatListingStyles.dotMenu}></span>
+                      </Space>
+                    </a>
+                  </Dropdown>
+                  <span
+                    className={ChatListingStyles.chatWindowClose}
+                    onClick={closeModal}
+                  ></span>
+                </div>
               </div>
-            </div>
-            <div className={ChatListingStyles.channelHeaderRight}>
-              <Dropdown
-                className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
-                placement="bottomRight"
-                menu={{
-                  items: channelMainDropdown,
-                  onClick: (value) => {
-                    chatListDropdown(value);
-                  },
-                }}
-                trigger={["click"]}
-              >
-                <a onClick={(e) => e.preventDefault()}>
-                  <Space>
-                    <span className={ChatListingStyles.dotMenu}></span>
-                  </Space>
-                </a>
-              </Dropdown>
-              <span
-                className={ChatListingStyles.chatWindowClose}
-                onClick={closeModal}
-              ></span>
-            </div>
-          </div>
-          <MemberListing allChannelItem={allChannelItem} />
+
+              <div className={ChatListingStyles.channelLibraryHeader}>
+                <div className={ChatListingStyles.channelStatusLeft}>
+                  <FiBookOpenSVG width="20" />
+                  Channel Library
+                </div>
+                <div
+                  className={ChatListingStyles.channelStatusRight}
+                  onClick={() => setChannelLibrary(false)}
+                >
+                  <FiChevronLeftSVG width="14" height="14" />
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className={ChatListingStyles.channelWindowHeader}>
+                <div className={ChatListingStyles.channelHeaderLeft}>
+                  <div
+                    className={` ${ChatListingStyles.chatInitialThumb} ${ChatListingStyles.blueThumb} `}
+                  >
+                    {allChannelItem?.companyInitial}
+                  </div>
+                  <div className={ChatListingStyles.channelName}>
+                    <div>
+                      {allChannelItem?.role} | {allChannelItem?.companyName}
+                    </div>
+                    <div>{allChannelItem?.hrNumber}</div>
+                  </div>
+                </div>
+                <div className={ChatListingStyles.channelHeaderRight}>
+                  <Dropdown
+                    className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
+                    placement="bottomRight"
+                    menu={{
+                      items: channelMainDropdown,
+                      onClick: (value) => {
+                        chatListDropdown(value);
+                      },
+                    }}
+                    trigger={["click"]}
+                  >
+                    <a onClick={(e) => e.preventDefault()}>
+                      <Space>
+                        <span className={ChatListingStyles.dotMenu}></span>
+                      </Space>
+                    </a>
+                  </Dropdown>
+                  <span
+                    className={ChatListingStyles.chatWindowClose}
+                    onClick={closeModal}
+                  ></span>
+                </div>
+              </div>
+              <MemberListing allChannelItem={allChannelItem} />
+            </>)}
           <div
             className={ChatListingStyles.channelWindowInner}
             ref={arrawScroll}
@@ -771,301 +901,303 @@ const ChatListing = ({
                     <ArrowIcon />
                   </span>
                 </span> */}
+            {channelLibrary === true ? (
+              <ChannelLibrary enc_channelID={enc_channelID} />
+            ) : (
+              <div
+                className={ChatListingStyles.channelWindowMessages}
+                id="content"
+              >
+                {filterData?.map((item: any, key: any) => {
 
-            <div
-              className={ChatListingStyles.channelWindowMessages}
-              id="content"
-            >
-              {filterData?.map((item: any, key: any) => {
 
+                  const messageDate = item?.date?.seconds
+                    ? new Date(item?.date?.seconds * 1000)
+                    : null;
 
-                const messageDate = item?.date?.seconds
-                  ? new Date(item?.date?.seconds * 1000)
-                  : null;
+                  const today = new Date();
+                  const yesterday = new Date(today);
+                  yesterday.setDate(today.getDate() - 1);
 
-                const today = new Date();
-                const yesterday = new Date(today);
-                yesterday.setDate(today.getDate() - 1);
-
-                let dateString = "";
-                if (messageDate) {
-                  if (messageDate.toDateString() === today.toDateString()) {
-                    dateString = "Today";
-                  } else if (
-                    messageDate.toDateString() === yesterday.toDateString()
-                  ) {
-                    dateString = "Yesterday";
-                  } else {
-                    dateString = messageDate.toDateString();
+                  let dateString = "";
+                  if (messageDate) {
+                    if (messageDate.toDateString() === today.toDateString()) {
+                      dateString = "Today";
+                    } else if (
+                      messageDate.toDateString() === yesterday.toDateString()
+                    ) {
+                      dateString = "Yesterday";
+                    } else {
+                      dateString = messageDate.toDateString();
+                    }
                   }
-                }
 
-                const showDateSeparator = dateString !== currentChatDate;
-                currentChatDate = dateString; // Update currentDate
+                  const showDateSeparator = dateString !== currentChatDate;
+                  currentChatDate = dateString; // Update currentDate
 
 
-                return (
-                  <>
-                    {showDateSeparator && (
-                      <div className={ChatListingStyles.divider}>
-                        <span>{dateString}</span>
-                      </div>
-                    )}
-                    {item?.isActivity === true && item?.isNotes == false ? (
-                      <div className={ChatListingStyles.channelMessageWrapper}>
-                        <div
-                          className={ChatListingStyles.channelMessageMain}
-                          ref={bottomToTopRef}
-                        >
-                          <div
-                            className={ChatListingStyles.systemGeneratedHeader}
-                          >
-                            <span>
-                              {item?.text} | Action By: {item?.senderName}
-                            </span>
-                            <span
-                              className={ChatListingStyles.systemGeneratedDate}
-                            >
-                              {GFG_Fun1(item?.date?.seconds)} |{" "}
-                              {item?.date?.seconds
-                                ? new Date(item?.date?.seconds * 1000)
-                                  .toLocaleTimeString()
-                                  .replace(
-                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                    "$1$3"
-                                  )
-                                : item?.date}
-                            </span>
-                          </div>
+                  return (
+                    <>
+                      {showDateSeparator && (
+                        <div className={ChatListingStyles.divider}>
+                          <span>{dateString}</span>
                         </div>
-                      </div>
-                    ) : item?.isNotes === true && item?.isActivity === true ? (
-                      <div className={ChatListingStyles.channelMessageWrapper}>
-                        <div
-                          className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} ${ChatListingStyles.lightGreyBg} `}
-                        >
+                      )}
+                      {item?.isActivity === true && item?.isNotes == false ? (
+                        <div className={ChatListingStyles.channelMessageWrapper}>
                           <div
-                            className={ChatListingStyles.systemGeneratedHeader}
-                          >
-                            <span>Action By: {item.senderName}</span>
-                            <span
-                              className={ChatListingStyles.systemGeneratedDate}
-                            >
-                              {GFG_Fun1(item?.date?.seconds)} |{" "}
-                              {item?.date?.seconds
-                                ? new Date(item?.date?.seconds * 1000)
-                                  .toLocaleTimeString()
-                                  .replace(
-                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                    "$1$3"
-                                  )
-                                : item?.date}
-                            </span>
-                          </div>
-                          <div
-                            className={ChatListingStyles.systemGeneratedIsNotes}
-                          >
-                            <span>
-                              <ShowMoreText
-                                lines={1}
-                                more="read more"
-                                less="read less"
-                                className="content-css"
-                                anchorClass={
-                                  ChatListingStyles.show_more_less_clickable
-                                }
-                                // onClick={executeOnClick}
-                                expanded={false}
-                                width={280}
-                                truncatedEndingComponent={"... "}
-                              >
-                                {/* {item?.text} */}
-                                <span
-                                  dangerouslySetInnerHTML={{
-                                    __html: sanitizer(
-                                      displayNotes(item?.text).innerHTML
-                                    ),
-                                  }}
-                                ></span>
-                              </ShowMoreText>
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ) : item?.reply_enc_ID ? (
-                      ReplyMessage(item.reply_enc_ID)?.length > 0 && (
-                        <div className={ChatListingStyles.channelMessageMain}>
-                          <div
-                            className={ChatListingStyles.channelMessageInner}
+                            className={ChatListingStyles.channelMessageMain}
+                            ref={bottomToTopRef}
                           >
                             <div
-                              className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
+                              className={ChatListingStyles.systemGeneratedHeader}
                             >
-                              {userInitial(item?.senderName)}
+                              <span>
+                                {item?.text} | Action By: {item?.senderName}
+                              </span>
+                              <span
+                                className={ChatListingStyles.systemGeneratedDate}
+                              >
+                                {GFG_Fun1(item?.date?.seconds)} |{" "}
+                                {item?.date?.seconds
+                                  ? new Date(item?.date?.seconds * 1000)
+                                    .toLocaleTimeString()
+                                    .replace(
+                                      /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                      "$1$3"
+                                    )
+                                  : item?.date}
+                              </span>
                             </div>
-                            {/* <img
+                          </div>
+                        </div>
+                      ) : item?.isNotes === true && item?.isActivity === true ? (
+                        <div className={ChatListingStyles.channelMessageWrapper}>
+                          <div
+                            className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} ${ChatListingStyles.lightGreyBg} `}
+                          >
+                            <div
+                              className={ChatListingStyles.systemGeneratedHeader}
+                            >
+                              <span>Action By: {item.senderName}</span>
+                              <span
+                                className={ChatListingStyles.systemGeneratedDate}
+                              >
+                                {GFG_Fun1(item?.date?.seconds)} |{" "}
+                                {item?.date?.seconds
+                                  ? new Date(item?.date?.seconds * 1000)
+                                    .toLocaleTimeString()
+                                    .replace(
+                                      /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                      "$1$3"
+                                    )
+                                  : item?.date}
+                              </span>
+                            </div>
+                            <div
+                              className={ChatListingStyles.systemGeneratedIsNotes}
+                            >
+                              <span>
+                                <ShowMoreText
+                                  lines={1}
+                                  more="read more"
+                                  less="read less"
+                                  className="content-css"
+                                  anchorClass={
+                                    ChatListingStyles.show_more_less_clickable
+                                  }
+                                  // onClick={executeOnClick}
+                                  expanded={false}
+                                  width={280}
+                                  truncatedEndingComponent={"... "}
+                                >
+                                  {/* {item?.text} */}
+                                  <span
+                                    dangerouslySetInnerHTML={{
+                                      __html: sanitizer(
+                                        displayNotes(item?.text).innerHTML
+                                      ),
+                                    }}
+                                  ></span>
+                                </ShowMoreText>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ) : item?.reply_enc_ID ? (
+                        ReplyMessage(item.reply_enc_ID)?.length > 0 && (
+                          <div className={ChatListingStyles.channelMessageMain}>
+                            <div
+                              className={ChatListingStyles.channelMessageInner}
+                            >
+                              <div
+                                className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
+                              >
+                                {userInitial(item?.senderName)}
+                              </div>
+                              {/* <img
                                 className={ChatListingStyles.profileAvtar}
                                 src="https://i.pravatar.cc/40"
                                 width="30"
                                 height="30"
                               /> */}
-                            <div className={ChatListingStyles.profileName}>
-                              {item?.senderName}
-                            </div>
-                            <span
-                              className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
-                            >
-                              {item?.senderDesignation}
-                            </span>
-                            <span className={ChatListingStyles.timeStamp}>
-                              {item?.date?.seconds
-                                ? new Date(item?.date?.seconds * 1000)
-                                  .toLocaleTimeString()
-                                  .replace(
-                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                    "$1$3"
-                                  )
-                                : item?.date}
-                            </span>
-                            <Dropdown
-                              className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
-                              placement="bottomRight"
-                              menu={{
-                                items: chatDropdown,
-                                onClick: (value) => {
-                                  chatListDropdownInChat(value, item);
-                                },
-                              }}
-                              trigger={["click"]}
-                            >
-                              <a onClick={(e) => e.preventDefault()}>
-                                <Space>
-                                  <span
-                                    className={ChatListingStyles.dotMenu}
-                                  ></span>
-                                </Space>
-                              </a>
-                            </Dropdown>
+                              <div className={ChatListingStyles.profileName}>
+                                {item?.senderName}
+                              </div>
+                              <span
+                                className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
+                              >
+                                {item?.senderDesignation}
+                              </span>
+                              <span className={ChatListingStyles.timeStamp}>
+                                {item?.date?.seconds
+                                  ? new Date(item?.date?.seconds * 1000)
+                                    .toLocaleTimeString()
+                                    .replace(
+                                      /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                      "$1$3"
+                                    )
+                                  : item?.date}
+                              </span>
+                              <Dropdown
+                                className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
+                                placement="bottomRight"
+                                menu={{
+                                  items: chatDropdown,
+                                  onClick: (value) => {
+                                    chatListDropdownInChat(value, item);
+                                  },
+                                }}
+                                trigger={["click"]}
+                              >
+                                <a onClick={(e) => e.preventDefault()}>
+                                  <Space>
+                                    <span
+                                      className={ChatListingStyles.dotMenu}
+                                    ></span>
+                                  </Space>
+                                </a>
+                              </Dropdown>
 
-                            {/* {showBookMark?.IsBookMark === true ? (
+                              {/* {showBookMark?.IsBookMark === true ? (
                               <BookmarkIconSVG
                                 className={ChatListingStyles.bookmarkIcon}
                               />
                             ) : (
                               ""
                             )} */}
-                          </div>
-                          <div className={ChatListingStyles.channelMessageBoxWrap}>
-                            <div
-                              className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageRight} `}
-                            >
-                              <div className={ChatListingStyles.quotedMessage}>
-                                <p>
-                                  {ReplyMessage(item?.enc_chatID)?.[0]?.Replied}
-                                </p>
-                                <div
-                                  className={ChatListingStyles.quotedMessageChild}
-                                >
-                                  <FiReplySVG width="10" height="16" />
-                                  {ReplyMessage(item?.enc_chatID)?.[0]?.senderName}
-                                  <span>Today at 12:31PM</span>
-                                </div>
-                              </div>
-                              <p>{item?.text}</p>
-                              <div className={ChatListingStyles.chatReaction}>
-                                <div
-                                  className={ChatListingStyles.chatReactionInner}
-                                >
+                            </div>
+                            <div className={ChatListingStyles.channelMessageBoxWrap}>
+                              <div
+                                className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageRight} `}
+                              >
+                                <div className={ChatListingStyles.quotedMessage}>
+                                  <p>
+                                    {ReplyMessage(item?.enc_chatID)?.[0]?.Replied}
+                                  </p>
                                   <div
-                                    className={ChatListingStyles.chatReactionCircle}
+                                    className={ChatListingStyles.quotedMessageChild}
                                   >
-                                    {/* <span
+                                    <FiReplySVG width="10" height="16" />
+                                    {ReplyMessage(item?.enc_chatID)?.[0]?.senderName}
+                                    <span>Today at 12:31PM</span>
+                                  </div>
+                                </div>
+                                <p>{item?.text}</p>
+                                <div className={ChatListingStyles.chatReaction}>
+                                  <div
+                                    className={ChatListingStyles.chatReactionInner}
+                                  >
+                                    <div
+                                      className={ChatListingStyles.chatReactionCircle}
+                                    >
+                                      {/* <span
                                  className={
                                    ChatListingStyles.chatReactionSmile
                                  }
                                >
                                  {/ <SmileIcon /> /}
                                </span> */}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
 
 
-                      )
-                    ) : (
-                      <div className={ChatListingStyles.channelMessageWrapper}>
-                        <div
-                          className={ChatListingStyles.channelMessageMain}
-                          ref={bottomToTopRef}
-                        >
-                          <div className={ChatListingStyles.channelMessageInner}>
-                            <div
-                              className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
-                            >
-                              {userInitial(item?.senderName)}
-                            </div>
-                            {/* <img
+                        )
+                      ) : (
+                        <div className={ChatListingStyles.channelMessageWrapper}>
+                          <div
+                            className={ChatListingStyles.channelMessageMain}
+                            ref={bottomToTopRef}
+                          >
+                            <div className={ChatListingStyles.channelMessageInner}>
+                              <div
+                                className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
+                              >
+                                {userInitial(item?.senderName)}
+                              </div>
+                              {/* <img
                               className={ChatListingStyles.profileAvtar}
                               src="https://i.pravatar.cc/40"
                               width="30"
                               height="30"
                             /> */}
-                            <div className={ChatListingStyles.profileName}>
-                              {item?.senderName}
+                              <div className={ChatListingStyles.profileName}>
+                                {item?.senderName}
+                              </div>
+                              <span
+                                className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
+                              >
+                                {item?.senderDesignation}
+                              </span>
+                              <span className={ChatListingStyles.timeStamp}>
+                                {item?.date?.seconds
+                                  ? new Date(item?.date?.seconds * 1000)
+                                    .toLocaleTimeString()
+                                    .replace(
+                                      /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
+                                      "$1$3"
+                                    )
+                                  : item?.date}
+                              </span>
+                              <Dropdown
+                                className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
+                                placement="bottomRight"
+                                menu={{
+                                  items: chatDropdown,
+                                  onClick: (value) => {
+                                    chatListDropdownInChat(
+                                      value,
+                                      item
+                                    );
+                                  },
+                                }}
+                                trigger={["click"]}
+                              >
+                                <a onClick={(e) => e.preventDefault()}>
+                                  <Space>
+                                    <span
+                                      className={ChatListingStyles.dotMenu}
+                                    ></span>
+                                  </Space>
+                                </a>
+                              </Dropdown>
                             </div>
-                            <span
-                              className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
-                            >
-                              {item?.senderDesignation}
-                            </span>
-                            <span className={ChatListingStyles.timeStamp}>
-                              {item?.date?.seconds
-                                ? new Date(item?.date?.seconds * 1000)
-                                  .toLocaleTimeString()
-                                  .replace(
-                                    /([\d]+:[\d]{2})(:[\d]{2})(.*)/,
-                                    "$1$3"
-                                  )
-                                : item?.date}
-                            </span>
-                            <Dropdown
-                              className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
-                              placement="bottomRight"
-                              menu={{
-                                items: chatDropdown,
-                                onClick: (value) => {
-                                  chatListDropdownInChat(
-                                    value,
-                                    item
-                                  );
-                                },
+                            <div
+                              className={` ${ChatListingStyles.channelMessageBox} ${username === item?.senderName
+                                ? ChatListingStyles.channelMessageRight
+                                : "null"
+                                } `}
+                              dangerouslySetInnerHTML={{
+                                __html: sanitizer(
+                                  displayNotes(item?.text).innerHTML
+                                ),
                               }}
-                              trigger={["click"]}
                             >
-                              <a onClick={(e) => e.preventDefault()}>
-                                <Space>
-                                  <span
-                                    className={ChatListingStyles.dotMenu}
-                                  ></span>
-                                </Space>
-                              </a>
-                            </Dropdown>
-                          </div>
-                          <div
-                            className={` ${ChatListingStyles.channelMessageBox} ${username === item?.senderName
-                              ? ChatListingStyles.channelMessageRight
-                              : "null"
-                              } `}
-                            dangerouslySetInnerHTML={{
-                              __html: sanitizer(
-                                displayNotes(item?.text).innerHTML
-                              ),
-                            }}
-                          >
-                            {/* <p
+                              {/* <p
                               dangerouslySetInnerHTML={{
                                 __html: item.text.replace(
                                   nameRegex,
@@ -1075,7 +1207,7 @@ const ChatListing = ({
                             >
 
                             </p> */}
-                            {/* <div className={ChatListingStyles.chatReaction}>
+                              {/* <div className={ChatListingStyles.chatReaction}>
                               <div
                                 className={ChatListingStyles.chatReactionInner}
                               >
@@ -1129,18 +1261,18 @@ const ChatListing = ({
                                 </div>
                               </div>
                             </div> */}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                    {/* <div className={ChatListingStyles.divider}>
+                      )}
+                      {/* <div className={ChatListingStyles.divider}>
                       <span>TODAY</span>
                     </div> */}
-                  </>
-                );
-              })}
+                    </>
+                  );
+                })}
 
-              {/* <div
+                {/* <div
                   className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} `}
                 >
                   <div className={ChatListingStyles.systemGeneratedHeader}>
@@ -1171,11 +1303,11 @@ const ChatListing = ({
                   </div>
                 </div> */}
 
-              {filterData?.length === 0 && (
-                <p className={ChatListingStyles.noChatFound}>No Chats Found</p>
-              )}
+                {filterData?.length === 0 && (
+                  <p className={ChatListingStyles.noChatFound}>No Chats Found</p>
+                )}
 
-              {/* <div className={ChatListingStyles.channelMessageMain}>
+                {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
                     className={ChatListingStyles.profileAvtar}
@@ -1236,8 +1368,8 @@ const ChatListing = ({
                 </div>
               </div> */}
 
-              {/* System Generated Message Starts */}
-              {/* <div
+                {/* System Generated Message Starts */}
+                {/* <div
                 className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} `}
               >
                 <div className={ChatListingStyles.systemGenerated}>
@@ -1245,9 +1377,9 @@ const ChatListing = ({
                   05-06-2023 | 12:24 PM
                 </div>
               </div> */}
-              {/* System Generated Message Ends */}
+                {/* System Generated Message Ends */}
 
-              {/* <div className={ChatListingStyles.channelMessageMain}>
+                {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
                     className={ChatListingStyles.profileAvtar}
@@ -1286,13 +1418,13 @@ const ChatListing = ({
                 </div>
               </div> */}
 
-              {/* <div className={ChatListingStyles.divider}>
+                {/* <div className={ChatListingStyles.divider}>
                 <span className={ChatListingStyles.dividerInner}>
                   2 Unread Messages
                 </span>
               </div> */}
 
-              {/* <div className={ChatListingStyles.channelMessageMain}>
+                {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
                     className={ChatListingStyles.profileAvtar}
@@ -1334,26 +1466,26 @@ const ChatListing = ({
                 </div>
               </div>
               {/* Reply To Message Feature Starts */}
-              {replyMessageSection === true && (
-                <div className={ChatListingStyles.replyToWrapper}>
-                  <div className={ChatListingStyles.replyToTop}>
-                    <FiReplySVG />
-                    Replying to {replyMessage?.senderName},
-                    <span>Today at 12:31PM</span>
-                    <span
-                      className={ChatListingStyles.chatWindowClose}
-                      onClick={closeReplyMessage}
-                    ></span>
-                  </div>
-                  <div className={ChatListingStyles.replyToMessage}>
-                    {/* <p>
+                {replyMessageSection === true && (
+                  <div className={ChatListingStyles.replyToWrapper}>
+                    <div className={ChatListingStyles.replyToTop}>
+                      <FiReplySVG />
+                      Replying to {replyMessage?.senderName},
+                      <span>Today at 12:31PM</span>
+                      <span
+                        className={ChatListingStyles.chatWindowClose}
+                        onClick={closeReplyMessage}
+                      ></span>
+                    </div>
+                    <div className={ChatListingStyles.replyToMessage}>
+                      {/* <p>
                       {replyMessage}
                     </p> */}
-                    <p>{replyMessage?.text}</p>
+                      <p>{replyMessage?.text}</p>
+                    </div>
                   </div>
-                </div>
-              )}
-              {/* <div className={ChatListingStyles.channelMessageMain}>
+                )}
+                {/* <div className={ChatListingStyles.channelMessageMain}>
                 <div className={ChatListingStyles.channelMessageInner}>
                   <img
                     className={ChatListingStyles.profileAvtar}
@@ -1403,15 +1535,16 @@ const ChatListing = ({
                   </div>
                 </div>
               </div> */}
-              {!scrollDown && filterData?.length > 5 && (
-                <span
-                  className={ChatListingStyles.scrollToBottom}
-                  onClick={scrollToBottom}
-                >
-                  <ScrollToBottomSVG />
-                </span>
-              )}
-            </div>
+                {!scrollDown && filterData?.length > 5 && (
+                  <span
+                    className={ChatListingStyles.scrollToBottom}
+                    onClick={scrollToBottom}
+                  >
+                    <ScrollToBottomSVG />
+                  </span>
+                )}
+              </div>
+            )}
           </div>
           <div className={ChatListingStyles.channelWindowFooter}>
             <div className={ChatListingStyles.channelTextWrapper}>
@@ -1451,9 +1584,104 @@ const ChatListing = ({
                 suppressContentEditableWarning={true}
               ></div>
             </div>
-            <span className={ChatListingStyles.channelAddMedia}>
-              <span className={ChatListingStyles.mediaPlus}></span>
-            </span>
+            {seeAttachment && (
+              <span
+                className={` ${ChatListingStyles.channelAddMedia} ${ChatListingStyles.channelAddMediaActive} `}
+              >
+                <div className={ChatListingStyles.mediaOptions}>
+                  <span>
+                    <SmileIcon />
+                    <div
+                      className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.emojiPopup} `}
+                      style={{
+                        display: "none",
+                      }}
+                    >
+                      <div className={ChatListingStyles.chatPopupInner}>
+                        <div className={ChatListingStyles.emojiPopupSearch}>
+                          <SearchIcon
+                            className={ChatListingStyles.searchIcon}
+                          />
+                          <input type="text" placeholder="Search Emoji" />
+                        </div>
+                        <div className={ChatListingStyles.popupContent}>
+                          <span>Smileys & People</span>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
+                  <span
+                    className={
+                      selectedImage ? ChatListingStyles.mediaOptionsActive : ""
+                    }
+                  >
+                    <input
+                      type="file"
+                      id="fileInput"
+                      style={{ display: "none" }}
+                      onChange={handleFileSelect}
+                      multiple
+                    />
+                    <label htmlFor="fileInput">
+                      <FiImageSVG />
+                    </label>
+                    {selectedImage && selectedFile.length > 0 && (
+                      <div
+                        className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.attachementPopup} `}
+                      // style={{
+                      // 	display:selectedImage ? 'block':'none'
+                      // }}
+                      >
+                        <div className={ChatListingStyles.chatPopupInner}>
+                          <div className={ChatListingStyles.popupContent}>
+                            <span>Attachments</span>
+                            <div className={ChatListingStyles.attachedMedia}>
+                              {selectedFile.length > 0 &&
+                                selectedFile.map((items: any) => {
+                                  return (
+                                    <span>
+                                      <span
+                                        className={
+                                          ChatListingStyles.chatWindowClose
+                                        }
+                                        onClick={() => handleFileClose(items)}
+                                      ></span>
+                                      <img
+                                        src={URL.createObjectURL(items)}
+                                        alt="Selected"
+                                        width="56"
+                                        height="56"
+                                      />
+                                    </span>
+                                  );
+                                })}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </span>
+
+                  <span>
+                    <FiFolderPlusSVG />
+                  </span>
+
+                  {/* <span onChange={handleFileSelect}><FiFolderPlusSVG /></span> */}
+                </div>
+                <span
+                  className={ChatListingStyles.mediaPlus}
+                  onClick={() => setSeeAttachment(false)}
+                ></span>
+              </span>
+            )}
+            {seeAttachment === false && (
+              <span className={ChatListingStyles.channelAddMedia}>
+                <span
+                  className={ChatListingStyles.mediaPlus}
+                  onClick={() => setSeeAttachment(true)}
+                ></span>
+              </span>
+            )}
             <span
               className={ChatListingStyles.channelSubmit}
               onClick={(e: any) => sendMessage(e)}
