@@ -1191,12 +1191,38 @@ const ChatListing = ({
                                 ? ChatListingStyles.channelMessageRight
                                 : "null"
                                 } `}
-                              dangerouslySetInnerHTML={{
-                                __html: sanitizer(
-                                  displayNotes(item?.text).innerHTML
-                                ),
-                              }}
+                            // dangerouslySetInnerHTML={{
+                            //   __html: sanitizer(
+                            //     displayNotes(item?.text).innerHTML
+                            //   ),
+                            // }}
                             >
+                              <p
+                                dangerouslySetInnerHTML={{
+                                  __html: sanitizer(
+                                    displayNotes(item?.text).innerHTML
+                                  ),
+                                }}
+                              ></p>
+                              <ul
+                                className={
+                                  ChatListingStyles.imageItemInnerMsgBox
+                                }
+                              >
+                                {item?.images &&
+                                  item?.images?.length > 0 &&
+                                  item?.images?.map((imageItem: any) => {
+                                    return (
+                                      <li>
+                                        <img
+                                          src={imageItem}
+                                          height={50}
+                                          width={50}
+                                        />
+                                      </li>
+                                    );
+                                  })}
+                              </ul>
                               {/* <p
                               dangerouslySetInnerHTML={{
                                 __html: item.text.replace(

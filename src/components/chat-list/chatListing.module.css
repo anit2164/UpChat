@@ -1108,6 +1108,19 @@
 .userMentionPoup .chatPopupInner .membersArea:hover {
   background-color: #fff9e1;
 }
+.userMentionPoup .chatPopupInner {
+  padding: 0;
+  max-height: 223px;
+  background: #fff;
+  border-radius: 8px;
+  text-align: left;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.userMentionPoup .chatPopupInner .membersArea:hover {
+  background-color: #fff9e1;
+}
 .userMentionPoup .chatPopupInner .membersArea:not(:last-child) {
   margin-bottom: 0;
 }
@@ -1518,5 +1531,71 @@
   justify-content: center;
   align-items: center;
 }
+.chatPopup.chatArrowBottom:before {
+  bottom: -12px;
+}
+.emojiPopup.chatArrowBottom:before {
+  left: calc(61% - 8px);
+}
 
 /* */
+/* Media Attachment Popup */
+.attachementPopup {
+  position: absolute;
+  bottom: 55px;
+  right: 50%;
+  transform: translateX(50%);
+  width: 90%;
+}
+.attachementPopup.chatArrowBottom:before {
+  left: calc(69% - 6px);
+}
+.attachementPopup .chatPopupInner {
+  padding: 11px 16px 16px;
+}
+.attachementPopup .popupContent {
+  font-size: 10px;
+  font-weight: 500;
+
+  display: flex;
+  flex-direction: column;
+}
+.attachementPopup .popupContent > span {
+  margin-bottom: 16px;
+}
+
+.attachementPopup .attachedMedia img {
+  display: block;
+}
+
+.attachementPopup .attachedMedia > span {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.attachementPopup .attachedMedia > span::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+.attachementPopup .chatWindowClose {
+  position: absolute;
+  right: -4px;
+  top: -2px;
+}
+.attachementPopup .chatWindowClose::before,
+.attachementPopup .chatWindowClose::after {
+  border-color: #d5d5d5;
+  width: 6px;
+}
+
+.imageItemInnerMsgBox {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  margin: 0;
+  padding: 0 2px;
+}
