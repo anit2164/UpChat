@@ -367,17 +367,19 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
 
       for (let i = 0; i < dataArray.length; i++) {
         let tempObj: any = dataArray[i];
-        tempObj.isRead = true;
+        if (tempObj.isRead === false) {
+          tempObj.isRead = true;
 
-        const querySnapshot = await firestore
-          .collectionGroup("user_chats")
-          .where("userEmpID", "==", loginUserId)
-          .where("enc_channelID", "==", item?.enc_channelID)
-          .limit(limits.pageSize)
-          .get();
-        querySnapshot.docs.forEach((snapshot) => {
-          snapshot.ref.update(tempObj);
-        });
+          const querySnapshot = await firestore
+            .collectionGroup("user_chats")
+            .where("userEmpID", "==", loginUserId)
+            .where("enc_channelID", "==", item?.enc_channelID)
+            .limit(limits.pageSize)
+            .get();
+          querySnapshot.docs.forEach((snapshot) => {
+            snapshot.ref.update(tempObj);
+          });
+        }
         // setUpdateData(resetCount);
       }
 

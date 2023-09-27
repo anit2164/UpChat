@@ -53,7 +53,7 @@ import ShowMoreText from "react-show-more-text";
 import DOMPurify from "dompurify";
 
 
-firebase.initializeApp(firebaseConfig);
+// firebase.initializeApp(firebaseConfig);
 
 const ChatListing = ({
   showChatList,
@@ -325,7 +325,8 @@ const ChatListing = ({
     setSelectedFile(updatedItems);
   };
   const sendMessage = async (e: any) => {
-    if (messageHandler || commentRef.current.innerText.length > 0) {
+    if (commentRef.current.innerText.trim().length > 0 ||
+      (selectedFile && selectedFile.length > 0)) {
       setMessageHandler("");
       sendMessageAPI();
       setSenderClass(true);
@@ -413,7 +414,8 @@ const ChatListing = ({
   const handleKeyDown = async (e: any) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (messageHandler || commentRef.current.innerText.length > 0) {
+      if (commentRef.current.innerText.trim().length > 0 ||
+        (selectedFile && selectedFile.length > 0)) {
         setMessageHandler("");
         sendMessageAPI();
         setSenderClass(true);

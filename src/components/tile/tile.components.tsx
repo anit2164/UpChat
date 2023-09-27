@@ -466,19 +466,21 @@ const Tile = ({
 
       for (let i = 0; i < dataArray.length; i++) {
         let tempObj: any = dataArray[i];
-        tempObj.isRead = true;
+        if (tempObj.isRead === false) {
+          tempObj.isRead = true;
 
-        firestore
-          .collectionGroup("user_chats")
-          .where("userEmpID", "==", loginUserId)
-          .where("enc_channelID", "==", item?.enc_channelID)
-          .limit(limits.pageSize)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.docs.forEach((snapshot) => {
-              snapshot.ref.update(tempObj);
+          firestore
+            .collectionGroup("user_chats")
+            .where("userEmpID", "==", loginUserId)
+            .where("enc_channelID", "==", item?.enc_channelID)
+            .limit(limits.pageSize)
+            .get()
+            .then((querySnapshot) => {
+              querySnapshot.docs.forEach((snapshot) => {
+                snapshot.ref.update(tempObj);
+              });
             });
-          });
+        }
       }
 
       return () => {
