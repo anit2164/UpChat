@@ -538,10 +538,12 @@ const ChatListing = ({
       setIsTileChat(false);
       setTileChat(false);
       setUpChat("");
+      localStorage.setItem("scrollDown", "false");
     } else if (upChat == "pinchat") {
       setIsPinChat(false);
       setPinChat(false);
       setUpChat("");
+      localStorage.setItem("scrollDown", "false");
     }
   };
   const closeReplyMessage = () => {

@@ -40,44 +40,13 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
       return () => unsubscribe();
     }
   }, [showUpChat]);
-
-  let tempCountData: any = [];
-  const tempInfoData = async (data: any) => {
-    let countArr: any = {};
-    const readOrUnread = firestore.collectionGroup("user_chats");
-    readOrUnread
-      .where("isRead", "==", false)
-      .where("enc_channelID", "==", data)
-      .where("userEmpID", "==", loginUserId)
-      .limit(limits.pageSize)
-      .onSnapshot((snapshot) => {
-        countArr.enc_ChannelIDCount = data;
-        countArr.readCount = snapshot?.docs?.length;
-        tempCountData.push(countArr);
-        setReadCountTrue(tempCountData);
-      });
-  };
-  const getData = (tempArr: any) => {
-    const collectionRef = firestore.collection("channels");
-    if (tempArr?.length > 0) {
-      const batch = tempArr.splice(0, 30);
-      collectionRef
-        .where("enc_channelID", "in", batch)
-        .limit(limits.pageSize)
-        .onSnapshot((querySnapshot) => {
-          const mergedResults: any = [];
-          querySnapshot.forEach((doc) => {
-            mergedResults.push(doc.data());
-          });
-          setData(mergedResults);
-        });
-    }
-  };
-  useEffect(() => {
+  const readCountFunc = (tempCountData: any) => {
     let result: any = [];
-
-    data?.map((item: any) => {
-      const data2: any = readCountTrue.find(
+    const uniqueValues: string[] = Array.from(
+      new Set(tempCountData.map((item: any) => item))
+    );
+    uniqueValues?.map((item: any) => {
+      const data2: any = tempCountData.find(
         (temp: any) => item.enc_channelID === temp.enc_ChannelIDCount
       );
 
@@ -96,7 +65,42 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
       );
       setCount(totalReadCount);
     }, 600);
-  }, [data, readCountTrue]);
+  };
+  let tempCountData: any = [];
+  const tempInfoData = async (data: any) => {
+    let countArr: any = {};
+    const readOrUnread = firestore.collectionGroup("user_chats");
+    readOrUnread
+      .where("isRead", "==", false)
+      .where("enc_channelID", "==", data)
+      .where("userEmpID", "==", loginUserId)
+      .limit(limits.pageSize)
+      .onSnapshot((snapshot) => {
+        countArr.enc_ChannelIDCount = data;
+        countArr.readCount = snapshot?.docs?.length;
+        tempCountData.push(countArr);
+        readCountFunc(tempCountData);
+        setReadCountTrue(tempCountData);
+      });
+  };
+
+  const getData = (tempArr: any) => {
+    const collectionRef = firestore.collection("channels");
+    if (tempArr?.length > 0) {
+      const batch = tempArr.splice(0, 30);
+      collectionRef
+        .where("enc_channelID", "in", batch)
+        .limit(limits.pageSize)
+        .onSnapshot((querySnapshot) => {
+          const mergedResults: any = [];
+          querySnapshot.forEach((doc) => {
+            mergedResults.push(doc.data());
+          });
+          setData(mergedResults);
+        });
+    }
+  };
+
 
   return (
     <div
@@ -105,7 +109,6 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
       onClick={() => {
         localStorage.setItem("initializeApp", "true");
         localStorage.setItem("scrollDown", "false");
-
         setToggle(!toggle);
         setShowClass(false);
         setShowUpChat(!showUpChat);
