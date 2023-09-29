@@ -53,6 +53,7 @@ import MyContext from "./myContext";
 import axios from "axios";
 import ShowMoreText from "react-show-more-text";
 import DOMPurify from "dompurify";
+import { limits } from "../../constants/constantLimit";
 
 
 // firebase.initializeApp(firebaseConfig);
@@ -778,6 +779,47 @@ const ChatListing = ({
     return infoTemp;
   };
 
+  const mouseOverEvent = async () => {
+    try {
+      const unsubscribe = firestore
+        .collection(
+          `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
+        )
+        .orderBy("date", "asc")
+        .onSnapshot((snapshot: any) => {
+          const messagesData = snapshot.docs.map((doc: any) => doc.data());
+          // setListingChats(messagesData);
+        });
+
+      // Query user_chats for updating isRead status
+      const userChatsQuery = firestore
+        .collectionGroup("user_chats")
+        .where("userEmpID", "==", loginUserId)
+        .where("enc_channelID", "==", allChannelItem?.enc_channelID)
+        .limit(limits.pageSize);
+
+      const tempObj = { isRead: true }; // Update object
+
+      const querySnapshot = await userChatsQuery.get();
+
+      const batch = firestore.batch();
+
+      querySnapshot.docs.forEach((snapshot: any) => {
+        const docRef = snapshot.ref;
+        batch.update(docRef, tempObj);
+      });
+
+      await batch.commit();
+
+      // Return a cleanup function to unsubscribe when needed
+      return () => {
+        unsubscribe();
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       {contextHolder}
@@ -828,6 +870,7 @@ const ChatListing = ({
       {(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
         <div
           className={` ${ChatListingStyles.channelWindow} ${ChatListingStyles.chatListingWindow} `}
+          onMouseOver={mouseOverEvent}
         >
           {channelLibrary === true ? (
             <>
@@ -1038,6 +1081,7 @@ const ChatListing = ({
                         <div className={ChatListingStyles.channelMessageWrapper}>
                           <div
                             className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} ${ChatListingStyles.lightGreyBg} `}
+
                           >
                             <div
                               className={ChatListingStyles.systemGeneratedHeader}
