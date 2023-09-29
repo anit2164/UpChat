@@ -8,8 +8,10 @@ import React, {
   createContext,
 
 } from "react";
+import FiIconWord from "../../assets/svg/FiIconWord.svg";
 import Collapse from "../../components/collapsible/collapsible.components";
 import Header from "../header/header.components";
+import FiIconPDF from "../../assets/svg/fiIconPDF.svg";
 import UpTabs from "../../components/upTabs/upTabs.components";
 import { Dropdown, Space, message } from "antd";
 import SendIcon from "../../assets/svg/fiSend.svg";
@@ -339,17 +341,46 @@ const ChatListing = ({
           // const currentDate = "2023-08-21";
           const filename = `${currentDate}-${file.name}`;
 
-          const storageRef = storage.ref(
-            `images/${allChannelItem.enc_channelID}`
-          );
-          const fileRef = storageRef.child(filename);
 
-          try {
-            await fileRef.put(file);
-            const downloadURL = await fileRef.getDownloadURL();
-            UploadedFiles.push(downloadURL);
-          } catch (error) {
-            console.error("Error uploading file: ", error);
+          if (file.type === "video/mp4") {
+            const storageRef = storage.ref(
+              `videos/${allChannelItem.enc_channelID}`
+            );
+            const fileRef = storageRef.child(filename);
+
+            try {
+              await fileRef.put(file);
+              const downloadURL = await fileRef.getDownloadURL();
+              UploadedFiles.push(downloadURL);
+            } catch (error) {
+              console.error("Error uploading file: ", error);
+            }
+          } else if (file.type === "image/png") {
+            const storageRef = storage.ref(
+              `images/${allChannelItem.enc_channelID}`
+            );
+            const fileRef = storageRef.child(filename);
+
+            try {
+              await fileRef.put(file);
+              const downloadURL = await fileRef.getDownloadURL();
+              UploadedFiles.push(downloadURL);
+            } catch (error) {
+              console.error("Error uploading file: ", error);
+            }
+          } else {
+            const storageRef = storage.ref(
+              `document/${allChannelItem.enc_channelID}`
+            );
+            const fileRef = storageRef.child(filename);
+
+            try {
+              await fileRef.put(file);
+              const downloadURL = await fileRef.getDownloadURL();
+              UploadedFiles.push(downloadURL);
+            } catch (error) {
+              console.error("Error uploading file: ", error);
+            }
           }
         }
       }
@@ -371,7 +402,7 @@ const ChatListing = ({
           Replied: replyMessageSection === true
             ? replyMessage.text.trim()
             : "",
-          images: UploadedFiles.length > 0 ? UploadedFiles : "",
+          files: UploadedFiles.length > 0 ? UploadedFiles : "",
           isRepliedTo: replyMessageSection === true ? "Shreyash Zinzuvadia" : "",
           msgRepliedId: "",
           userInitial: initials1,
@@ -428,17 +459,45 @@ const ChatListing = ({
             // const currentDate = "2023-08-21";
             const filename = `${currentDate}-${file.name}`;
 
-            const storageRef = storage.ref(
-              `images/${allChannelItem.enc_channelID}`
-            );
-            const fileRef = storageRef.child(filename);
+            if (file.type === "video/mp4") {
+              const storageRef = storage.ref(
+                `videos/${allChannelItem.enc_channelID}`
+              );
+              const fileRef = storageRef.child(filename);
 
-            try {
-              await fileRef.put(file);
-              const downloadURL = await fileRef.getDownloadURL();
-              UploadedFiles.push(downloadURL);
-            } catch (error) {
-              console.error("Error uploading file: ", error);
+              try {
+                await fileRef.put(file);
+                const downloadURL = await fileRef.getDownloadURL();
+                UploadedFiles.push(downloadURL);
+              } catch (error) {
+                console.error("Error uploading file: ", error);
+              }
+            } else if (file.type === "image/png") {
+              const storageRef = storage.ref(
+                `images/${allChannelItem.enc_channelID}`
+              );
+              const fileRef = storageRef.child(filename);
+
+              try {
+                await fileRef.put(file);
+                const downloadURL = await fileRef.getDownloadURL();
+                UploadedFiles.push(downloadURL);
+              } catch (error) {
+                console.error("Error uploading file: ", error);
+              }
+            } else {
+              const storageRef = storage.ref(
+                `document/${allChannelItem.enc_channelID}`
+              );
+              const fileRef = storageRef.child(filename);
+
+              try {
+                await fileRef.put(file);
+                const downloadURL = await fileRef.getDownloadURL();
+                UploadedFiles.push(downloadURL);
+              } catch (error) {
+                console.error("Error uploading file: ", error);
+              }
             }
           }
         }
@@ -459,7 +518,7 @@ const ChatListing = ({
             Replied: replyMessageSection === true
               ? replyMessage.text.trim()
               : "",
-            images: UploadedFiles.length > 0 ? UploadedFiles : "",
+            files: UploadedFiles.length > 0 ? UploadedFiles : "",
             isRepliedTo: replyMessageSection === true ? "Shreyash Zinzuvadia" : "",
             msgRepliedId: "",
             userInitial: initials1,
@@ -1213,16 +1272,116 @@ const ChatListing = ({
                                   ChatListingStyles.imageItemInnerMsgBox
                                 }
                               >
-                                {item?.images &&
-                                  item?.images?.length > 0 &&
-                                  item?.images?.map((imageItem: any) => {
+                                {item?.files &&
+                                  item?.files?.length > 0 &&
+                                  item?.files?.map((fileitem: any) => {
+                                    function containsAnyWord(
+                                      inputString: any,
+                                      wordsToCheck: any
+                                    ) {
+                                      const regex = new RegExp(
+                                        `\\b(?:${wordsToCheck.join("|")})\\b`,
+                                        "i"
+                                      );
+
+                                      return regex.test(inputString);
+                                    }
+                                    const wordsForimage = [
+                                      "jpg",
+                                      "jpeg",
+                                      "png",
+                                      "gif",
+                                    ];
+                                    const wordsForvideo = ["mp4"];
+                                    const wordsForpdf = ["pdf"];
+                                    const wordsFordoc = ["doc", "docx"];
+                                    const wordsFortext = ["txt"];
+                                    const extensionMatch =
+                                      fileitem.match(/\.([^.]+)$/);
+                                    const extension = extensionMatch
+                                      ? extensionMatch[1]
+                                      : null;
+                                    const isImage = containsAnyWord(
+                                      extension.toLowerCase(),
+                                      wordsForimage
+                                    );
+                                    const isVideo = containsAnyWord(
+                                      extension.toLowerCase(),
+                                      wordsForvideo
+                                    );
+                                    const isPdf = containsAnyWord(
+                                      extension.toLowerCase(),
+                                      wordsForpdf
+                                    );
+                                    const isDoc = containsAnyWord(
+                                      extension.toLowerCase(),
+                                      wordsFordoc
+                                    );
+                                    const isText = containsAnyWord(
+                                      extension.toLowerCase(),
+                                      wordsFortext
+                                    );
+                                    function getFileNameFromUrl(url: any) {
+                                      const urlParts = url.split("/");
+                                      const lastPart =
+                                        urlParts[urlParts.length - 1];
+
+                                      // Handle any query parameters that might be present
+                                      const filename = lastPart.split("?")[0];
+
+                                      return filename;
+                                    }
+                                    const fileName =
+                                      getFileNameFromUrl(fileitem);
+
                                     return (
                                       <li>
-                                        <img
-                                          src={imageItem}
-                                          height={50}
-                                          width={50}
-                                        />
+                                        {isImage && (
+                                          <img
+                                            src={fileitem}
+                                            alt="Preview"
+                                            height={50}
+                                            width={50}
+                                          />
+                                        )}
+                                        {isVideo && (
+                                          <video
+                                            width="200"
+                                            height="100"
+                                            controls
+                                          >
+                                            <source
+                                              src={fileitem}
+                                              type="video/mp4"
+                                            />
+                                            Your browser does not support the
+                                            video tag.
+                                          </video>
+                                        )}
+                                        {isPdf && (
+                                          <>
+                                            <FiIconPDF />
+                                            <div>
+                                              <div>{fileName}</div>
+                                            </div>
+                                          </>
+                                        )}
+                                        {isDoc && (
+                                          <>
+                                            <FiIconWord />
+                                            <div>
+                                              <div>{fileName}</div>
+                                            </div>
+                                          </>
+                                        )}
+                                        {isText && (
+                                          <>
+                                            <FiIconWord />
+                                            <div>
+                                              <div>{fileName}</div>
+                                            </div>
+                                          </>
+                                        )}
                                       </li>
                                     );
                                   })}
@@ -1667,21 +1826,43 @@ const ChatListing = ({
                             <span>Attachments</span>
                             <div className={ChatListingStyles.attachedMedia}>
                               {selectedFile.length > 0 &&
-                                selectedFile.map((items: any) => {
+                                selectedFile.map((file: any, index: any) => {
+                                  const fileType = file.type.split("/")[0];
                                   return (
-                                    <span>
+                                    <span key={index}>
                                       <span
                                         className={
                                           ChatListingStyles.chatWindowClose
                                         }
-                                        onClick={() => handleFileClose(items)}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleFileClose(file);
+                                        }}
                                       ></span>
-                                      <img
-                                        src={URL.createObjectURL(items)}
-                                        alt="Selected"
-                                        width="56"
-                                        height="56"
-                                      />
+                                      {fileType === "image" && (
+                                        <img
+                                          src={URL.createObjectURL(file)}
+                                          alt={`Selected ${fileType}`}
+                                          width="56"
+                                          height="56"
+                                        />
+                                      )}
+                                      {fileType === "video" && (
+                                        <video width="56" height="56">
+                                          <source
+                                            src={URL.createObjectURL(file)}
+                                            type={file.type}
+                                          />
+                                          Your browser does not support the
+                                          video tag.
+                                        </video>
+                                      )}
+                                      {fileType === "application" && (
+                                        <>
+                                          <FiIconPDF />
+                                          <div>{file.name}</div>
+                                        </>
+                                      )}
                                     </span>
                                   );
                                 })}

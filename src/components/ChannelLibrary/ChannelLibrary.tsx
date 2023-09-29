@@ -63,6 +63,96 @@ const ChannelLibrary = ({ enc_channelID }: any) => {
       console.error("Error listing files:", error);
     }
   };
+  const fetchVideoGroupedByMonth = async (
+    setvideoMonths: any,
+    settotalVideoCount: any
+  ) => {
+    try {
+      // List all items (files and subfolders) in the folder
+      const result = await folderRefVideo.listAll();
+      const totalImagesCount = result.items.length;
+      settotalVideoCount(totalImagesCount);
+
+      // Group images by month and year
+      const imagesByMonth: any = {};
+
+      await Promise.all(
+        result.items.map(async (item: any) => {
+          const url = await item.getDownloadURL();
+          const filename = item.name;
+          const fileDate = filename.split("-");
+          const imageDate = new Date(fileDate[0], fileDate[1] - 1, fileDate[2]);
+
+          const monthName = imageDate.toLocaleString("default", {
+            month: "long",
+          });
+          const year = imageDate.getFullYear();
+
+          const key = `${monthName}, ${year}`;
+
+          if (!imagesByMonth[key]) {
+            imagesByMonth[key] = [];
+          }
+
+          imagesByMonth[key].push({ url, name: item.name });
+        })
+      );
+      const sortedKeys = Object.keys(imagesByMonth).sort().reverse();
+      const sortedImagesByMonth: any = {};
+      sortedKeys.forEach((key) => {
+        sortedImagesByMonth[key] = imagesByMonth[key];
+      });
+
+      setvideoMonths(sortedImagesByMonth);
+    } catch (error) {
+      console.error("Error listing files:", error);
+    }
+  };
+  const fetchDocumentGroupedByMonth = async (
+    setdocumentMonths: any,
+    settotalDocumentCount: any
+  ) => {
+    try {
+      // List all items (files and subfolders) in the folder
+      const result = await folderRefdocument.listAll();
+      const totalImagesCount = result.items.length;
+      settotalDocumentCount(totalImagesCount);
+
+      // Group images by month and year
+      const imagesByMonth: any = {};
+
+      await Promise.all(
+        result.items.map(async (item) => {
+          const url = await item.getDownloadURL();
+          const filename = item.name;
+          const fileDate: any = filename.split("-");
+          const imageDate = new Date(fileDate[0], fileDate[1] - 1, fileDate[2]);
+
+          const monthName = imageDate.toLocaleString("default", {
+            month: "long",
+          });
+          const year = imageDate.getFullYear();
+
+          const key = `${monthName}, ${year}`;
+
+          if (!imagesByMonth[key]) {
+            imagesByMonth[key] = [];
+          }
+
+          imagesByMonth[key].push({ url, name: item.name });
+        })
+      );
+      const sortedKeys = Object.keys(imagesByMonth).sort().reverse();
+      const sortedImagesByMonth: any = {};
+      sortedKeys.forEach((key) => {
+        sortedImagesByMonth[key] = imagesByMonth[key];
+      });
+
+      setdocumentMonths(sortedImagesByMonth);
+    } catch (error) {
+      console.error("Error listing files:", error);
+    }
+  };
   const fetchImageUrls = async (setImages: any) => {
     // Calculate the date for one week ago
     const oneWeekAgo = new Date();
@@ -96,20 +186,97 @@ const ChannelLibrary = ({ enc_channelID }: any) => {
       console.error("Error listing files:", error);
     }
   };
+  const fetchVideoUrls = async (setVideos: any) => {
+    // Calculate the date for one week ago
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    try {
+      // List all items (files and subfolders) in the folder
+      const result = await folderRefVideo.listAll();
+
+      // Filter the items based on their timestamps
+      const lastWeekvideo = await Promise.all(
+        result.items
+          .filter((item) => {
+            const filename = item.name;
+            const fileDate: any = filename.split("-");
+            const videoTimestamp = new Date(
+              fileDate[0],
+              fileDate[1] - 1,
+              fileDate[2]
+            );
+
+            return videoTimestamp >= oneWeekAgo;
+          })
+          .map(async (item) => {
+            const url = await item.getDownloadURL();
+            return { url, name: item.name };
+          })
+      );
+      setVideos({ lastWeekvideo });
+    } catch (error) {
+      console.error("Error listing files:", error);
+    }
+  };
+  const fetchDocumentUrls = async (setDocuments: any) => {
+    // Calculate the date for one week ago
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    try {
+      // List all items (files and subfolders) in the folder
+      const result = await folderRefdocument.listAll();
+
+      // Filter the items based on their timestamps
+      const lastWeekvideo = await Promise.all(
+        result.items
+          .filter((item: any) => {
+            const filename = item.name;
+            const fileDate: any = filename.split("-");
+            const videoTimestamp = new Date(
+              fileDate[0],
+              fileDate[1] - 1,
+              fileDate[2]
+            );
+
+            return videoTimestamp >= oneWeekAgo;
+          })
+          .map(async (item) => {
+            const url = await item.getDownloadURL();
+            return { url, name: item.name };
+          })
+      );
+      setDocuments({ lastWeekvideo });
+    } catch (error) {
+      console.error("Error listing files:", error);
+    }
+  };
   const [images, setImages] = useState({ lastWeekImages: [] });
   const [imageMonths, setimageMonths] = useState<any>({});
   const [totalImagesCount, settotalImagesCount] = useState(0);
-
+  const [videos, setVideos] = useState({ lastWeekImages: [] });
+  const [documents, setDocuments] = useState({ lastWeekImages: [] });
+  const [videoMonths, setvideoMonths] = useState<any>({});
+  const [documentMonths, setdocumentMonths] = useState<any>({});
+  const [totalVideoCount, settotalVideoCount] = useState(0);
+  const [totalDocumentCount, settotalDocumentCount] = useState(0);
   const storage = firebase.storage();
   const folderRef = storage.ref(`/images/${enc_channelID}`);
+  const folderRefVideo = storage.ref(`/videos/${enc_channelID}`);
+  const folderRefdocument = storage.ref(`/document/${enc_channelID}`);
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
   useEffect(() => {
     fetchImageUrls(setImages);
+    fetchVideoUrls(setVideos);
+    fetchDocumentUrls(setDocuments);
   }, []);
   useEffect(() => {
     fetchImagesGroupedByMonth(setimageMonths, settotalImagesCount);
+    fetchVideoGroupedByMonth(setvideoMonths, settotalVideoCount);
+    fetchDocumentGroupedByMonth(setdocumentMonths, settotalDocumentCount);
   }, []);
   return (
     <div
@@ -175,399 +342,77 @@ const ChannelLibrary = ({ enc_channelID }: any) => {
           <TabPanel className={ChannelLibraryStyles.tabContent}>
             <div className={ChannelLibraryStyles.assetGrid}>
               <ul>
-                <li className={ChannelLibraryStyles.dividerText}>
-                  April, 2023
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela x Uplers
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Interview Window Schedule
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconWord />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela Talent Briefing
-                      </div>
-                      <span>3 pages</span>
-                      <span>DOC</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela x Uplers
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Interview Window Schedule
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconWord />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela Talent Briefing
-                      </div>
-                      <span>3 pages</span>
-                      <span>DOC</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela x Uplers
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Interview Window Schedule
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconWord />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela Talent Briefing
-                      </div>
-                      <span>3 pages</span>
-                      <span>DOC</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela x Uplers
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Interview Window Schedule
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconWord />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela Talent Briefing
-                      </div>
-                      <span>3 pages</span>
-                      <span>DOC</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela x Uplers
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Interview Window Schedule
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconWord />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela Talent Briefing
-                      </div>
-                      <span>3 pages</span>
-                      <span>DOC</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela x Uplers
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconPDF />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Interview Window Schedule
-                      </div>
-                      <span>1 page</span>
-                      <span>PDF</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className={ChannelLibraryStyles.gridContentLeft}>
-                    <FiIconWord />
-                    <div className={ChannelLibraryStyles.assetDetails}>
-                      <div className={ChannelLibraryStyles.assetName}>
-                        Andela Talent Briefing
-                      </div>
-                      <span>3 pages</span>
-                      <span>DOC</span>
-                    </div>
-                  </div>
-                  <div className={ChannelLibraryStyles.gridContentRight}>
-                    <FiDownloadSVG width="14" />
-                    <span className={ChannelLibraryStyles.textUnderline}>
-                      Download
-                    </span>
-                  </div>
-                </li>
+                {Object.keys(documentMonths).map((monthYearKey) => (
+                  <>
+                    <li
+                      key={monthYearKey}
+                      className={ChannelLibraryStyles.dividerText}
+                    >
+                      {monthYearKey}
+                    </li>
+
+                    {documentMonths[monthYearKey].map((document: any) => (
+                      <li>
+                        <div className={ChannelLibraryStyles.gridContentLeft}>
+                          {/* {document.name.spilt(".")[2] === "pdf" ? ( */}
+                          <FiIconPDF />
+                          {/* ) : (
+                            <FiIconWord />
+                          )} */}
+                          <div className={ChannelLibraryStyles.assetDetails}>
+                            <div className={ChannelLibraryStyles.assetName}>
+                              {document.name}
+                            </div>
+                            <span>1 page</span>
+                            <span>PDF</span>
+                          </div>
+                        </div>
+                        <div className={ChannelLibraryStyles.gridContentRight}>
+                          <FiDownloadSVG
+                            width="14"
+                            onClick={() => window.open(document.url)}
+                          />
+                          <span
+                            className={ChannelLibraryStyles.textUnderline}
+                            onClick={() => window.open(document.url)}
+                          >
+                            Download
+                          </span>
+                        </div>
+                      </li>
+                    ))}
+                  </>
+                ))}
               </ul>
             </div>
           </TabPanel>
           <TabPanel className={ChannelLibraryStyles.tabContent}>
             <div className={ChannelLibraryStyles.contentGrid}>
               <ul>
-                <li className={ChannelLibraryStyles.dividerText}>Last Week</li>
-                <li className={ChannelLibraryStyles.videoGrid}>
-                  <img src="https://i.pravatar.cc/95" width="95" height="95" />
-                  <span>
-                    <FiVideoSVG />
-                    02:21
-                  </span>
-                </li>
-                <li className={ChannelLibraryStyles.videoGrid}>
-                  <img src="https://i.pravatar.cc/95" width="95" height="95" />
-                  <span>
-                    <FiVideoSVG />
-                    05:20
-                  </span>
-                </li>
-                <li className={ChannelLibraryStyles.videoGrid}>
-                  <img src="https://i.pravatar.cc/95" width="95" height="95" />
-                  <span>
-                    <FiVideoSVG />
-                    01:00
-                  </span>
-                </li>
-                <li className={ChannelLibraryStyles.videoGrid}>
-                  <img src="https://i.pravatar.cc/95" width="95" height="95" />
-                  <span>
-                    <FiVideoSVG />
-                    03:15
-                  </span>
-                </li>
-                <li className={ChannelLibraryStyles.dividerText}>
-                  April, 2023
-                </li>
-                <li className={ChannelLibraryStyles.videoGrid}>
-                  <img src="https://i.pravatar.cc/95" width="95" height="95" />
-                  <span>
-                    <FiVideoSVG />
-                    02:10
-                  </span>
-                </li>
-                <li className={ChannelLibraryStyles.videoGrid}>
-                  <img src="https://i.pravatar.cc/95" width="95" height="95" />
-                  <span>
-                    <FiVideoSVG />
-                    04:16
-                  </span>
-                </li>
-                <li className={ChannelLibraryStyles.videoGrid}>
-                  <img src="https://i.pravatar.cc/95" width="95" height="95" />
-                  <span>
-                    <FiVideoSVG />
-                    00:21
-                  </span>
-                </li>
-                <li className={ChannelLibraryStyles.videoGrid}>
-                  <img src="https://i.pravatar.cc/95" width="95" height="95" />
-                  <span>
-                    <FiVideoSVG />
-                    01:00
-                  </span>
-                </li>
+                {Object.keys(videoMonths).map((monthYearKey) => (
+                  <>
+                    <li
+                      key={monthYearKey}
+                      className={ChannelLibraryStyles.dividerText}
+                    >
+                      {monthYearKey}
+                    </li>
+
+                    {videoMonths[monthYearKey].map((video: any, index: any) => (
+                      <li key={index}>
+                        <video
+                          width="95"
+                          height="95"
+                          onClick={() => window.open(video.url)}
+                        >
+                          <source src={video.url} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                        {/* <span>{video.name}</span> */}
+                      </li>
+                    ))}
+                  </>
+                ))}
               </ul>
             </div>
           </TabPanel>
@@ -651,7 +496,7 @@ const ChannelLibrary = ({ enc_channelID }: any) => {
 
       <div className={ChannelLibraryStyles.channelLibraryFooterWrap}>
         <div className={ChannelLibraryStyles.channelLibraryFooter}>
-          {totalImagesCount > 0 && totalImagesCount} Photos, 16 Documents, 8
+          {totalImagesCount > 0 && totalImagesCount} Photos, {totalDocumentCount > 0 && totalDocumentCount} Documents, {totalVideoCount > 0 && totalVideoCount}
           Videos, 6 Links
         </div>
       </div>
