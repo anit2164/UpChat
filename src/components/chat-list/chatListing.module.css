@@ -214,14 +214,14 @@
   display: flex;
   flex-direction: column;
   /* align-items: end; */
-  height: 506px;
+  height: 502px;
   background: #fff;
   overflow-x: hidden;
   overflow-y: auto;
 }
 @media screen and (max-height: 650px) {
   .channelWindowInner {
-    height: 406px;
+    height: 402px;
   }
 }
 
@@ -1595,7 +1595,27 @@
 .imageItemInnerMsgBox {
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
   gap: 15px;
   margin: 0;
   padding: 0 2px;
+}
+.imageItemInnerMsgBox li {
+  max-width: 48%;
+}
+.imageItemInnerMsgBox li a {
+  display: block;
+}
+
+.imageItemInnerMsgBox li video {
+  max-width: 100%;
+}
+
+.channelLibraryScrollWrapper {
+  height: 531px;
+}
+@media screen and (max-height: 650px) {
+  .channelLibraryScrollWrapper {
+    height: 431px;
+  }
 }

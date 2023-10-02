@@ -261,6 +261,7 @@ const ChannelLibrary = ({ enc_channelID }: any) => {
   const [documentMonths, setdocumentMonths] = useState<any>({});
   const [totalVideoCount, settotalVideoCount] = useState(0);
   const [totalDocumentCount, settotalDocumentCount] = useState(0);
+  const [totalLinkCount, settotalLinkCount] = useState(0);
   const storage = firebase.storage();
   const folderRef = storage.ref(`/images/${enc_channelID}`);
   const folderRefVideo = storage.ref(`/videos/${enc_channelID}`);
@@ -354,17 +355,17 @@ const ChannelLibrary = ({ enc_channelID }: any) => {
                     {documentMonths[monthYearKey].map((document: any) => (
                       <li>
                         <div className={ChannelLibraryStyles.gridContentLeft}>
-                          {/* {document.name.spilt(".")[2] === "pdf" ? ( */}
-                          <FiIconPDF />
-                          {/* ) : (
+                          {document.name.split(".")[1] == "pdf" ? (
+                            <FiIconPDF />
+                          ) : (
                             <FiIconWord />
-                          )} */}
+                          )}
                           <div className={ChannelLibraryStyles.assetDetails}>
                             <div className={ChannelLibraryStyles.assetName}>
                               {document.name}
                             </div>
-                            <span>1 page</span>
-                            <span>PDF</span>
+                            {/* <span>1 page</span>
+                            <span>PDF</span> */}
                           </div>
                         </div>
                         <div className={ChannelLibraryStyles.gridContentRight}>
@@ -496,8 +497,10 @@ const ChannelLibrary = ({ enc_channelID }: any) => {
 
       <div className={ChannelLibraryStyles.channelLibraryFooterWrap}>
         <div className={ChannelLibraryStyles.channelLibraryFooter}>
-          {totalImagesCount > 0 && totalImagesCount} Photos, {totalDocumentCount > 0 && totalDocumentCount} Documents, {totalVideoCount > 0 && totalVideoCount}
-          Videos, 6 Links
+          {totalImagesCount > 0 && `${totalImagesCount} Photos`}
+          {totalDocumentCount > 0 && `, ${totalDocumentCount} Documents`}
+          {totalVideoCount > 0 && `, ${totalVideoCount} Videos`}
+          {totalLinkCount > 0 && `, ${totalLinkCount}Links`}
         </div>
       </div>
     </div>

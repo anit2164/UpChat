@@ -41,7 +41,7 @@
 }
 .channelLibTabs [class*="react-tabs__tab-panel"] {
   padding: 16px 4px 0 16px;
-  height: 444px;
+  height: 433px;
   overflow-y: auto;
 }
 
@@ -124,6 +124,8 @@
 }
 .gridContentLeft {
   display: flex;
+  align-items: center;
+  text-align: left;
 }
 .gridContentLeft svg {
   margin-right: 16px;

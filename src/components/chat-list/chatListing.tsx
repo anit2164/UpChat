@@ -111,7 +111,7 @@ const ChatListing = ({
   const [enc_channelID, setenc_channelID] = useState("");
   const [seeAttachment, setSeeAttachment] = useState(false);
 
-
+  const [selectedDoc, setSelectDoc] = useState<any>(false);
   const bottomToTopRef: any = useRef(null);
   const arrawScroll = useRef(null);
   const commentRef: any = useRef();
@@ -318,10 +318,37 @@ const ChatListing = ({
     }
   };
 
-  const handleFileSelect = (e: any) => {
-    const fileSelect = e.target.files;
-    setSelectedImage(true);
-    setSelectedFile([...selectedFile, ...fileSelect]);
+  const handleFileSelect = (e: any, fileType: any) => {
+    const files = e.target.files;
+    const newSelectedFiles = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const fileTypeOfFile = file.type;
+
+      if (fileTypeOfFile.startsWith("image/") && fileType === "image") {
+        setSelectedImage(true);
+        setSelectDoc(false);
+        newSelectedFiles.push(file);
+      } else if (fileTypeOfFile.startsWith("video/") && fileType === "image") {
+        setSelectedImage(true);
+        setSelectDoc(false);
+        newSelectedFiles.push(file);
+      } else if (
+        fileType === "doc" &&
+        fileTypeOfFile.startsWith("application/")
+      ) {
+        setSelectedImage(false);
+        setSelectDoc(true);
+        newSelectedFiles.push(file);
+      } else if (fileType === "doc" && fileTypeOfFile.startsWith("text/")) {
+        setSelectedImage(false);
+        setSelectDoc(true);
+        newSelectedFiles.push(file);
+      }
+    }
+
+    setSelectedFile([...selectedFile, ...newSelectedFiles]);
   };
   const handleFileClose = (items: any) => {
     const updatedItems = selectedFile.filter((item: any) => item !== items);
@@ -570,6 +597,8 @@ const ChatListing = ({
     ) {
       scrollToBottom();
       setScrollDown(false);
+      setIstagged(false)
+      commentRef.current.innerText = "";
     }
   }, [showChat, listingChats]);
 
@@ -967,7 +996,9 @@ const ChatListing = ({
               <MemberListing allChannelItem={allChannelItem} />
             </>)}
           <div
-            className={ChatListingStyles.channelWindowInner}
+            className={`${channelLibrary === true &&
+              ChatListingStyles.channelLibraryScrollWrapper
+              } ${ChatListingStyles.channelWindowInner}`}
             ref={arrawScroll}
             onScroll={handleScroll}
           >
@@ -1319,17 +1350,17 @@ const ChatListing = ({
                                 {item?.files &&
                                   item?.files?.length > 0 &&
                                   item?.files?.map((fileitem: any) => {
-                                    function containsAnyWord(
+                                    const containsAnyWord = (
                                       inputString: any,
                                       wordsToCheck: any
-                                    ) {
+                                    ) => {
                                       const regex = new RegExp(
                                         `\\b(?:${wordsToCheck.join("|")})\\b`,
                                         "i"
                                       );
 
                                       return regex.test(inputString);
-                                    }
+                                    };
                                     const wordsForimage = [
                                       "jpg",
                                       "jpeg",
@@ -1365,7 +1396,7 @@ const ChatListing = ({
                                       extension.toLowerCase(),
                                       wordsFortext
                                     );
-                                    function getFileNameFromUrl(url: any) {
+                                    const getFileNameFromUrl = (url: any) => {
                                       const urlParts = url.split("/");
                                       const lastPart =
                                         urlParts[urlParts.length - 1];
@@ -1374,56 +1405,90 @@ const ChatListing = ({
                                       const filename = lastPart.split("?")[0];
 
                                       return filename;
-                                    }
+                                    };
                                     const fileName =
                                       getFileNameFromUrl(fileitem);
 
                                     return (
                                       <li>
                                         {isImage && (
-                                          <img
-                                            src={fileitem}
-                                            alt="Preview"
-                                            height={50}
-                                            width={50}
-                                          />
+                                          <>
+                                            <a
+                                              download={fileName}
+                                              onClick={() =>
+                                                window.open(
+                                                  fileitem,
+                                                  "_blank"
+                                                )
+                                              }
+                                            >
+                                              <img
+                                                src={fileitem}
+                                                alt="Preview"
+                                                height={50}
+                                                width={50}
+                                              />
+                                            </a>
+                                          </>
                                         )}
                                         {isVideo && (
-                                          <video
-                                            width="200"
-                                            height="100"
-                                            controls
-                                          >
-                                            <source
-                                              src={fileitem}
-                                              type="video/mp4"
-                                            />
-                                            Your browser does not support the
-                                            video tag.
-                                          </video>
+                                          <>
+                                            <a
+                                              href={fileitem}
+                                              download={fileName}
+                                            >
+                                              <video
+                                                controls
+                                              >
+                                                <source
+                                                  src={fileitem}
+                                                  type="video/mp4"
+                                                />
+                                                Your browser does not support
+                                                the video tag.
+                                              </video>
+                                            </a>
+                                          </>
                                         )}
                                         {isPdf && (
                                           <>
-                                            <FiIconPDF />
-                                            <div>
-                                              <div>{fileName}</div>
-                                            </div>
+                                            <a
+                                              href={fileitem}
+                                              download={fileName}
+                                              title={fileName}
+                                            >
+                                              <FiIconPDF />
+                                            </a>
                                           </>
                                         )}
                                         {isDoc && (
                                           <>
-                                            <FiIconWord />
-                                            <div>
-                                              <div>{fileName}</div>
-                                            </div>
+                                            <a
+                                              href={fileitem}
+                                              download={fileName}
+                                              title={fileName}
+                                            >
+                                              <FiIconWord />
+
+                                              {/* <div>
+                                                <div>{fileName}</div>
+                                              </div> */}
+                                            </a>
                                           </>
                                         )}
                                         {isText && (
                                           <>
-                                            <FiIconWord />
-                                            <div>
-                                              <div>{fileName}</div>
-                                            </div>
+                                            <a
+                                              href={fileitem}
+                                              download={fileName}
+                                              title={fileName}
+                                            >
+                                              <FiIconWord />
+
+                                              {/* <div>
+                                                <div>{fileName}</div>
+                                              </div> */}
+                                            </a>
                                           </>
                                         )}
                                       </li>
@@ -1852,73 +1917,153 @@ const ChatListing = ({
                       type="file"
                       id="fileInput"
                       style={{ display: "none" }}
-                      onChange={handleFileSelect}
+                      onChange={(e) => handleFileSelect(e, "image")}
                       multiple
+                      accept="image/*,video/*"
                     />
                     <label htmlFor="fileInput">
                       <FiImageSVG />
                     </label>
-                    {selectedImage && selectedFile.length > 0 && (
-                      <div
-                        className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.attachementPopup} `}
-                      // style={{
-                      // 	display:selectedImage ? 'block':'none'
-                      // }}
-                      >
-                        <div className={ChatListingStyles.chatPopupInner}>
-                          <div className={ChatListingStyles.popupContent}>
-                            <span>Attachments</span>
-                            <div className={ChatListingStyles.attachedMedia}>
-                              {selectedFile.length > 0 &&
-                                selectedFile.map((file: any, index: any) => {
-                                  const fileType = file.type.split("/")[0];
-                                  return (
-                                    <span key={index}>
-                                      <span
-                                        className={
-                                          ChatListingStyles.chatWindowClose
-                                        }
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleFileClose(file);
-                                        }}
-                                      ></span>
-                                      {fileType === "image" && (
-                                        <img
-                                          src={URL.createObjectURL(file)}
-                                          alt={`Selected ${fileType}`}
-                                          width="56"
-                                          height="56"
-                                        />
-                                      )}
-                                      {fileType === "video" && (
-                                        <video width="56" height="56">
-                                          <source
+                    {selectedImage &&
+                      selectedFile !== null &&
+                      selectedFile.length > 0 && (
+                        <div
+                          className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.attachementPopup} `}
+                        >
+                          <div className={ChatListingStyles.chatPopupInner}>
+                            <div className={ChatListingStyles.popupContent}>
+                              <span>Attachments</span>
+                              <div className={ChatListingStyles.attachedMedia}>
+                                {selectedFile.length > 0 &&
+                                  selectedFile.map((file: any, index: any) => {
+                                    const fileType = file.type.split("/")[0];
+                                    // console.log("fileType", fileType);
+                                    return (
+                                      <span key={index}>
+                                        <span
+                                          className={
+                                            ChatListingStyles.chatWindowClose
+                                          }
+                                          onClick={(e) => {
+                                            console.log("hello word;");
+                                            e.stopPropagation();
+                                            handleFileClose(file);
+                                          }}
+                                        ></span>
+                                        {fileType === "image" && (
+                                          <img
                                             src={URL.createObjectURL(file)}
-                                            type={file.type}
+                                            alt={`Selected ${fileType}`}
+                                            width="56"
+                                            height="56"
                                           />
-                                          Your browser does not support the
-                                          video tag.
-                                        </video>
-                                      )}
-                                      {fileType === "application" && (
-                                        <>
-                                          <FiIconPDF />
-                                          <div>{file.name}</div>
-                                        </>
-                                      )}
-                                    </span>
-                                  );
-                                })}
+                                        )}
+                                        {fileType === "video" && (
+                                          <div
+                                            onClick={(e) => {
+                                              handleFileClose(file);
+                                            }}
+                                          >
+                                            <video width="100" height="100">
+                                              <source
+                                                src={URL.createObjectURL(file)}
+                                                type={file.type}
+                                              />
+                                              Your browser does not support the
+                                              video tag.
+                                            </video>
+                                          </div>
+                                        )}
+                                        {/* {fileType === "application" && (
+                                          <>
+                                            <FiIconPDF />
+                                            <div>{file.name}</div>
+                                          </>
+                                        )} */}
+                                      </span>
+                                    );
+                                  })}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </span>
 
-                  <span>
-                    <FiFolderPlusSVG />
+                  <span
+                    className={
+                      selectedDoc && ChatListingStyles.mediaOptionsActive
+                    }
+                  >
+                    <input
+                      type="file"
+                      id="fileInput1"
+                      style={{ display: "none" }}
+                      onChange={(e) => handleFileSelect(e, "doc")}
+                      accept=".doc, .docx, .pdf, .txt"
+                      multiple
+                    />
+                    <label htmlFor="fileInput1">
+                      <FiFolderPlusSVG />
+                    </label>
+                    {selectedDoc &&
+                      selectedFile !== null &&
+                      selectedFile.length > 0 && (
+                        <div
+                          className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.attachementPopup} `}
+                        >
+                          <div className={ChatListingStyles.chatPopupInner}>
+                            <div className={ChatListingStyles.popupContent}>
+                              <span>Attachments</span>
+                              <div className={ChatListingStyles.attachedMedia}>
+                                {selectedFile.length > 0 &&
+                                  selectedFile.map((file: any, index: any) => {
+                                    const fileType = file.name.split(".")[1];
+                                    console.log("fileType", fileType);
+                                    return (
+                                      <span key={index}>
+                                        <span
+                                          className={
+                                            ChatListingStyles.chatWindowClose
+                                          }
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleFileClose(file);
+                                          }}
+                                        ></span>
+
+                                        {fileType === "docx" && (
+                                          <>
+                                            <FiIconWord />
+                                            <div>{file.name}</div>
+                                          </>
+                                        )}
+                                        {fileType === "doc" && (
+                                          <>
+                                            <FiIconWord />
+                                            <div>{file.name}</div>
+                                          </>
+                                        )}
+                                        {fileType === "txt" && (
+                                          <>
+                                            <FiIconWord />
+                                            <div>{file.name}</div>
+                                          </>
+                                        )}
+                                        {fileType === "pdf" && (
+                                          <>
+                                            <FiIconPDF />
+                                            <div>{file.name}</div>
+                                          </>
+                                        )}
+                                      </span>
+                                    );
+                                  })}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                   </span>
 
                   {/* <span onChange={handleFileSelect}><FiFolderPlusSVG /></span> */}
