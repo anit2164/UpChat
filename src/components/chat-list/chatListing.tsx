@@ -17,10 +17,10 @@ import { Dropdown, Space, message } from "antd";
 import SendIcon from "../../assets/svg/fiSend.svg";
 import SearchIcon from "../../assets/svg/search.svg";
 import FiChevronLeftSVG from "../../assets/svg/fiChevronLeft.svg";
-import FiFolderPlusSVG from "../../assets/svg/FiFolderPlusSVG.svg";
+import FiFolderPlusSVG from "../../assets/svg/fiFolderPlus.svg";
 // import ArrowIcon from "@SVG/fiArrowRight.svg";
 import SmileIcon from "../../assets/svg/fiSmile.svg";
-import FiImageSVG from "../../assets/svg/FiImageSVG.svg";
+import FiImageSVG from "../../assets/svg/fiImage.svg";
 import ChannelLibrary from "../ChannelLibrary/ChannelLibrary";
 
 import SmileIcon1 from "../../assets/svg/smileIcon-1.svg";
