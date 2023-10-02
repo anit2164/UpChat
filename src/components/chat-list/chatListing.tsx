@@ -13,7 +13,7 @@ import Collapse from "../../components/collapsible/collapsible.components";
 import Header from "../header/header.components";
 import FiIconPDF from "../../assets/svg/fiIconPDF.svg";
 import UpTabs from "../../components/upTabs/upTabs.components";
-import { Dropdown, Space, message } from "antd";
+import { Dropdown, Space, message, Spin } from "antd";
 import SendIcon from "../../assets/svg/fiSend.svg";
 import SearchIcon from "../../assets/svg/search.svg";
 import FiChevronLeftSVG from "../../assets/svg/fiChevronLeft.svg";
@@ -110,6 +110,8 @@ const ChatListing = ({
   const [channelLibrary, setChannelLibrary] = useState(false);
   const [enc_channelID, setenc_channelID] = useState("");
   const [seeAttachment, setSeeAttachment] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   const [selectedDoc, setSelectDoc] = useState<any>(false);
   const bottomToTopRef: any = useRef(null);
@@ -149,11 +151,11 @@ const ChatListing = ({
       key: ChannelMenu.SEARCH_IN_CHAT,
       icon: <SearchIcon />,
     },
-    {
-      label: ChannelMenu.BOOKMARKS,
-      key: ChannelMenu.BOOKMARKS,
-      icon: <FiBookmarkOutlinedSVG width="12" />,
-    },
+    // {
+    //   label: ChannelMenu.BOOKMARKS,
+    //   key: ChannelMenu.BOOKMARKS,
+    //   icon: <FiBookmarkOutlinedSVG width="12" />,
+    // },
     {
       label: ChannelMenu.CHANNEL_LIBRARY,
       key: ChannelMenu.CHANNEL_LIBRARY,
@@ -185,11 +187,11 @@ const ChatListing = ({
       key: ChannelMenu.COPY,
       icon: <FiCopySVG width="16" />,
     },
-    {
-      label: ChannelMenu.BOOKMARKS,
-      key: ChannelMenu.BOOKMARKS,
-      icon: <FiBookmarkOutlinedSVG />,
-    },
+    // {
+    //   label: ChannelMenu.BOOKMARKS,
+    //   key: ChannelMenu.BOOKMARKS,
+    //   icon: <FiBookmarkOutlinedSVG />,
+    // },
   ];
 
   const scrollToBottom = () => {
@@ -366,11 +368,9 @@ const ChatListing = ({
         for (const file of selectedFile) {
           const currentDate = new Date().toISOString().split("T")[0];
 
-          // const currentDate = "2023-08-21";
           const filename = `${currentDate}-${file.name}`;
-
-
           if (file.type === "video/mp4") {
+            setUploading(true);
             const storageRef = storage.ref(
               `videos/${allChannelItem.enc_channelID}`
             );
@@ -379,11 +379,15 @@ const ChatListing = ({
             try {
               await fileRef.put(file);
               const downloadURL = await fileRef.getDownloadURL();
+              setUploadSuccess(true);
               UploadedFiles.push(downloadURL);
             } catch (error) {
               console.error("Error uploading file: ", error);
+            } finally {
+              setUploading(false);
             }
           } else if (file.type === "image/png") {
+            setUploading(true);
             const storageRef = storage.ref(
               `images/${allChannelItem.enc_channelID}`
             );
@@ -392,11 +396,15 @@ const ChatListing = ({
             try {
               await fileRef.put(file);
               const downloadURL = await fileRef.getDownloadURL();
+              setUploadSuccess(true);
               UploadedFiles.push(downloadURL);
             } catch (error) {
               console.error("Error uploading file: ", error);
+            } finally {
+              setUploading(false);
             }
           } else {
+            setUploading(true);
             const storageRef = storage.ref(
               `document/${allChannelItem.enc_channelID}`
             );
@@ -405,9 +413,12 @@ const ChatListing = ({
             try {
               await fileRef.put(file);
               const downloadURL = await fileRef.getDownloadURL();
+              setUploadSuccess(true);
               UploadedFiles.push(downloadURL);
             } catch (error) {
               console.error("Error uploading file: ", error);
+            } finally {
+              setUploading(false);
             }
           }
         }
@@ -484,10 +495,9 @@ const ChatListing = ({
           for (const file of selectedFile) {
             const currentDate = new Date().toISOString().split("T")[0];
 
-            // const currentDate = "2023-08-21";
             const filename = `${currentDate}-${file.name}`;
-
             if (file.type === "video/mp4") {
+              setUploading(true);
               const storageRef = storage.ref(
                 `videos/${allChannelItem.enc_channelID}`
               );
@@ -496,11 +506,15 @@ const ChatListing = ({
               try {
                 await fileRef.put(file);
                 const downloadURL = await fileRef.getDownloadURL();
+                setUploadSuccess(true);
                 UploadedFiles.push(downloadURL);
               } catch (error) {
                 console.error("Error uploading file: ", error);
+              } finally {
+                setUploading(false);
               }
             } else if (file.type === "image/png") {
+              setUploading(true);
               const storageRef = storage.ref(
                 `images/${allChannelItem.enc_channelID}`
               );
@@ -509,11 +523,15 @@ const ChatListing = ({
               try {
                 await fileRef.put(file);
                 const downloadURL = await fileRef.getDownloadURL();
+                setUploadSuccess(true);
                 UploadedFiles.push(downloadURL);
               } catch (error) {
                 console.error("Error uploading file: ", error);
+              } finally {
+                setUploading(false);
               }
             } else {
+              setUploading(true);
               const storageRef = storage.ref(
                 `document/${allChannelItem.enc_channelID}`
               );
@@ -522,9 +540,12 @@ const ChatListing = ({
               try {
                 await fileRef.put(file);
                 const downloadURL = await fileRef.getDownloadURL();
+                setUploadSuccess(true);
                 UploadedFiles.push(downloadURL);
               } catch (error) {
                 console.error("Error uploading file: ", error);
+              } finally {
+                setUploading(false);
               }
             }
           }
@@ -1045,6 +1066,7 @@ const ChatListing = ({
                 className={ChatListingStyles.channelWindowMessages}
                 id="content"
               >
+                {uploading && <div><Spin /></div>}
                 {filterData?.map((item: any, key: any) => {
 
 
