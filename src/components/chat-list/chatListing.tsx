@@ -808,46 +808,46 @@ const ChatListing = ({
     return infoTemp;
   };
 
-  const mouseOverEvent = async () => {
-    try {
-      const unsubscribe = firestore
-        .collection(
-          `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
-        )
-        .orderBy("date", "asc")
-        .onSnapshot((snapshot: any) => {
-          const messagesData = snapshot.docs.map((doc: any) => doc.data());
-          // setListingChats(messagesData);
-        });
+  // const mouseOverEvent = async () => {
+  //   try {
+  //     const unsubscribe = firestore
+  //       .collection(
+  //         `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
+  //       )
+  //       .orderBy("date", "asc")
+  //       .onSnapshot((snapshot: any) => {
+  //         const messagesData = snapshot.docs.map((doc: any) => doc.data());
+  //         // setListingChats(messagesData);
+  //       });
 
-      // Query user_chats for updating isRead status
-      const userChatsQuery = firestore
-        .collectionGroup("user_chats")
-        .where("userEmpID", "==", loginUserId)
-        .where("enc_channelID", "==", allChannelItem?.enc_channelID)
-        .limit(limits.pageSize);
+  //     // Query user_chats for updating isRead status
+  //     const userChatsQuery = firestore
+  //       .collectionGroup("user_chats")
+  //       .where("userEmpID", "==", loginUserId)
+  //       .where("enc_channelID", "==", allChannelItem?.enc_channelID)
+  //       .limit(limits.pageSize);
 
-      const tempObj = { isRead: true }; // Update object
+  //     const tempObj = { isRead: true }; // Update object
 
-      const querySnapshot = await userChatsQuery.get();
+  //     const querySnapshot = await userChatsQuery.get();
 
-      const batch = firestore.batch();
+  //     const batch = firestore.batch();
 
-      querySnapshot.docs.forEach((snapshot: any) => {
-        const docRef = snapshot.ref;
-        batch.update(docRef, tempObj);
-      });
+  //     querySnapshot.docs.forEach((snapshot: any) => {
+  //       const docRef = snapshot.ref;
+  //       batch.update(docRef, tempObj);
+  //     });
 
-      await batch.commit();
+  //     await batch.commit();
 
-      // Return a cleanup function to unsubscribe when needed
-      return () => {
-        unsubscribe();
-      };
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //     // Return a cleanup function to unsubscribe when needed
+  //     return () => {
+  //       unsubscribe();
+  //     };
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <>
@@ -899,7 +899,7 @@ const ChatListing = ({
       {(showChatList || pinnedChatsDetails || snoozeChatsDetails) && (
         <div
           className={` ${ChatListingStyles.channelWindow} ${ChatListingStyles.chatListingWindow} `}
-          onMouseOver={mouseOverEvent}
+        // onMouseOver={mouseOverEvent}
         >
           {channelLibrary === true ? (
             <>
