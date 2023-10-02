@@ -1619,3 +1619,47 @@
     height: 431px;
   }
 }
+/* Media Active */
+.channelAddMediaActive {
+  background: #fff9e0;
+}
+.channelAddMediaActive .mediaPlus {
+  background: #ffd233;
+}
+.mediaOptions {
+  border-right: 1px solid #cecccc;
+  padding-right: 8px;
+  margin-right: 8px;
+
+  display: flex;
+}
+.mediaOptions > span {
+  width: 20px;
+  height: 20px;
+  margin-left: 16px;
+  background: #fff;
+  border-radius: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.mediaOptions > span label {
+  font-size: 0px;
+}
+
+.mediaOptions span:first-child {
+  margin-left: 0;
+}
+.mediaOptions span svg path {
+  opacity: 0.6;
+}
+.mediaOptions span.mediaOptionsActive {
+  background: #ffd233;
+}
+.mediaOptions span.mediaOptionsActive svg path {
+  opacity: 1;
+}
+/* */
