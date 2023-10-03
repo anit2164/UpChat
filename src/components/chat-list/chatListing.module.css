@@ -665,7 +665,7 @@
   flex-direction: column;
   justify-content: center;
 
-  border: 1px solid #ffda30;
+  border: 1px solid #dae9e4;
   background: #fff;
   border-radius: 8px;
   margin-bottom: 24px;
@@ -675,7 +675,7 @@
   display: flex;
   justify-content: space-between;
 
-  background: #ffda30;
+  background: #dae9e4;
   border-radius: 8px;
   text-align: left;
   padding: 8px 10px;

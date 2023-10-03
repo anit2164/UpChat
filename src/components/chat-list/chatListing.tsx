@@ -8,12 +8,12 @@ import React, {
   createContext,
 
 } from "react";
-import FiIconWord from "../../assets/svg/FiIconWord.svg";
+import FiIconWord from "../../assets/svg/fiIconWord.svg";
 import Collapse from "../../components/collapsible/collapsible.components";
 import Header from "../header/header.components";
 import FiIconPDF from "../../assets/svg/fiIconPDF.svg";
 import UpTabs from "../../components/upTabs/upTabs.components";
-import { Dropdown, Space, message, Spin } from "antd";
+import { Dropdown, Space, message, Spin, Tooltip } from "antd";
 import SendIcon from "../../assets/svg/fiSend.svg";
 import SearchIcon from "../../assets/svg/search.svg";
 import FiChevronLeftSVG from "../../assets/svg/fiChevronLeft.svg";
@@ -698,6 +698,10 @@ const ChatListing = ({
     if (value.key === ChannelMenu.SEARCH_IN_CHAT) {
       setSearchInChat(true);
     }
+    if (value.key === ChannelMenu.CHANNEL_LIBRARY) {
+      setChannelLibrary(true);
+      setenc_channelID(allChannelItem?.enc_channelID);
+    }
   };
 
   const GFG_Fun1 = (time: any) => {
@@ -1139,7 +1143,7 @@ const ChatListing = ({
                             <div
                               className={ChatListingStyles.systemGeneratedHeader}
                             >
-                              <span>Action By: {item.senderName}</span>
+                              <span>Note By: {item.senderName}</span>
                               <span
                                 className={ChatListingStyles.systemGeneratedDate}
                               >
@@ -1866,298 +1870,313 @@ const ChatListing = ({
               </div>
             )}
           </div>
-          <div className={ChatListingStyles.channelWindowFooter}>
-            <div className={ChatListingStyles.channelTextWrapper}>
-              {/* <input
-              type="text"
-              // placeholder="Please allow me sometime"
-              value={messageHandler}
-              onChange={(e: any) => { setMessageHandler(e.target.value); metionUser(e); }}
-              onKeyDown={handleKeyDown}
-            /> */}
-              <div
-                ref={commentRef}
-                id="Please allow me sometime"
-                className={ChatListingStyles.commentBox}
-                contentEditable={true}
-                placeholder="text @....."
-                onKeyDown={(e: any) => {
-                  onKeyPressHandler(e);
-                  handleKeyDown(e);
-                }}
-                onInput={(e: any) => {
-                  if (isTagged) {
-                    let text = e.target.innerText.split("@");
-                    let userFilter = memberFilter.filter((item: any) => {
-                      return item.userName
-                        .toLowerCase()
-                        .includes(text[text.length - 1]);
-                    });
+          {channelLibrary === false && (
+            <div className={ChatListingStyles.channelWindowFooter}>
+              <div className={ChatListingStyles.channelTextWrapper}>
+                {/* <input
+   type="text"
+   // placeholder="Please allow me sometime"
+   value={messageHandler}
+   onChange={(e: any) => { setMessageHandler(e.target.value); metionUser(e); }}
+   onKeyDown={handleKeyDown}
+ /> */}
+                <div
+                  ref={commentRef}
+                  id="Please allow me sometime"
+                  className={ChatListingStyles.commentBox}
+                  contentEditable={true}
+                  placeholder="text @....."
+                  onKeyDown={(e: any) => {
+                    onKeyPressHandler(e);
+                    handleKeyDown(e);
+                  }}
+                  onInput={(e: any) => {
+                    if (isTagged) {
+                      let text = e.target.innerText.split("@");
+                      let userFilter = memberFilter.filter((item: any) => {
+                        return item.userName
+                          .toLowerCase()
+                          .includes(text[text.length - 1]);
+                      });
 
-                    if (userFilter.length > 0 && userFilter) {
-                      setMentionMembers(userFilter);
-                    } else {
-                      setIstagged(false);
+                      if (userFilter.length > 0 && userFilter) {
+                        setMentionMembers(userFilter);
+                      } else {
+                        setIstagged(false);
+                      }
                     }
-                  }
-                }}
-                suppressContentEditableWarning={true}
-              ></div>
-            </div>
-            {seeAttachment && (
-              <span
-                className={` ${ChatListingStyles.channelAddMedia} ${ChatListingStyles.channelAddMediaActive} `}
-              >
-                <div className={ChatListingStyles.mediaOptions}>
-                  <span>
-                    <SmileIcon />
-                    <div
-                      className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.emojiPopup} `}
-                      style={{
-                        display: "none",
-                      }}
-                    >
-                      <div className={ChatListingStyles.chatPopupInner}>
-                        <div className={ChatListingStyles.emojiPopupSearch}>
-                          <SearchIcon
-                            className={ChatListingStyles.searchIcon}
-                          />
-                          <input type="text" placeholder="Search Emoji" />
-                        </div>
-                        <div className={ChatListingStyles.popupContent}>
-                          <span>Smileys & People</span>
+                  }}
+                  suppressContentEditableWarning={true}
+                ></div>
+              </div>
+              {seeAttachment && (
+                <span
+                  className={` ${ChatListingStyles.channelAddMedia} ${ChatListingStyles.channelAddMediaActive} `}
+                >
+                  <div className={ChatListingStyles.mediaOptions}>
+                    {/* <span>
+                      <SmileIcon />
+                      <div
+                        className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.emojiPopup} `}
+                        style={{
+                          display: "none",
+                        }}
+                      >
+                        <div className={ChatListingStyles.chatPopupInner}>
+                          <div className={ChatListingStyles.emojiPopupSearch}>
+                            <SearchIcon
+                              className={ChatListingStyles.searchIcon}
+                            />
+                            <input type="text" placeholder="Search Emoji" />
+                          </div>
+                          <div className={ChatListingStyles.popupContent}>
+                            <span>Smileys & People</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </span>
-                  <span
-                    className={
-                      selectedImage ? ChatListingStyles.mediaOptionsActive : ""
-                    }
-                  >
-                    <input
-                      type="file"
-                      id="fileInput"
-                      style={{ display: "none" }}
-                      onChange={(e) => handleFileSelect(e, "image")}
-                      multiple
-                      accept="image/*,video/*"
-                    />
-                    <label htmlFor="fileInput">
-                      <FiImageSVG />
-                    </label>
-                    {selectedImage &&
-                      selectedFile !== null &&
-                      selectedFile.length > 0 && (
-                        <div
-                          className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.attachementPopup} `}
-                        >
-                          <div className={ChatListingStyles.chatPopupInner}>
-                            <div className={ChatListingStyles.popupContent}>
-                              <span>Attachments</span>
-                              <div className={ChatListingStyles.attachedMedia}>
-                                {selectedFile.length > 0 &&
-                                  selectedFile.map((file: any, index: any) => {
-                                    const fileType = file.type.split("/")[0];
-                                    // console.log("fileType", fileType);
-                                    return (
-                                      <span key={index}>
-                                        <span
-                                          className={
-                                            ChatListingStyles.chatWindowClose
-                                          }
-                                          onClick={(e) => {
-                                            console.log("hello word;");
-                                            e.stopPropagation();
-                                            handleFileClose(file);
-                                          }}
-                                        ></span>
-                                        {fileType === "image" && (
-                                          <img
-                                            src={URL.createObjectURL(file)}
-                                            alt={`Selected ${fileType}`}
-                                            width="56"
-                                            height="56"
-                                          />
-                                        )}
-                                        {fileType === "video" && (
-                                          <div
+                    </span> */}
+
+                    <span
+                      className={
+                        selectedImage ? ChatListingStyles.mediaOptionsActive : ""
+                      }
+                    >
+                      <Tooltip
+                        placement="bottom"
+                        title="Add image & videos"
+                      >
+                        <input
+                          type="file"
+                          id="fileInput"
+                          style={{ display: "none" }}
+                          onChange={(e) => handleFileSelect(e, "image")}
+                          multiple
+                          accept="image/*,video/*"
+                        />
+                        <label htmlFor="fileInput">
+                          <FiImageSVG />
+                        </label>
+                      </Tooltip>
+                      {selectedImage &&
+                        selectedFile !== null &&
+                        selectedFile.length > 0 && (
+                          <div
+                            className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.attachementPopup} `}
+                          >
+                            <div className={ChatListingStyles.chatPopupInner}>
+                              <div className={ChatListingStyles.popupContent}>
+                                <span>Attachments</span>
+                                <div className={ChatListingStyles.attachedMedia}>
+                                  {selectedFile.length > 0 &&
+                                    selectedFile.map((file: any, index: any) => {
+                                      const fileType = file.type.split("/")[0];
+                                      // console.log("fileType", fileType);
+                                      return (
+                                        <span key={index}>
+                                          <span
+                                            className={
+                                              ChatListingStyles.chatWindowClose
+                                            }
                                             onClick={(e) => {
+                                              console.log("hello word;");
+                                              e.stopPropagation();
                                               handleFileClose(file);
                                             }}
-                                          >
-                                            <video width="100" height="100">
-                                              <source
-                                                src={URL.createObjectURL(file)}
-                                                type={file.type}
-                                              />
-                                              Your browser does not support the
-                                              video tag.
-                                            </video>
-                                          </div>
-                                        )}
-                                        {/* {fileType === "application" && (
-                                          <>
-                                            <FiIconPDF />
-                                            <div>{file.name}</div>
-                                          </>
-                                        )} */}
-                                      </span>
-                                    );
-                                  })}
+                                          ></span>
+                                          {fileType === "image" && (
+                                            <img
+                                              src={URL.createObjectURL(file)}
+                                              alt={`Selected ${fileType}`}
+                                              width="56"
+                                              height="56"
+                                            />
+                                          )}
+                                          {fileType === "video" && (
+                                            <div
+                                              onClick={(e) => {
+                                                handleFileClose(file);
+                                              }}
+                                            >
+                                              <video width="100" height="100">
+                                                <source
+                                                  src={URL.createObjectURL(file)}
+                                                  type={file.type}
+                                                />
+                                                Your browser does not support the
+                                                video tag.
+                                              </video>
+                                            </div>
+                                          )}
+                                          {/* {fileType === "application" && (
+                               <>
+                                 <FiIconPDF />
+                                 <div>{file.name}</div>
+                               </>
+                             )} */}
+                                        </span>
+                                      );
+                                    })}
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                  </span>
+                        )}
+                    </span>
 
+
+                    <span
+                      className={
+                        selectedDoc && ChatListingStyles.mediaOptionsActive
+                      }
+                    >
+                      <Tooltip
+                        placement="bottom"
+                        title="Add document"
+                      >
+                        <input
+                          type="file"
+                          id="fileInput1"
+                          style={{ display: "none" }}
+                          onChange={(e) => handleFileSelect(e, "doc")}
+                          accept=".doc, .docx, .pdf, .txt"
+                          multiple
+                        />
+                        <label htmlFor="fileInput1">
+                          <FiFolderPlusSVG />
+                        </label>
+                      </Tooltip>
+                      {selectedDoc &&
+                        selectedFile !== null &&
+                        selectedFile.length > 0 && (
+                          <div
+                            className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.attachementPopup} `}
+                          >
+                            <div className={ChatListingStyles.chatPopupInner}>
+                              <div className={ChatListingStyles.popupContent}>
+                                <span>Attachments</span>
+                                <div className={ChatListingStyles.attachedMedia}>
+                                  {selectedFile.length > 0 &&
+                                    selectedFile.map((file: any, index: any) => {
+                                      const fileType = file.name.split(".")[1];
+                                      console.log("fileType", fileType);
+                                      return (
+                                        <span key={index}>
+                                          <span
+                                            className={
+                                              ChatListingStyles.chatWindowClose
+                                            }
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              handleFileClose(file);
+                                            }}
+                                          ></span>
+
+                                          {fileType === "docx" && (
+                                            <>
+                                              <FiIconWord />
+                                              <div>{file.name}</div>
+                                            </>
+                                          )}
+                                          {fileType === "doc" && (
+                                            <>
+                                              <FiIconWord />
+                                              <div>{file.name}</div>
+                                            </>
+                                          )}
+                                          {fileType === "txt" && (
+                                            <>
+                                              <FiIconWord />
+                                              <div>{file.name}</div>
+                                            </>
+                                          )}
+                                          {fileType === "pdf" && (
+                                            <>
+                                              <FiIconPDF />
+                                              <div>{file.name}</div>
+                                            </>
+                                          )}
+                                        </span>
+                                      );
+                                    })}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                    </span>
+
+                    {/* <span onChange={handleFileSelect}><FiFolderPlusSVG /></span> */}
+                  </div>
                   <span
-                    className={
-                      selectedDoc && ChatListingStyles.mediaOptionsActive
-                    }
-                  >
-                    <input
-                      type="file"
-                      id="fileInput1"
-                      style={{ display: "none" }}
-                      onChange={(e) => handleFileSelect(e, "doc")}
-                      accept=".doc, .docx, .pdf, .txt"
-                      multiple
-                    />
-                    <label htmlFor="fileInput1">
-                      <FiFolderPlusSVG />
-                    </label>
-                    {selectedDoc &&
-                      selectedFile !== null &&
-                      selectedFile.length > 0 && (
-                        <div
-                          className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.attachementPopup} `}
-                        >
-                          <div className={ChatListingStyles.chatPopupInner}>
-                            <div className={ChatListingStyles.popupContent}>
-                              <span>Attachments</span>
-                              <div className={ChatListingStyles.attachedMedia}>
-                                {selectedFile.length > 0 &&
-                                  selectedFile.map((file: any, index: any) => {
-                                    const fileType = file.name.split(".")[1];
-                                    console.log("fileType", fileType);
-                                    return (
-                                      <span key={index}>
-                                        <span
-                                          className={
-                                            ChatListingStyles.chatWindowClose
-                                          }
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleFileClose(file);
-                                          }}
-                                        ></span>
-
-                                        {fileType === "docx" && (
-                                          <>
-                                            <FiIconWord />
-                                            <div>{file.name}</div>
-                                          </>
-                                        )}
-                                        {fileType === "doc" && (
-                                          <>
-                                            <FiIconWord />
-                                            <div>{file.name}</div>
-                                          </>
-                                        )}
-                                        {fileType === "txt" && (
-                                          <>
-                                            <FiIconWord />
-                                            <div>{file.name}</div>
-                                          </>
-                                        )}
-                                        {fileType === "pdf" && (
-                                          <>
-                                            <FiIconPDF />
-                                            <div>{file.name}</div>
-                                          </>
-                                        )}
-                                      </span>
-                                    );
-                                  })}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                  </span>
-
-                  {/* <span onChange={handleFileSelect}><FiFolderPlusSVG /></span> */}
-                </div>
-                <span
-                  className={ChatListingStyles.mediaPlus}
-                  onClick={() => setSeeAttachment(false)}
-                ></span>
-              </span>
-            )}
-            {seeAttachment === false && (
-              <span className={ChatListingStyles.channelAddMedia}>
-                <span
-                  className={ChatListingStyles.mediaPlus}
-                  onClick={() => setSeeAttachment(true)}
-                ></span>
-              </span>
-            )}
-            <span
-              className={ChatListingStyles.channelSubmit}
-              onClick={(e: any) => sendMessage(e)}
-            >
-              <SendIcon />
-            </span>
-
-            {/* User mention popup Starts */}
-            {isTagged === true && (
-              <div
-                className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.userMentionPoup} `}
-                style={{
-                  display: "block",
-                }}
+                    className={ChatListingStyles.mediaPlus}
+                    onClick={() => setSeeAttachment(false)}
+                  ></span>
+                </span>
+              )}
+              {seeAttachment === false && (
+                <span className={ChatListingStyles.channelAddMedia}>
+                  <span
+                    className={ChatListingStyles.mediaPlus}
+                    onClick={() => setSeeAttachment(true)}
+                  ></span>
+                </span>
+              )}
+              <span
+                className={ChatListingStyles.channelSubmit}
+                onClick={(e: any) => sendMessage(e)}
               >
-                <div className={ChatListingStyles.chatPopupInner}>
-                  {mentionMembers?.map((value: any) => {
-                    return (
-                      <div className={ChatListingStyles.membersArea}>
-                        <div className={ChatListingStyles.membersAreaLeft}>
-                          <div
-                            className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
-                          >
-                            {userInitial(value?.userName)}
-                          </div>
-                          <div
-                            className={ChatListingStyles.profileName}
-                            onClick={() => {
-                              let tempInnerHTML =
-                                commentRef.current.innerHTML.split("@");
-                              let spanTag = `&nbsp;<span id=${value?.userEmpId} contentEditable="false" class=${ChatListingStyles.personTaggedValue}>
-                                ${value?.userName} </span>&nbsp;`;
-                              tempInnerHTML[tempInnerHTML.length - 1] = spanTag;
-                              commentRef.current.innerHTML =
-                                tempInnerHTML.join("");
-                              setIstagged(false);
-                            }}
-                          >
-                            {value?.userName}
-                          </div>
-                          <span
-                            className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
-                          >
-                            {value?.userDesignation}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+                <SendIcon />
+              </span>
 
-          </div>
+              {/* User mention popup Starts */}
+              {isTagged === true && (
+                <div
+                  className={` ${ChatListingStyles.chatPopup} ${ChatListingStyles.chatArrowBottom} ${ChatListingStyles.userMentionPoup} `}
+                  style={{
+                    display: "block",
+                  }}
+                >
+                  <div className={ChatListingStyles.chatPopupInner}>
+                    {mentionMembers?.map((value: any) => {
+                      return (
+                        <div className={ChatListingStyles.membersArea}>
+                          <div className={ChatListingStyles.membersAreaLeft}>
+                            <div
+                              className={` ${ChatListingStyles.circleAvtar} ${ChatListingStyles.blueThumb} `}
+                            >
+                              {userInitial(value?.userName)}
+                            </div>
+                            <div
+                              className={ChatListingStyles.profileName}
+                              onClick={() => {
+                                let tempInnerHTML =
+                                  commentRef.current.innerHTML.split("@");
+                                let spanTag = `&nbsp;<span id=${value?.userEmpId} contentEditable="false" class=${ChatListingStyles.personTaggedValue}>
+                     ${value?.userName} </span>&nbsp;`;
+                                tempInnerHTML[tempInnerHTML.length - 1] = spanTag;
+                                commentRef.current.innerHTML =
+                                  tempInnerHTML.join("");
+                                setIstagged(false);
+                              }}
+                            >
+                              {value?.userName}
+                            </div>
+                            <span
+                              className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.sales} `}
+                            >
+                              {value?.userDesignation}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
+
         </div>
       )}
     </>

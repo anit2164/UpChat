@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ChannelLibraryStyles from "./ChannelLibrary.module.css";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import FiIconPDF from "../../assets/svg/FiIconPDF.svg";
-import FiVideoSVG from "../../assets/svg/FiVideoSVG.svg";
-import FiCopySVG from "../../assets/svg/FiCopySVG.svg";
-import FiIconWord from "../../assets/svg/FiIconWord.svg";
-import FiLinkSVG from "../../assets/svg/FiLinkSVG.svg";
-import FiExternalLinkSVG from "../../assets/svg/FiExternalLinkSVG.svg";
+import FiIconPDF from "../../assets/svg/fiIconPDF.svg";
+import FiCopySVG from "../../assets/svg/fiCopy.svg";
+import FiIconWord from "../../assets/svg/fiIconWord.svg";
+import FiLinkSVG from "../../assets/svg/fiLink.svg";
+import FiExternalLinkSVG from "../../assets/svg/fiExternalLink.svg";
 import FiDownloadSVG from "../../assets/svg/fiDownload.svg";
 import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
