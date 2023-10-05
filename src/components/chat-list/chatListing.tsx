@@ -1137,11 +1137,11 @@ const ChatListing = ({
                       ) : item?.isNotes === true && item?.isActivity === true ? (
                         <div className={ChatListingStyles.channelMessageWrapper}>
                           <div
-                            className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMain} ${ChatListingStyles.lightGreyBg} `}
+                            className={` ${ChatListingStyles.channelMessageMain} ${ChatListingStyles.systemGeneratedMainNotes} ${ChatListingStyles.lightGreyBg} `}
 
                           >
                             <div
-                              className={ChatListingStyles.systemGeneratedHeader}
+                              className={ChatListingStyles.systemGeneratedHeaderNotes}
                             >
                               <span>Note By: {item.senderName}</span>
                               <span

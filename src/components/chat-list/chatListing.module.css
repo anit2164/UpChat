@@ -665,13 +665,37 @@
   flex-direction: column;
   justify-content: center;
 
-  border: 1px solid #dae9e4;
+  border: 1px solid var(--color-sunlight);
   background: #fff;
   border-radius: 8px;
   margin-bottom: 24px;
   padding-bottom: 0;
 }
 .systemGeneratedHeader {
+  display: flex;
+  justify-content: space-between;
+
+  background: var(--color-sunlight);
+  border-radius: 8px;
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #000000;
+}
+.systemGeneratedMainNotes {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  border: 1px solid #dae9e4;
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  padding-bottom: 0;
+}
+.systemGeneratedHeaderNotes {
   display: flex;
   justify-content: space-between;
 
