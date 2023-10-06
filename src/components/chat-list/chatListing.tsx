@@ -1938,6 +1938,7 @@ const ChatListing = ({
 
                     <span
                       className={
+                        // selectedImage && ChatListingStyles.mediaOptionsActive
                         selectedImage ? ChatListingStyles.mediaOptionsActive : ""
                       }
                     >
@@ -2008,11 +2009,11 @@ const ChatListing = ({
                                             </div>
                                           )}
                                           {/* {fileType === "application" && (
-                               <>
-                                 <FiIconPDF />
-                                 <div>{file.name}</div>
-                               </>
-                             )} */}
+                                  <>
+                                    <FiIconPDF />
+                                    <div>{file.name}</div>
+                                  </>
+                                )} */}
                                         </span>
                                       );
                                     })}

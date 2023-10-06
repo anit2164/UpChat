@@ -1670,6 +1670,15 @@
   cursor: pointer;
 }
 
+.mediaOptions > span > span {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
 .mediaOptions > span label {
   font-size: 0px;
 }
