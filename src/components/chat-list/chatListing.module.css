@@ -688,9 +688,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-
   border: 1px solid #dae9e4;
-  background: #fff;
+  background: #ede8e8;
   border-radius: 8px;
   margin-bottom: 24px;
   padding-bottom: 0;
@@ -698,7 +697,6 @@
 .systemGeneratedHeaderNotes {
   display: flex;
   justify-content: space-between;
-
   background: #dae9e4;
   border-radius: 8px;
   text-align: left;
