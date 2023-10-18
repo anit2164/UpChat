@@ -471,25 +471,83 @@ const UpTabs = () => {
     }
   };
 
-  useEffect(() => {
-    fetchdata();
-  }, [search]);
+  // useEffect(() => {
+  //   fetchdata();
+  // }, [search]);
+
+  const getUnpinSearchData = async (tempArr: any, callback: any) => {
+    try {
+      const collectionRef = firestore.collection("channels");
+      if (tempArr?.length > 0) {
+        let getAllUnpindata = new Set();
+
+        await Promise.all(
+          tempArr.map(async (item: any) => {
+            const querySnapshot = await collectionRef
+              .where("enc_channelID", "==", item)
+              .limit(dataPerPage)
+              .get();
+
+            const mergedResults = querySnapshot.docs.map((doc) => doc.data());
+            mergedResults.forEach((result) => {
+              getAllUnpindata.add(result);
+            });
+          })
+        );
+        const resultArray = Array.from(getAllUnpindata);
+
+        if (callback) {
+          callback(resultArray);
+        }
+
+        return resultArray;
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getUnPinChannelSearchData = (callback: any) => {
+    const loginUserId = localStorage.getItem("EmployeeID");
+    const unsubscribe = firestore
+      .collectionGroup(`user`)
+      .where("userEmpId", "==", loginUserId)
+      .limit(limits.pageSize)
+      .onSnapshot((snapshot) => {
+        let tempArrUnPin: any = [];
+        snapshot.forEach((doc) => {
+          const user = doc.data();
+          if (!user.isPinned) {
+            tempArrUnPin.push(user?.channelID.toString());
+          }
+          if (tempArrUnPin.length > 0) {
+            getUnpinSearchData(tempArrUnPin, callback);
+          }
+        });
+      });
+    return () => unsubscribe();
+  };
 
   useEffect(() => {
     if (search) {
-      let filteredData = tempArr?.filter((item: any) => {
-        return (
-          item?.role?.toLowerCase()?.includes(search?.toLowerCase()) ||
-          item?.companyName.toLowerCase().includes(search?.toLowerCase()) ||
-          item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase())
-        );
+      getUnPinChannelSearchData((getData: any) => {
+        let filteredUnpinData = getData?.filter((item: any) => {
+          return (
+            item?.role?.toLowerCase()?.includes(search?.toLowerCase()) ||
+            item?.companyName.toLowerCase().includes(search?.toLowerCase()) ||
+            item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase()) ||
+            item?.hrStatus?.toLowerCase()?.includes(search?.toLowerCase())
+          );
+        });
+
+        setAllChannel(filteredUnpinData);
       });
-      setAllChannel(filteredData);
       // setDataFalse(filteredData);
     } else {
       setAllChannel(tempArr);
     }
   }, [search]);
+
 
   useEffect(() => {
     if (search) {
@@ -497,7 +555,8 @@ const UpTabs = () => {
         return (
           item?.role?.toLowerCase()?.includes(search?.toLowerCase()) ||
           item?.companyName.toLowerCase().includes(search?.toLowerCase()) ||
-          item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase())
+          item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase()) ||
+          item?.hrStatus?.toLowerCase()?.includes(search?.toLowerCase())
         );
       });
       // setData(filteredData);
