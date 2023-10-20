@@ -1256,9 +1256,16 @@ const ChatListing = ({
                                 className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageRight} `}
                               >
                                 <div className={ChatListingStyles.quotedMessage}>
-                                  <p>
-                                    {ReplyMessage(item?.enc_chatID)?.[0]?.Replied}
-                                  </p>
+                                  <p
+                                    dangerouslySetInnerHTML={{
+                                      __html: sanitizer(
+                                        displayNotes(
+                                          ReplyMessage(item?.enc_chatID)?.[0]
+                                            ?.Replied
+                                        ).innerHTML
+                                      ),
+                                    }}
+                                  ></p>
                                   <div
                                     className={ChatListingStyles.quotedMessageChild}
                                   >
@@ -1267,7 +1274,13 @@ const ChatListing = ({
                                     <span>Today at 12:31PM</span>
                                   </div>
                                 </div>
-                                <p>{item?.text}</p>
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: sanitizer(
+                                      displayNotes(item?.text).innerHTML
+                                    ),
+                                  }}
+                                ></span>
                                 <div className={ChatListingStyles.chatReaction}>
                                   <div
                                     className={ChatListingStyles.chatReactionInner}
