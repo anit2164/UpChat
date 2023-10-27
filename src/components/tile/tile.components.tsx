@@ -396,10 +396,10 @@ const Tile = ({
   };
 
   useEffect(() => {
-    const color = "color";
-    for (let i = 0; i < data.length; i++) {
-      data[i][color] = getRandomColor();
-    }
+    // const color = "color";
+    // for (let i = 0; i < data.length; i++) {
+    //   data[i][color] = getRandomColor();
+    // }
     setUpdateData(data);
     setTempArr(data);
   }, [data]);
@@ -602,7 +602,11 @@ const Tile = ({
                 onClick={() => showChatList(item)}
               >
                 <div
-                  className={` ${TileStyle.chatInitialThumb} ${item?.color} `}
+                  className={` ${TileStyle.chatInitialThumb} `}
+                  style={{
+                    background: item.backGroudColor,
+                    color: item.fontColor,
+                  }}
                 >
                   {item?.companyInitial}
                 </div>

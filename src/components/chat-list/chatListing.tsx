@@ -931,7 +931,8 @@ const ChatListing = ({
               <div className={ChatListingStyles.channelWindowHeader}>
                 <div className={ChatListingStyles.channelHeaderLeft}>
                   <div
-                    className={` ${ChatListingStyles.chatInitialThumb} ${ChatListingStyles.blueThumb} `}
+                    className={` ${ChatListingStyles.chatInitialThumb}`}
+                    style={{ background: allChannelItem?.backGroudColor, color: allChannelItem?.fontColor }}
                   >
                     {allChannelItem?.companyInitial}
                   </div>

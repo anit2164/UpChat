@@ -161,10 +161,6 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
     },
   ];
   useEffect(() => {
-    const color = "color";
-    for (let i = 0; i < dataFalse.length; i++) {
-      dataFalse[i][color] = getRandomColor();
-    }
     setUpdateData(dataFalse);
   }, [dataFalse]);
 
@@ -479,7 +475,11 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
                 onClick={() => pinnedChatsDetails(item)}
               >
                 <div
-                  className={` ${PinChatDetailsStyle.chatInitialThumb} ${item?.color} `}
+                  className={` ${PinChatDetailsStyle.chatInitialThumb}`}
+                  style={{
+                    background: item.backGroudColor,
+                    color: item.fontColor,
+                  }}
                 >
                   {item?.companyInitial}
                 </div>

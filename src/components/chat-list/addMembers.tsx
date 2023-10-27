@@ -80,24 +80,25 @@ const AddMembers = ({
       ];
 
       if (filterData?.length > 0 && filteredDataInfo) {
-        const result = array1
-          .filter(
-            (object1: any) =>
-              !array2.some(
-                (object2: any) => object1.userEmpId === object2.userEmpId
-              )
-          )
-          .map((item: any) =>
-            properties.reduce((newObject: any, name: any) => {
-              newObject[name] = item[name];
-              return newObject;
-            }, {})
-          );
-        let addMemberColor: any = result?.map((val: any) => {
-          return { ...val, color: getRandomColor() };
+        const result = array1.filter(
+          (object1: any) =>
+            !array2.some((object2: any) => object1.userEmpId === object2.userEmpId)
+        );
+
+        const sortedUsers = result.slice().sort((a: any, b: any) => {
+          const nameA = a.userName.toUpperCase().trim();
+          const nameB = b.userName.toUpperCase().trim();
+
+          if (nameA < nameB) {
+            return -1;
+          }
+          if (nameA > nameB) {
+            return 1;
+          }
+          return 0;
         });
-        setListData(addMemberColor);
-        setSortedData(addMemberColor);
+        setListData(sortedUsers);
+        setSortedData(sortedUsers);
       }
     }
   }, [filteredDataInfo]);
@@ -137,17 +138,50 @@ const AddMembers = ({
     }
   };
 
+  const getRandomColor = () => {
+    const colors = [
+      {
+        backgroundColor: "#bee2ff",
+        fontColor: "#3678b1",
+      },
+      {
+        backgroundColor: "#fceae6",
+        fontColor: "#cc4d4d",
+      },
+      {
+        backgroundColor: "rgba(69, 255, 83, 0.2)",
+        fontColor: " #006c1a",
+      },
+      {
+        backgroundColor: "#f7f4bf",
+        fontColor: "#8b851a",
+      },
+      {
+        backgroundColor: "#ffd1b2",
+        fontColor: "#ef6000",
+      },
+      {
+        backgroundColor: "#bff6ff",
+        fontColor: "#0095ad",
+      },
+    ];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
   let tempArr: any = [];
 
   for (let index = 0; index < showUserName.length; index++) {
     let tempObj = {
       userName: "",
       userEmpID: "",
+      backGroudColor: "",
+      fontColor: ""
     };
-
-    const element = showUserName[index];
-    (tempObj.userName = element?.userName),
-      (tempObj.userEmpID = element?.userEmpId);
+    const element = showUserName?.[index];
+    tempObj.userName = element?.userName;
+    tempObj.userEmpID = element?.userEmpId;
+    tempObj.backGroudColor = getRandomColor().backgroundColor;
+    tempObj.fontColor = getRandomColor().fontColor;
     tempArr.push(tempObj);
   }
   // API Call For Add Members
@@ -200,18 +234,7 @@ const AddMembers = ({
     addMemberAPI();
   };
 
-  const getRandomColor = () => {
-    const colors = [
-      ChatListingStyles.blueThumb,
-      ChatListingStyles.darkRedThumb,
-      ChatListingStyles.greenThumb,
-      ChatListingStyles.yellowThumb,
-      ChatListingStyles.orangeThumb,
-      ChatListingStyles.skyBlueThumb,
-    ];
-    const randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
-  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -276,10 +299,13 @@ const AddMembers = ({
                 <div className={ChatListingStyles.membersArea}>
                   <div className={ChatListingStyles.membersAreaLeft}>
                     <span
-                      className={` ${
-                        ChatListingStyles.circle
-                      } ${getRandomColor()} `}
-                      // style={{ backgroundColor: getRandomColor() }}
+                      className={` ${ChatListingStyles.circle
+                        }  `}
+                      style={{
+                        backgroundColor: item.backGroudColor,
+                        color: item.fontColor,
+                      }}
+                    // style={{ backgroundColor: getRandomColor() }}
                     >
                       {item?.userInitial}
                     </span>

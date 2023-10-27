@@ -183,18 +183,28 @@ const MemberListing = (allChannelItem: any) => {
                           /> */}
                           <span
                             className={` ${ChatListingStyles.circle
-                              } ${getRandomColor()} `}
+                              }`}
+                            style={{
+                              background: item?.backGroudColor,
+                              color: item?.fontColor,
+                            }}
                           >
                             {userInitial(item?.userName)}
                           </span>
                           <div className={ChatListingStyles.profileName}>
                             {item?.userName}
                           </div>
-                          <span
-                            className={` ${ChatListingStyles.profileDesignation} ${ChatListingStyles.coeteam} `}
-                          >
-                            {item?.userDesignation}
-                          </span>
+                          {item?.userDesignation && (
+                            <span
+                              className={` ${ChatListingStyles.profileDesignation}`}
+                              style={{
+                                background: item?.backGroudColor,
+                                color: item?.fontColor,
+                              }}
+                            >
+                              {item?.userDesignation}
+                            </span>
+                          )}
                         </div>
                         <span
                           className={ChatListingStyles.removeLink}
