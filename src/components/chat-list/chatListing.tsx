@@ -56,6 +56,7 @@ import ShowMoreText from "react-show-more-text";
 import DOMPurify from "dompurify";
 import { limits } from "../../constants/constantLimit";
 import ReactPlayer from 'react-player';
+import BookmarkIconSVG from "../../assets/svg/bookmarkIcon.svg";
 
 // firebase.initializeApp(firebaseConfig);
 
@@ -113,6 +114,8 @@ const ChatListing = ({
   const [seeAttachment, setSeeAttachment] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [showBookMark, setShowBookMark] = useState<any>(false);
+  const [showBookmarksData, setshowBookmarksData] = useState<any>([]);
 
   const [selectedDoc, setSelectDoc] = useState<any>(false);
   const bottomToTopRef: any = useRef(null);
@@ -188,11 +191,11 @@ const ChatListing = ({
       key: ChannelMenu.COPY,
       icon: <FiCopySVG width="16" />,
     },
-    // {
-    //   label: ChannelMenu.BOOKMARKS,
-    //   key: ChannelMenu.BOOKMARKS,
-    //   icon: <FiBookmarkOutlinedSVG />,
-    // },
+    {
+      label: ChannelMenu.BOOKMARKS,
+      key: ChannelMenu.BOOKMARKS,
+      icon: <FiBookmarkOutlinedSVG />,
+    },
   ];
 
   const scrollToBottom = () => {
@@ -816,7 +819,70 @@ const ChatListing = ({
       setReplyMessageSection(true);
       setReplyMessage(item);
     }
+    if (value.key === ChannelMenu.BOOKMARKS) {
+      console.log("itemitems", item);
+      const userChatsQuery = firestore
+        .collection("ChannelChatsMapping")
+        .doc(allChannelItem?.enc_channelID)
+        .collection("chats")
+        .doc(item.enc_chatID)
+        .collection("user_chats")
+        .where("userEmpID", "==", loginUserId);
+      userChatsQuery
+        .get()
+        .then((querySnapshot: any) => {
+          // Process the data returned by the query
+          querySnapshot.forEach((doc: any) => {
+            const data = doc.data();
+            const updatedData = {
+              ...data,
+              IsBookMark: true,
+              enc_chatID: item.enc_chatID,
+            };
+            doc.ref
+              .update(updatedData)
+              .then(() => {
+                setShowBookMark(updatedData);
+                console.log("User Chat Data updated:", updatedData);
+              })
+              .catch((error: any) => {
+                console.error("Error updating user chat data:", error);
+              });
+
+            // userChat.push(data);
+            // Handle the data here
+          });
+        })
+        .catch((error: any) => {
+          console.error("Error getting user chats:", error);
+        });
+    }
   };
+
+  useEffect(() => {
+    if (allChannelItem?.enc_channelID) {
+      const userChatsQuery = firestore
+        .collectionGroup("user_chats")
+        .where("IsBookMark", "==", true)
+        .where("enc_channelID", "==", allChannelItem?.enc_channelID)
+        .where("userEmpID", "==", loginUserId);
+      userChatsQuery
+        .get()
+        .then((querySnapshot: any) => {
+          let uniqueChatIDs = new Set();
+          querySnapshot.forEach((doc: any) => {
+            const data = doc.data();
+            uniqueChatIDs.add(data.enc_chatID);
+          });
+          const uniqueChatIDsArray: any = Array.from(uniqueChatIDs);
+          setshowBookmarksData(uniqueChatIDsArray);
+        })
+        .catch((error: any) => {
+          console.error("Error getting user chats:", error);
+        });
+    }
+  }, [showBookMark, showChatList]);
+
 
   useEffect(() => {
     if (initializeApp === "true" || allChannelItem) {
@@ -1313,14 +1379,11 @@ const ChatListing = ({
                                   </Space>
                                 </a>
                               </Dropdown>
-
-                              {/* {showBookMark?.IsBookMark === true ? (
-                              <BookmarkIconSVG
-                                className={ChatListingStyles.bookmarkIcon}
-                              />
-                            ) : (
-                              ""
-                            )} */}
+                              {showBookmarksData?.includes(item.enc_chatID) && (
+                                <BookmarkIconSVG
+                                  className={ChatListingStyles.bookmarkIcon}
+                                />
+                              )}
                             </div>
                             <div className={ChatListingStyles.channelMessageBoxWrap}>
                               <div
@@ -1433,6 +1496,11 @@ const ChatListing = ({
                                   </Space>
                                 </a>
                               </Dropdown>
+                              {showBookmarksData?.includes(item.enc_chatID) && (
+                                <BookmarkIconSVG
+                                  className={ChatListingStyles.bookmarkIcon}
+                                />
+                              )}
                             </div>
                             <div
                               className={` ${ChatListingStyles.channelMessageBox} ${username === item?.senderName
