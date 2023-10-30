@@ -22,6 +22,7 @@ import FiFolderPlusSVG from "../../assets/svg/fiFolderPlus.svg";
 import SmileIcon from "../../assets/svg/fiSmile.svg";
 import FiImageSVG from "../../assets/svg/fiImage.svg";
 import ChannelLibrary from "../ChannelLibrary/ChannelLibrary";
+import FiIconPdf from "../../assets/svg/fiIconPDF.svg";
 
 import SmileIcon1 from "../../assets/svg/smileIcon-1.svg";
 import SmileIcon2 from "../../assets/svg/smileIcon-2.svg";
@@ -54,7 +55,7 @@ import axios from "axios";
 import ShowMoreText from "react-show-more-text";
 import DOMPurify from "dompurify";
 import { limits } from "../../constants/constantLimit";
-
+import ReactPlayer from 'react-player';
 
 // firebase.initializeApp(firebaseConfig);
 
@@ -324,29 +325,80 @@ const ChatListing = ({
     const files = e.target.files;
     const newSelectedFiles = [];
 
+
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const fileTypeOfFile = file.type;
+      const fileNameParts = file.name.split('.');
+      const fileExtension = fileNameParts[fileNameParts.length - 1].toLowerCase();
 
       if (fileTypeOfFile.startsWith("image/") && fileType === "image") {
+
+        const wordsForimage = [
+          "jpg",
+          "jpeg",
+          "png",
+          "gif",
+          "svg"
+        ];
         setSelectedImage(true);
         setSelectDoc(false);
-        newSelectedFiles.push(file);
+        if (wordsForimage.includes(fileExtension)) {
+          newSelectedFiles.push(file);
+        } else {
+          messageApi.open({
+            type: "error",
+            content: `${fileExtension} type of image not supported`,
+          });
+        }
       } else if (fileTypeOfFile.startsWith("video/") && fileType === "image") {
+        const wordsForvideo = ["mp4", "mov"];
+
         setSelectedImage(true);
         setSelectDoc(false);
-        newSelectedFiles.push(file);
+        if (wordsForvideo.includes(fileExtension)) {
+          newSelectedFiles.push(file);
+        } else {
+          messageApi.open({
+            type: "error",
+            content: `${fileExtension} type of video not supported `,
+          });
+        }
+
       } else if (
         fileType === "doc" &&
         fileTypeOfFile.startsWith("application/")
       ) {
+        const wordsForpdf = ["pdf"];
+        const wordsFordoc = ["doc", "docx", "xls", "xlsx", "csv"];
+
         setSelectedImage(false);
         setSelectDoc(true);
-        newSelectedFiles.push(file);
+        if (wordsForpdf.includes(fileExtension) || wordsFordoc.includes(fileExtension)) {
+          newSelectedFiles.push(file);
+        } else {
+          messageApi.open({
+            type: "error",
+            content: `${fileExtension} type of document not supported`,
+          });
+        }
+
+
       } else if (fileType === "doc" && fileTypeOfFile.startsWith("text/")) {
+        const wordsFortext = ["txt"];
         setSelectedImage(false);
         setSelectDoc(true);
-        newSelectedFiles.push(file);
+        if (wordsFortext.includes(fileExtension)) {
+          newSelectedFiles.push(file);
+        } else {
+          messageApi.open({
+            type: "error",
+            content: `${fileExtension} type of document not supported`,
+          });
+        }
+
+
       }
     }
 
@@ -367,36 +419,46 @@ const ChatListing = ({
       if (selectedFile.length > 0) {
         for (const file of selectedFile) {
           const currentDate = new Date().toISOString().split("T")[0];
+          const currentTime = new Date();
+          const hours = currentTime.getHours().toString().padStart(2, "0");
+          const minutes = currentTime.getMinutes().toString().padStart(2, "0");
+          const seconds = currentTime.getSeconds().toString().padStart(2, "0");
 
-          const filename = `${currentDate}-${file.name}`;
-          if (file.type === "video/mp4") {
+          const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+          const filename = `${currentDate}-${formattedTime}-${file.name}`;
+          const originalFilename = file.name;
+
+          if (file.type.toLowerCase().startsWith("video/")) {
             setUploading(true);
             const storageRef = storage.ref(
-              `videos/${allChannelItem.enc_channelID}`
+              `videos/${allChannelItem?.enc_channelID}`
             );
-            const fileRef = storageRef.child(filename);
+            const videoname = originalFilename.replace(/\.mov$/, ".mp4");
+            const videoFileName = `${currentDate}-${formattedTime}-${videoname}`;
+
+            const updatedBlob = new Blob([file], { type: "video/mp4" });
+            const fileRef = storageRef.child(videoFileName);
 
             try {
-              await fileRef.put(file);
+              await fileRef.put(updatedBlob);
               const downloadURL = await fileRef.getDownloadURL();
-              setUploadSuccess(true);
               UploadedFiles.push(downloadURL);
             } catch (error) {
               console.error("Error uploading file: ", error);
             } finally {
               setUploading(false);
             }
-          } else if (file.type === "image/png") {
+          } else if (file.type.toLowerCase().startsWith("image/")) {
             setUploading(true);
             const storageRef = storage.ref(
-              `images/${allChannelItem.enc_channelID}`
+              `images/${allChannelItem?.enc_channelID}`
             );
             const fileRef = storageRef.child(filename);
 
             try {
               await fileRef.put(file);
               const downloadURL = await fileRef.getDownloadURL();
-              setUploadSuccess(true);
               UploadedFiles.push(downloadURL);
             } catch (error) {
               console.error("Error uploading file: ", error);
@@ -406,14 +468,13 @@ const ChatListing = ({
           } else {
             setUploading(true);
             const storageRef = storage.ref(
-              `document/${allChannelItem.enc_channelID}`
+              `document/${allChannelItem?.enc_channelID}`
             );
             const fileRef = storageRef.child(filename);
 
             try {
               await fileRef.put(file);
               const downloadURL = await fileRef.getDownloadURL();
-              setUploadSuccess(true);
               UploadedFiles.push(downloadURL);
             } catch (error) {
               console.error("Error uploading file: ", error);
@@ -494,36 +555,46 @@ const ChatListing = ({
         if (selectedFile.length > 0) {
           for (const file of selectedFile) {
             const currentDate = new Date().toISOString().split("T")[0];
+            const currentTime = new Date();
+            const hours = currentTime.getHours().toString().padStart(2, "0");
+            const minutes = currentTime.getMinutes().toString().padStart(2, "0");
+            const seconds = currentTime.getSeconds().toString().padStart(2, "0");
 
-            const filename = `${currentDate}-${file.name}`;
-            if (file.type === "video/mp4") {
+            const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+            const filename = `${currentDate}-${formattedTime}-${file.name}`;
+            const originalFilename = file.name;
+
+            if (file.type.toLowerCase().startsWith("video/")) {
               setUploading(true);
               const storageRef = storage.ref(
-                `videos/${allChannelItem.enc_channelID}`
+                `videos/${allChannelItem?.enc_channelID}`
               );
-              const fileRef = storageRef.child(filename);
+              const videoname = originalFilename.replace(/\.mov$/, ".mp4");
+              const videoFileName = `${currentDate}-${formattedTime}-${videoname}`;
+
+              const updatedBlob = new Blob([file], { type: "video/mp4" });
+              const fileRef = storageRef.child(videoFileName);
 
               try {
-                await fileRef.put(file);
+                await fileRef.put(updatedBlob);
                 const downloadURL = await fileRef.getDownloadURL();
-                setUploadSuccess(true);
                 UploadedFiles.push(downloadURL);
               } catch (error) {
                 console.error("Error uploading file: ", error);
               } finally {
                 setUploading(false);
               }
-            } else if (file.type === "image/png") {
+            } else if (file.type.toLowerCase().startsWith("image/")) {
               setUploading(true);
               const storageRef = storage.ref(
-                `images/${allChannelItem.enc_channelID}`
+                `images/${allChannelItem?.enc_channelID}`
               );
               const fileRef = storageRef.child(filename);
 
               try {
                 await fileRef.put(file);
                 const downloadURL = await fileRef.getDownloadURL();
-                setUploadSuccess(true);
                 UploadedFiles.push(downloadURL);
               } catch (error) {
                 console.error("Error uploading file: ", error);
@@ -533,14 +604,13 @@ const ChatListing = ({
             } else {
               setUploading(true);
               const storageRef = storage.ref(
-                `document/${allChannelItem.enc_channelID}`
+                `document/${allChannelItem?.enc_channelID}`
               );
               const fileRef = storageRef.child(filename);
 
               try {
                 await fileRef.put(file);
                 const downloadURL = await fileRef.getDownloadURL();
-                setUploadSuccess(true);
                 UploadedFiles.push(downloadURL);
               } catch (error) {
                 console.error("Error uploading file: ", error);
@@ -1387,9 +1457,10 @@ const ChatListing = ({
                                   ChatListingStyles.imageItemInnerMsgBox
                                 }
                               >
-                                {item?.files &&
+                                {item?.files?.length > 0
+                                  ? item?.files &&
                                   item?.files?.length > 0 &&
-                                  item?.files?.map((fileitem: any) => {
+                                  item?.files?.map((fileitem: any, indexs: any) => {
                                     const containsAnyWord = (
                                       inputString: any,
                                       wordsToCheck: any
@@ -1406,16 +1477,24 @@ const ChatListing = ({
                                       "jpeg",
                                       "png",
                                       "gif",
+                                      "svg",
                                     ];
-                                    const wordsForvideo = ["mp4"];
+                                    const wordsForvideo = ["mp4", "mov"];
                                     const wordsForpdf = ["pdf"];
-                                    const wordsFordoc = ["doc", "docx"];
+                                    const wordsFordoc = [
+                                      "doc",
+                                      "docx",
+                                      "xls",
+                                      "xlsx",
+                                      "csv",
+                                    ];
                                     const wordsFortext = ["txt"];
                                     const extensionMatch =
                                       fileitem.match(/\.([^.]+)$/);
                                     const extension = extensionMatch
                                       ? extensionMatch[1]
                                       : null;
+
                                     const isImage = containsAnyWord(
                                       extension.toLowerCase(),
                                       wordsForimage
@@ -1440,8 +1519,6 @@ const ChatListing = ({
                                       const urlParts = url.split("/");
                                       const lastPart =
                                         urlParts[urlParts.length - 1];
-
-                                      // Handle any query parameters that might be present
                                       const filename = lastPart.split("?")[0];
 
                                       return filename;
@@ -1450,7 +1527,7 @@ const ChatListing = ({
                                       getFileNameFromUrl(fileitem);
 
                                     return (
-                                      <li>
+                                      <li key={indexs}>
                                         {isImage && (
                                           <>
                                             <a
@@ -1474,37 +1551,59 @@ const ChatListing = ({
                                         {isVideo && (
                                           <>
                                             <a
-                                              href={fileitem}
-                                              download={fileName}
+                                              // href={fileitem}
+                                              onClick={(e) => {
+                                                e.preventDefault(); // Prevent the default download behavior
+                                                window.open(
+                                                  fileitem,
+                                                  "_blank"
+                                                ); // Open the link in a new tab
+                                              }}
                                             >
-                                              <video
-                                                controls
-                                              >
-                                                <source
-                                                  src={fileitem}
-                                                  type="video/mp4"
-                                                />
-                                                Your browser does not support
-                                                the video tag.
-                                              </video>
+                                              {/* <video>
+                                              <source
+                                                src={fileitem}
+                                                type="video/mp4"
+                                              />
+                                              Your browser does not support
+                                              the video tag.
+                                            </video> */}
+                                              <ReactPlayer
+                                                url={fileitem}
+                                                width="100%"
+                                                height="100%"
+                                              />
                                             </a>
                                           </>
                                         )}
                                         {isPdf && (
                                           <>
                                             <a
-                                              href={fileitem}
+                                              // href={fileitem}
+
+                                              onClick={() =>
+                                                window.open(
+                                                  fileitem,
+                                                  "_blank"
+                                                )
+                                              }
                                               download={fileName}
                                               title={fileName}
                                             >
-                                              <FiIconPDF />
+                                              <FiIconPdf />
                                             </a>
                                           </>
                                         )}
                                         {isDoc && (
                                           <>
                                             <a
-                                              href={fileitem}
+                                              // href={fileitem}
+                                              onClick={() =>
+                                                window.open(
+                                                  fileitem,
+                                                  "_blank"
+                                                )
+                                              }
                                               download={fileName}
                                               title={fileName}
                                             >
@@ -1519,7 +1618,13 @@ const ChatListing = ({
                                         {isText && (
                                           <>
                                             <a
-                                              href={fileitem}
+                                              onClick={() =>
+                                                window.open(
+                                                  fileitem,
+                                                  "_blank"
+                                                )
+                                              }
+                                              // href={fileitem}
                                               download={fileName}
                                               title={fileName}
                                             >
@@ -1533,7 +1638,8 @@ const ChatListing = ({
                                         )}
                                       </li>
                                     );
-                                  })}
+                                  })
+                                  : ""}
                               </ul>
                               {/* <p
                               dangerouslySetInnerHTML={{
@@ -2053,7 +2159,7 @@ const ChatListing = ({
                           id="fileInput1"
                           style={{ display: "none" }}
                           onChange={(e) => handleFileSelect(e, "doc")}
-                          accept=".doc, .docx, .pdf, .txt"
+                          accept=".doc, .docx, .pdf, .txt, .XLS, .XLSX, .csv"
                           multiple
                         />
                         <label htmlFor="fileInput1">
@@ -2089,6 +2195,28 @@ const ChatListing = ({
                                           {fileType === "docx" && (
                                             <>
                                               <FiIconWord />
+                                              <div>{file.name}</div>
+                                            </>
+                                          )}
+                                          {fileType === "xls" && (
+                                            <>
+                                              <FiIconWord />
+
+                                              <div>{file.name}</div>
+                                            </>
+
+                                          )}
+                                          {fileType === "xlsx" && (
+                                            <>
+                                              <FiIconWord />
+
+                                              <div>{file.name}</div>
+                                            </>
+                                          )}
+                                          {fileType === "csv" && (
+                                            <>
+                                              <FiIconWord />
+
                                               <div>{file.name}</div>
                                             </>
                                           )}

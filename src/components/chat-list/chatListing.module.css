@@ -614,7 +614,11 @@
   max-height: 56px;
   border-radius: 4px;
 }
-
+.attachedMedia video {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 4px;
+}
 /* Message Reaction */
 .messageReactionWrapper {
   display: flex;
