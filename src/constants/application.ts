@@ -10,5 +10,6 @@ export class ChannelMenu {
   static SEARCH_IN_CHAT = "Search in chat";
   static REPLY = "Reply";
   static COPY = "Copy";
+  static REMOVE_BOOKMARK = "Remove Bookmark";
 }
 Object.freeze(ChannelMenu);
