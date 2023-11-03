@@ -1698,3 +1698,7 @@
   opacity: 1;
 }
 /* */
+
+.bookmarkWindowWrap {
+  height: 555px;
+}

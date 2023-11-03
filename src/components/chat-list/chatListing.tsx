@@ -57,6 +57,7 @@ import DOMPurify from "dompurify";
 import { limits } from "../../constants/constantLimit";
 import ReactPlayer from 'react-player';
 import BookmarkIconSVG from "../../assets/svg/bookmarkIcon.svg";
+import BookMarkMessage from "../BookMarkMessage/BookMarkMessage";
 
 // firebase.initializeApp(firebaseConfig);
 
@@ -116,6 +117,7 @@ const ChatListing = ({
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [showBookMark, setShowBookMark] = useState<any>(false);
   const [showBookmarksData, setshowBookmarksData] = useState<any>([]);
+  const [bookMarkMessage, setBookMarkMessage] = useState(false);
 
   const [selectedDoc, setSelectDoc] = useState<any>(false);
   const bottomToTopRef: any = useRef(null);
@@ -155,11 +157,11 @@ const ChatListing = ({
       key: ChannelMenu.SEARCH_IN_CHAT,
       icon: <SearchIcon />,
     },
-    // {
-    //   label: ChannelMenu.BOOKMARKS,
-    //   key: ChannelMenu.BOOKMARKS,
-    //   icon: <FiBookmarkOutlinedSVG width="12" />,
-    // },
+    {
+      label: ChannelMenu.BOOKMARKS,
+      key: ChannelMenu.BOOKMARKS,
+      icon: <BookmarkIconDark width="12" />,
+    },
     {
       label: ChannelMenu.CHANNEL_LIBRARY,
       key: ChannelMenu.CHANNEL_LIBRARY,
@@ -195,6 +197,19 @@ const ChatListing = ({
       label: ChannelMenu.BOOKMARKS,
       key: ChannelMenu.BOOKMARKS,
       icon: <FiBookmarkOutlinedSVG />,
+    },
+  ];
+
+  const chatDropdownNoBookMark = [
+    {
+      label: ChannelMenu.REPLY,
+      key: ChannelMenu.REPLY,
+      icon: <FiReplySVG width="16" />,
+    },
+    {
+      label: ChannelMenu.COPY,
+      key: ChannelMenu.COPY,
+      icon: <FiCopySVG width="16" />,
     },
   ];
 
@@ -773,9 +788,21 @@ const ChatListing = ({
     }
     if (value.key === ChannelMenu.CHANNEL_LIBRARY) {
       setChannelLibrary(true);
+      setBookMarkMessage(false);
       setenc_channelID(allChannelItem?.enc_channelID);
     }
+    if (value.key === ChannelMenu.BOOKMARKS) {
+      setBookMarkMessage(true);
+      setChannelLibrary(false);
+    }
   };
+
+  useEffect(() => {
+    if (showChatList) {
+      setChannelLibrary(false);
+      setBookMarkMessage(false);
+    }
+  }, [showChatList]);
 
   const GFG_Fun1 = (time: any) => {
     var utcSeconds = time;
@@ -890,8 +917,8 @@ const ChatListing = ({
         const firestore = firebase.firestore();
         const unsubscribe = firestore
           .collection(`ChannelUserMapping/${allChannelItem?.enc_channelID}/user`)
-          .onSnapshot((snapshot) => {
-            const userData: any = snapshot.docs.map((doc) => ({
+          .onSnapshot((snapshot:any) => {
+            const userData: any = snapshot.docs.map((doc:any) => ({
               id: doc.id,
               ...doc.data(),
             }));
@@ -1157,10 +1184,14 @@ const ChatListing = ({
               </div>
               <MemberListing allChannelItem={allChannelItem} />
             </>)}
-          <div
-            className={`${channelLibrary === true &&
-              ChatListingStyles.channelLibraryScrollWrapper
-              } ${ChatListingStyles.channelWindowInner}`}
+            <div
+            className={`${
+              channelLibrary === true
+                ? ChatListingStyles.channelLibraryScrollWrapper
+                : bookMarkMessage === true
+                ? ChatListingStyles.bookmarkWindowWrap
+                : ChatListingStyles.channelWindowInner
+            } `}
             ref={arrawScroll}
             onScroll={handleScroll}
           >
@@ -1202,6 +1233,11 @@ const ChatListing = ({
                 </span> */}
             {channelLibrary === true ? (
               <ChannelLibrary enc_channelID={enc_channelID} />
+            ) : bookMarkMessage === true ? (
+              <BookMarkMessage
+                setBookMarkMessage={setBookMarkMessage}
+                enc_channelID={allChannelItem?.enc_channelID}
+              />
             ) : (
               <div
                 className={ChatListingStyles.channelWindowMessages}
@@ -1364,7 +1400,7 @@ const ChatListing = ({
                                 className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
                                 placement="bottomRight"
                                 menu={{
-                                  items: chatDropdown,
+                                  items: showBookmarksData?.includes(item.enc_chatID) === true? chatDropdownNoBookMark: chatDropdown,
                                   onClick: (value) => {
                                     chatListDropdownInChat(value, item);
                                   },
@@ -1478,7 +1514,7 @@ const ChatListing = ({
                                 className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
                                 placement="bottomRight"
                                 menu={{
-                                  items: chatDropdown,
+                                  items: showBookmarksData?.includes(item.enc_chatID) === true? chatDropdownNoBookMark: chatDropdown,
                                   onClick: (value) => {
                                     chatListDropdownInChat(
                                       value,
@@ -2058,7 +2094,7 @@ const ChatListing = ({
               </div>
             )}
           </div>
-          {channelLibrary === false && (
+          {channelLibrary === false && bookMarkMessage === false &&(
             <div className={ChatListingStyles.channelWindowFooter}>
               <div className={ChatListingStyles.channelTextWrapper}>
                 {/* <input

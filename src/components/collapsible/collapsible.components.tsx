@@ -22,14 +22,14 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
   }
   useEffect(() => {
 
-    if (initializeApp === "true") {
+    // if (initializeApp === "true") {
       let tempArr: any = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
         .where("userEmpId", "==", loginUserId)
         .limit(limits.pageSize)
-        .onSnapshot((snapshot) => {
-          snapshot.forEach((doc) => {
+        .onSnapshot((snapshot:any) => {
+          snapshot.forEach((doc:any) => {
             const user = doc.data();
             tempArr.push(user?.channelID.toString());
             tempInfoData(user?.channelID.toString());
@@ -38,7 +38,7 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
           getData(tempArr);
         });
       return () => unsubscribe();
-    }
+    // }
   }, [showUpChat]);
   const readCountFunc = (tempCountData: any) => {
     let result: any = [];
