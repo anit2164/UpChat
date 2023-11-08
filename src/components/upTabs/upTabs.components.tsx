@@ -383,6 +383,7 @@ const UpTabs = () => {
         // Update the state with the fetched data
         // setAllChannel(mergedResults);
         setAllChannel([...allChannel, ...mergedResults]);
+        setTempArr([...allChannel, ...mergedResults]);
 
         setTempArr(mergedResults);
         setPinnedChannel(false);

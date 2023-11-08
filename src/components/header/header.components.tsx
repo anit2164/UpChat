@@ -65,57 +65,84 @@ const Header = ({ setToggle, showUpChat, setShowUpChat }: any) => {
   };
 
   const getData: any = (tempArr: any) => {
+    // const collectionRef = firestore.collection("channels");
+    // if (tempArr?.length > 0) {
+    //   const batch = tempArr.splice(0, 30);
+    //   collectionRef
+    //     .where("enc_channelID", "in", batch)
+    //     .limit(limits.pageSize)
+    //     .onSnapshot((querySnapshot: any) => {
+    //       const mergedResults: any = [];
+    //       querySnapshot.forEach((doc: any) => {
+    //         const channelData = doc.data();
+    //         channelData.unreadCount =
+    //           unreadCounts[channelData.enc_channelID] || 0;
+    //         mergedResults.push(channelData);
+    //       });
+
+    //       setData(mergedResults);
+    //     });
+    // }
     const collectionRef = firestore.collection("channels");
     if (tempArr?.length > 0) {
-      const batch = tempArr.splice(0, 30);
-      collectionRef
-        .where("enc_channelID", "in", batch)
-        .limit(limits.pageSize)
-        .onSnapshot((querySnapshot: any) => {
-          const mergedResults: any = [];
-          querySnapshot.forEach((doc: any) => {
-            const channelData = doc.data();
-            channelData.unreadCount =
-              unreadCounts[channelData.enc_channelID] || 0;
-            mergedResults.push(channelData);
-          });
+        const batch = tempArr.splice(0, 30);
+        collectionRef
+            .where("enc_channelID", "in", batch)
+            .limit(limits.pageSize)
+            .onSnapshot((querySnapshot:any) => {
 
-          setData(mergedResults);
-        });
+                const mergedResults:any = [];
+                querySnapshot.forEach((doc:any) => {
+                    const channelData = doc.data();
+                    channelData.unreadCount = unreadCounts[channelData.enc_channelID] || 0;
+                    mergedResults.push(channelData);
+                });
+                setData(mergedResults);
+            });
     }
   };
+  // useEffect(() => {
+  //   let result: any = [];
+
+  //   data?.map((item: any) => {
+  //     const data2: any = readCountTrue.find(
+  //       (temp: any) => item.enc_channelID === temp.enc_ChannelIDCount
+  //     );
+
+  //     setTimeout(() => {
+  //       if (data2) {
+  //         item.readCount = data2.readCount;
+  //       }
+  //       result.push(item);
+  //     });
+  //   }, 500);
+  //   const scrollDown = localStorage.getItem("scrollDown");
+  //   if (scrollDown == "false" || scrollDown == "null") {
+
+  //     setTimeout(() => {
+  //       const totalReadCount = result.reduce(
+  //         (total: any, item: any) => total + item.readCount,
+  //         0
+  //       );
+
+  //       setCount(totalReadCount);
+  //     }, 600);
+  //   } else {
+  //     setCount(0);
+  //   }
+  //   // setUpdateData(result);
+  //   // setData(data);
+  // }, [data, readCountTrue, unreadCounts]);
+
   useEffect(() => {
-    let result: any = [];
+    let totalCount = 0;
 
-    data?.map((item: any) => {
-      const data2: any = readCountTrue.find(
-        (temp: any) => item.enc_channelID === temp.enc_ChannelIDCount
-      );
+    Object.entries(unreadCounts).map(([key, value]:any) => {
+        totalCount += value
+    })
+    setCount(totalCount)
 
-      setTimeout(() => {
-        if (data2) {
-          item.readCount = data2.readCount;
-        }
-        result.push(item);
-      });
-    }, 500);
-    const scrollDown = localStorage.getItem("scrollDown");
-    if (scrollDown == "false" || scrollDown == "null") {
-
-      setTimeout(() => {
-        const totalReadCount = result.reduce(
-          (total: any, item: any) => total + item.readCount,
-          0
-        );
-
-        setCount(totalReadCount);
-      }, 600);
-    } else {
-      setCount(0);
-    }
-    // setUpdateData(result);
-    // setData(data);
-  }, [data, readCountTrue, unreadCounts]);
+}, [data, readCountTrue, unreadCounts]);
 
   useEffect(() => {
     let tempArr: any = [];
