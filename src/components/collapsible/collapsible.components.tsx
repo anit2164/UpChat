@@ -42,7 +42,7 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
         });
       return () => unsubscribe();
     }
-  }, [showUpChat]);
+  }, [showUpChat,userExist]);
 
   useEffect(() => {
     const fetchData = async () => {
