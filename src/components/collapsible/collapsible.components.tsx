@@ -20,7 +20,7 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
   const initializeApp = localStorage.getItem("initializeApp");
   const[userExist,setUserExist] = useState<any>([]);
 
-  if (userExist === true) {
+  if (initializeApp === "true") {
     firebase.initializeApp(firebaseConfig);
   }
   useEffect(() => {
@@ -62,7 +62,7 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
     };
     fetchData();
   }, [])
-  
+
   const readCountFunc = (tempCountData: any) => {
     let result: any = [];
     const uniqueValues: string[] = Array.from(
