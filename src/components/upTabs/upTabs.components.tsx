@@ -23,7 +23,7 @@ firebase.initializeApp(firebaseConfig);
 const UpTabs = () => {
   const [search, setSearch] = useState("");
   const [allChannel, setAllChannel] = useState<any>([]);
-  const [tempArr, setTempArr] = useState([]);
+  const [tempArr, setTempArr] = useState<any>([]);
   const [pinData, setpinData] = useState([]);
   const [tempArrFalse, setTempArrFalse] = useState([]);
   const [updatePinnedChannel, setPinnedChannel] = useState(false);
@@ -385,7 +385,7 @@ const UpTabs = () => {
         setAllChannel([...allChannel, ...mergedResults]);
         setTempArr([...allChannel, ...mergedResults]);
 
-        setTempArr(mergedResults);
+        // setTempArr(mergedResults);
         setPinnedChannel(false);
         setSoonzeChannel(false);
       } else {
