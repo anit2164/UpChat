@@ -20,7 +20,7 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
   const initializeApp = localStorage.getItem("initializeApp");
   const[userExist,setUserExist] = useState<any>([]);
 
-  if (initializeApp === "true") {
+  if (userExist === true) {
     firebase.initializeApp(firebaseConfig);
   }
   useEffect(() => {
