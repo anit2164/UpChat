@@ -7,22 +7,25 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { limits } from "../../constants/constantLimit";
 // firebase.initializeApp(firebaseConfig);
+import axios from "axios";
 
 const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
   const firestore = firebase.firestore();
   const loginUserId = localStorage.getItem("EmployeeID");
+  const apiKey:any = localStorage.getItem("apiKey");
   const [showClass, setShowClass] = useState(true);
   const [readCountTrue, setReadCountTrue] = useState([]);
   const [count, setCount] = useState(0);
   const [data, setData] = useState([]);
   const initializeApp = localStorage.getItem("initializeApp");
+  const[userExist,setUserExist] = useState<any>([]);
 
-  if (initializeApp === "true") {
+  if (userExist === true) {
     firebase.initializeApp(firebaseConfig);
   }
   useEffect(() => {
 
-    // if (initializeApp === "true") {
+    if (userExist === true) {
       let tempArr: any = [];
       const unsubscribe = firestore
         .collectionGroup(`user`)
@@ -38,8 +41,28 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
           getData(tempArr);
         });
       return () => unsubscribe();
-    // }
+    }
   }, [showUpChat]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://3.218.6.134:9082/ViewAllHR/IsCurrentUserMapWithAnyChannel?UserEmpID=${loginUserId}`, {
+          headers: {
+            Authorization: JSON.parse(apiKey),
+            "X-API-KEY": "QXBpS2V5TWlkZGxld2FyZQ==",
+            "Content-Type": "application/json",
+          },
+        });
+        setUserExist(response?.data?.details)
+        // setData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [])
+  
   const readCountFunc = (tempCountData: any) => {
     let result: any = [];
     const uniqueValues: string[] = Array.from(
