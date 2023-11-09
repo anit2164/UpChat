@@ -36,11 +36,12 @@
 .toggleClose {
   /* justify-content: space-between; */
   background: rgb(220, 231, 237);
-  background: linear-gradient(
+  /* background: linear-gradient(
     90deg,
     rgba(220, 231, 237, 0.5) 0%,
     rgba(228, 138, 23, 0.5) 100%
-  );
+  ); */
+  background: #ffda31;
 }
 .toggleClose .unreadNum {
   min-width: 20px;
