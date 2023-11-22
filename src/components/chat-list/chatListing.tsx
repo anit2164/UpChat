@@ -1037,6 +1037,17 @@ const ChatListing = ({
   //   }
   // };
 
+  const handleReplyMessageClick = (originalMessageID:any) => {
+    const targetMessage = document.getElementById(
+      originalMessageID.reply_enc_ID
+    );
+    if (targetMessage) {
+      setTimeout(() => {
+        targetMessage.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  };
+
   return (
     <>
       {contextHolder}
@@ -1363,7 +1374,7 @@ const ChatListing = ({
                         </div>
                       ) : item?.reply_enc_ID ? (
                         ReplyMessage(item.reply_enc_ID)?.length > 0 && (
-                          <div className={ChatListingStyles.channelMessageMain}>
+                          <div className={ChatListingStyles.channelMessageMain} id={item.enc_chatID}>
                             <div
                               className={ChatListingStyles.channelMessageInner}
                             >
@@ -1423,7 +1434,7 @@ const ChatListing = ({
                             </div>
                             <div className={ChatListingStyles.channelMessageBoxWrap}>
                               <div
-                                className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageRight} `}
+                                className={` ${ChatListingStyles.channelMessageBox} ${ChatListingStyles.channelMessageRight} ` } onClick={() => handleReplyMessageClick(item)}
                               >
                                 <div className={ChatListingStyles.quotedMessage}>
                                   <p
@@ -1475,7 +1486,7 @@ const ChatListing = ({
 
                         )
                       ) : (
-                        <div className={ChatListingStyles.channelMessageWrapper}>
+                        <div className={ChatListingStyles.channelMessageWrapper} id={item.enc_chatID}>
                           <div
                             className={ChatListingStyles.channelMessageMain}
                             ref={bottomToTopRef}
