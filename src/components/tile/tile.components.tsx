@@ -140,6 +140,7 @@ const Tile = ({
         // Create a reference to the listener
         collectionRef
           .where("enc_channelID", "in", batch)
+          .where("isSnoozed","==",false)
           .limit(dataPerPage)
           .onSnapshot((querySnapshot) => {
             const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
@@ -520,6 +521,7 @@ const Tile = ({
             data.set(allChannelItem);
             const query = collectionRef
               .where("enc_channelID", "in", batch)
+              .where("isSnoozed","==",false)
               .limit(limits.pageSize)
               .get();
             queryPromises.push(query);

@@ -88,6 +88,7 @@ const Header = ({ setToggle, showUpChat, setShowUpChat }: any) => {
         const batch = tempArr.splice(0, 30);
         collectionRef
             .where("enc_channelID", "in", batch)
+            .where("isSnoozed","==",false)
             .limit(limits.pageSize)
             .onSnapshot((querySnapshot:any) => {
 

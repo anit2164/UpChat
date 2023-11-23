@@ -112,6 +112,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
       const batch = tempArr.splice(0, 30);
       const query = collectionRef
         .where("enc_channelID", "in", batch)
+        .where("isSnoozed","==",false)
         .limit(limits.pageSize)
         .onSnapshot((querySnapshot) => {
           const mergedResults: any = [];
@@ -416,6 +417,7 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
             data.set(pinnedChatsItem);
             const query = collectionRef
               .where("enc_channelID", "in", batch)
+              .where("isSnoozed","==",false)
               .limit(limits.pageSize)
               .get();
             queryPromises.push(query);

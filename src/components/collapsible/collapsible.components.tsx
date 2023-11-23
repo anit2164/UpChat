@@ -113,6 +113,7 @@ const Collapse = ({ setToggle, toggle, showUpChat, setShowUpChat }: any) => {
       const batch = tempArr.splice(0, 30);
       collectionRef
         .where("enc_channelID", "in", batch)
+        .where("isSnoozed","==",false)
         .limit(limits.pageSize)
         .onSnapshot((querySnapshot) => {
           const mergedResults: any = [];

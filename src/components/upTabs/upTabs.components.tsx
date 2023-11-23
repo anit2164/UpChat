@@ -288,6 +288,7 @@ const UpTabs = () => {
       const batch = tempArr.splice(0, 30);
       const query = collectionRef
         .where("enc_channelID", "in", batch)
+        .where("isSnoozed","==",false)
         .limit(limits.pageSize)
         .onSnapshot((querySnapshot) => {
           const mergedResults: any = [];
@@ -372,6 +373,7 @@ const UpTabs = () => {
         const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
         const querySnapshot = await collectionRef
           .where("enc_channelID", "in", batch)
+          .where("isSnoozed","==",false)
           .limit(dataPerPage)
           .get();
 
@@ -486,6 +488,7 @@ const UpTabs = () => {
           tempArr.map(async (item: any) => {
             const querySnapshot = await collectionRef
               .where("enc_channelID", "==", item)
+              .where("isSnoozed","==",false)
               .limit(dataPerPage)
               .get();
 
