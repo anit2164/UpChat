@@ -14,7 +14,7 @@ import ChatListing from "../chat-list/chatListing";
 import MyContext from "../chat-list/myContext";
 import { limits } from "../../constants/constantLimit"
 import PaginationArrow from "../../assets/svg/paginationArrow.svg";
-
+import { debounce } from "lodash";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -34,7 +34,7 @@ const Tile = ({
   // unpinData,
 }: any) => {
   const [dataNew, setDataNew] = useState([]);
-  const [tempArr, setTempArr] = useState([]);
+  const [tempArr, setTempArr] = useState<any>([]);
   const [activeUser, setActiveUser] = useState(false);
   const [updateData, setUpdateData] = useState<any>([]);
   const [showChat, setShowList] = useState(false);
@@ -213,30 +213,108 @@ const Tile = ({
   let tempArrUnPin: any = [];
   useEffect(() => {
     // let tempArrPin = [];
+    // const unsubscribe = firestore
+    //   .collectionGroup(`user`)
+    //   .where("userEmpId", "==", loginUserId)
+    //   .limit(limits.pageSize)
+    //   .onSnapshot((snapshot) => {
+    //     snapshot.forEach((doc) => {
+    //       const user = doc.data();
+    //       if (!user.isPinned) {
+    //         //   tempArrPin.push(user?.channelID.toString());
+    //         //   tempInfoData(user?.channelID.toString());
+    //         // } else {
+    //         tempArrUnPin.push(user?.channelID.toString());
+    //         tempInfo(user?.channelID.toString());
+    //       }
+    //     });
+    //     // getPinData(tempArrPin);
+    //     setUnpinData(tempArrUnPin);
+    //     getUnpinData(tempArrUnPin, currentPage);
+    //   });
+    // return () => unsubscribe();
 
-    const unsubscribe = firestore
-      .collectionGroup(`user`)
-      .where("userEmpId", "==", loginUserId)
-      .limit(limits.pageSize)
-      .onSnapshot((snapshot) => {
-        snapshot.forEach((doc) => {
-          const user = doc.data();
-          if (!user.isPinned) {
-            //   tempArrPin.push(user?.channelID.toString());
-            //   tempInfoData(user?.channelID.toString());
-            // } else {
-            tempArrUnPin.push(user?.channelID.toString());
-            tempInfo(user?.channelID.toString());
-          }
+    // let tempArr: any = [];
+    // try {
+    //   const unsubscribe = firestore
+    //     .collectionGroup("user")
+    //     .where("userEmpId", "==", loginUserId)
+    //     .limit(limits.pageSize)
+    //     .get()
+    //     .then((snapshot) => {
+    //       snapshot.forEach((doc) => {
+    //         const user = doc.data();
+    //         if (!user.isPinned) {
+    //           tempArr.push(user?.channelID.toString());
+    //         }
+    //       });
+    //       for (let i = 0; i < tempArr.length; i++) {
+    //         tempInfo(tempArr[i]);
+    //       }
+    //       const collectionRef = firestore.collection("channels");
+    //       const queryPromises = [];
+
+    //       while (tempArr?.length > 0) {
+    //         const batch = tempArr?.splice(0, 30);
+    //         const query = collectionRef
+    //           .where("enc_channelID", "in", batch)
+    //           .where("isSnoozed", "==", false)
+    //           .limit(limits.pageSize)
+    //           .get();
+    //         queryPromises.push(query);
+    //       }
+    //       Promise.all(queryPromises)
+    //         .then((querySnapshots) => {
+    //           const mergedResults: any = [];
+    //           querySnapshots.forEach((querySnapshot) => {
+    //             querySnapshot.forEach((doc) => {
+    //               mergedResults.push(doc.data());
+    //               const sortData = mergedResults?.sort(
+    //                 (a: any, b: any) => b?.lastMessageTime - a?.lastMessageTime
+    //               );
+    //               const keyToExtract = "enc_channelID";
+    //               const extractedValues = sortData.map(
+    //                 (obj: any) => obj[keyToExtract]
+    //               );
+    //               setUnpinData(extractedValues);
+    //               getUnpinData(extractedValues, currentPage);
+    //             });
+    //           });
+    //         })
+    //         .catch((error) => {
+    //           console.error(error);
+    //         });
+    //     });
+    // } catch (error) {
+    //   console.error(error, "errororo");
+    // }
+    const debouncedFunction = debounce(async () => {
+      const snapshot = firestore
+        .collectionGroup(`user`)
+        .where("userEmpId", "==", loginUserId)
+        // .where("isPinned", "==", false)
+        // .limit(limits.pageSize)
+        .onSnapshot((snapshot:any) => {
+          snapshot.forEach((doc:any) => {
+            const user = doc.data();
+            if (!user.isPinned) {
+              //   tempArrPin.push(user?.channelID.toString());
+              //   tempInfoData(user?.channelID.toString());
+              // } else {
+              tempArrUnPin.push(user?.channelID.toString());
+              tempInfo(user?.channelID.toString());
+            }
+          });
+
+          // getPinData(tempArrPin);
+          setUnpinData(tempArrUnPin);
+
+          getUnpinData(tempArrUnPin, currentPage);
         });
-
-        // getPinData(tempArrPin);
-        setUnpinData(tempArrUnPin);
-
-        getUnpinData(tempArrUnPin, currentPage);
-      });
-    return () => unsubscribe();
-  }, []);
+    });
+    debouncedFunction();
+    return () => {};
+  }, [currentPage]);
   var sum = 0;
 
   const channelDropdown = useCallback(async (value: any, item: any) => {
