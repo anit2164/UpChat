@@ -130,28 +130,81 @@ const Tile = ({
     }
   };
 
+  // const getUnpinData = async (tempArr: any, pageNo: any) => {
+  //   try {
+  //     const collectionRef = firestore.collection("channels");
+  //     if (tempArr?.length > 0) {
+  //       const startIndex: any = (pageNo - 1) * dataPerPage;
+  //       const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
+
+  //       // Create a reference to the listener
+  //       collectionRef
+  //         .where("enc_channelID", "in", batch)
+  //         .where("isSnoozed","==",false)
+  //         .limit(dataPerPage)
+  //         .onSnapshot((querySnapshot) => {
+  //           const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
+
+  //           setData([...data, ...mergedResults]);
+  //           // setUnReadCount(mergedResults);
+  //           setTempArr(mergedResults);
+  //           // setPinnedChannel(false);
+  //           // setSoonzeChannel(false);
+  //         });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
   const getUnpinData = async (tempArr: any, pageNo: any) => {
     try {
+      console.log("pageNopageNopageNopageNo", pageNo);
       const collectionRef = firestore.collection("channels");
-      if (tempArr?.length > 0) {
-        const startIndex: any = (pageNo - 1) * dataPerPage;
-        const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
 
-        // Create a reference to the listener
-        collectionRef
-          .where("enc_channelID", "in", batch)
-          .where("isSnoozed","==",false)
-          .limit(dataPerPage)
-          .onSnapshot((querySnapshot) => {
-            const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
+      const startIndex = (pageNo - 1) * dataPerPage;
+      let mergedResults = new Set();
+      console.log("tempArrtempArrtempArr", tempArr);
 
-            setData([...data, ...mergedResults]);
-            // setUnReadCount(mergedResults);
-            setTempArr(mergedResults);
-            // setPinnedChannel(false);
-            // setSoonzeChannel(false);
+      tempArr.forEach((item: any) => {
+        const unsubscribe = collectionRef
+          .where("enc_channelID", "==", item)
+          .where("isSnoozed", "==", false)
+          .onSnapshot((querySnapshot :any) => {
+            querySnapshot.forEach((doc:any) => {
+              mergedResults.add(doc.data());
+            });
+            const uniqueDataMap = new Map();
+            mergedResults.forEach((item: any) => {
+              const channelId = item.enc_channelID;
+              if (
+                !uniqueDataMap.has(channelId) ||
+                uniqueDataMap.get(channelId).lastMessageTime.seconds <
+                  item.lastMessageTime.seconds
+              ) {
+                uniqueDataMap.set(channelId, item);
+              }
+            });
+            const uniqueData = Array.from(uniqueDataMap.values());
+            uniqueData.sort((a, b) => {
+              return (
+                b.lastMessageTime.seconds - a.lastMessageTime.seconds ||
+                b.lastMessageTime.nanoseconds - a.lastMessageTime.nanoseconds
+              );
+            });
+            // const sortedResults = Array.from(mergedResults).sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+            const batch = uniqueData.slice(
+              startIndex,
+              startIndex + dataPerPage
+            );
+            console.log("batchbatchbatch", updateData);
+            // setBatchData([...updateData, ...batch]);
+            setData([...updateData, ...batch]);
+            setTempArr([...updateData, ...batch]);
+            setUpdateData([...updateData, ...batch]);
           });
-      }
+        return () => unsubscribe();
+      });
+      console.log(mergedResults, "mergedResultsmergedResults");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -401,8 +454,20 @@ const Tile = ({
     // for (let i = 0; i < data.length; i++) {
     //   data[i][color] = getRandomColor();
     // }
-    setUpdateData(data);
-    setTempArr(data);
+    const uniqueMessages: any = {};
+    data.forEach((item: any) => {
+      if (
+        !(item.hrNumber in uniqueMessages) ||
+        item.lastMessageTime.seconds >
+          uniqueMessages[item.hrNumber].lastMessageTime.seconds
+      ) {
+        uniqueMessages[item.hrNumber] = item;
+      }
+    });
+    const uniqueArray:any = Object.values(uniqueMessages);
+
+    setUpdateData(uniqueArray);
+    setTempArr(uniqueArray);
   }, [data]);
 
   let resetCount;
