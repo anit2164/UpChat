@@ -401,9 +401,12 @@ const UpTabs = () => {
   const handleScroll = () => {
     const element: any = arrawScroll.current;
     if (element) {
+      let cul =
+      Math.round(element.scrollTop + element.clientHeight) -
+      element.scrollHeight;
       if (
         Math.round(element.scrollTop + element.clientHeight) ===
-        element.scrollHeight
+        element.scrollHeight || Math.abs(cul) === 1
       ) {
         if (currentPage < totalPages) {
           setCurrentPage((prevPage) => prevPage + 1);
@@ -414,7 +417,6 @@ const UpTabs = () => {
       }
     }
   };
-
 
   const fetchdata = () => {
     if (search) {
