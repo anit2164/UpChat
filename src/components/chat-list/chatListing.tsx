@@ -1290,7 +1290,7 @@ const ChatListing = ({
   const editMessageClick = (item: any) => {
     setEditData(item);
     setEditMessage(true);
-    commentRef.current.innerText = item.text;
+    commentRef.current.innerHTML = displayNotes(item?.text).innerHTML;
   };
 
   return (
