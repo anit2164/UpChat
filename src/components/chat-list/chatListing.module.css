@@ -1699,6 +1699,28 @@
 }
 /* */
 
+/*  Edit msg Css start */
+
+.replyToWrapper .editMeesageIcon {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.replyToWrapper .editMeesageIcon svg {
+  fill: #c0c0c0;
+  font-size: 20px;
+  width: 18px;
+}
+
+.replyToWrapper .editMeesageText {
+  font-size: 10px;
+  font-weight: 500;
+  color: #232323;
+}
+
+/*  Edit msg Css End */
+
 .bookmarkWindowWrap {
   height: 555px;
 }

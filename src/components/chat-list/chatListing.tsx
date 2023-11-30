@@ -33,6 +33,7 @@ import SmileIcon6 from "../../assets/svg/smileIcon-6.svg";
 import BookmarkIconDark from "../../assets/svg/bookmarkIconDark.svg";
 import FiBookOpenSVG from "../../assets/svg/fiBookOpen.svg";
 import FiFilmSVG from "../../assets/svg/fiFilm.svg";
+import MsgEditIcon from "../../assets/svg/MsgEdit.svg";
 import FiVolumeMuteSVG from "../../assets/svg/fiVolumeMute.svg";
 import FiReplySVG from "../../assets/svg/fiReply.svg";
 import FiCopySVG from "../../assets/svg/fiCopy.svg";
@@ -118,7 +119,8 @@ const ChatListing = ({
   const [showBookMark, setShowBookMark] = useState<any>(false);
   const [showBookmarksData, setshowBookmarksData] = useState<any>([]);
   const [bookMarkMessage, setBookMarkMessage] = useState(false);
-
+  const [editData, setEditData] = useState<any>("");
+  const [editMessage, setEditMessage] = useState(false);
   const [selectedDoc, setSelectDoc] = useState<any>(false);
   const bottomToTopRef: any = useRef(null);
   const arrawScroll = useRef(null);
@@ -427,12 +429,16 @@ const ChatListing = ({
     setSelectedFile(updatedItems);
   };
   const sendMessage = async (e: any) => {
-    if (commentRef.current.innerText.trim().length > 0 ||
-      (selectedFile && selectedFile.length > 0)) {
+    if(editData){
+      if (commentRef.current.innerText.trim().length > 0 ||
+      (selectedFile && selectedFile.length > 0)) 
+      {
+      localStorage.setItem("msgSend", "true");
       setMessageHandler("");
       sendMessageAPI();
       setSenderClass(true);
       setScrollDown(true);
+      setSelectedImage(false);
       let UploadedFiles = [];
       if (selectedFile.length > 0) {
         for (const file of selectedFile) {
@@ -504,67 +510,300 @@ const ChatListing = ({
       }
 
       try {
-        let obj = {
-          date: new Date(),
-          documentUrl: "",
-          enc_chatID: "",
+        let obj: any = {
+          enc_chatID: editData?.enc_chatID,
           hrID: allChannelItem?.hrID,
-          isActivity: false,
-          senderEmpID: replyMessageSection === true ? loginUserId : "",
-          text: commentRef.current.innerText,
-          isNotes: true,
-          remark: "",
-          senderDesignation: loggeInUserDesignation,
-          senderName: username,
-          talentName: "",
-          Replied: replyMessageSection === true
-            ? replyMessage.text.trim()
-            : "",
-          files: UploadedFiles.length > 0 ? UploadedFiles : "",
-          isRepliedTo: replyMessageSection === true ? "Shreyash Zinzuvadia" : "",
-          msgRepliedId: "",
-          userInitial: initials1,
-          reply_enc_ID:
-            replyMessageSection === true ? replyMessage?.enc_chatID : "",
+          text: commentRef.current.innerHTML.replace(/\s+/g, " "),
+          files:
+            UploadedFiles.length > 0 || editData.files
+              ? [...UploadedFiles, ...editData.files]
+              : "",
         };
-        let apiObj = {
-          id: allChannelItem?.hrID,
-          note: messageHandler,
-        };
-        // const firestore = firebase.firestore();
-        commentRef.current.innerText = "";
+
         setReplyMessageSection(false);
         setReplyMessage({});
-
         const collectionRef = firestore.collection(
           `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
         );
-        const tempEnc_ID: any = await collectionRef.add(obj);
-        obj.enc_chatID = replyMessageSection === true ? tempEnc_ID.id : tempEnc_ID.id;
-        obj.msgRepliedId = replyMessageSection === true ? tempEnc_ID.id : "";
-        const snapshot = collectionRef.doc(tempEnc_ID.id);
+        const { enc_chatID, ...updatedData } = obj;
+        const docRef = collectionRef.doc(enc_chatID);
+        await docRef.update(updatedData);
 
-        await snapshot.set(obj);
-        await collectionRef.get();
-
-        scrollToBottom();
-        // updateChannel(new Date());
-        updateChannelDateTime(allChannelItem?.enc_channelID);
-        createCollection(tempEnc_ID.id);
+        setMessageHandler("");
+        // handleScrollTop();
+        setEditData("");
+        // updateChannelDateTime(channelData);
+        setSeeAttachment(false);
         setSelectedFile([]);
-        setSeeAttachment(false)
-        // dispatch(sendMessageHandler(apiObj));
+        sendMessageAPI();
+        let msgSend = localStorage.getItem("msgSend");
+        if (msgSend === "true") {
+          commentRef.current.innerText = "";
+          localStorage.removeItem("msgSend");
+        }
       } catch (error) {
         console.error(error);
+      }
+      setEditMessage(false);
+    }
+    }else{
+
+      if (commentRef.current.innerText.trim().length > 0 ||
+        (selectedFile && selectedFile.length > 0)) {
+        setMessageHandler("");
+        sendMessageAPI();
+        setSenderClass(true);
+        setScrollDown(true);
+        setSelectedImage(false);
+        let UploadedFiles = [];
+        if (selectedFile.length > 0) {
+          for (const file of selectedFile) {
+            const currentDate = new Date().toISOString().split("T")[0];
+            const currentTime = new Date();
+            const hours = currentTime.getHours().toString().padStart(2, "0");
+            const minutes = currentTime.getMinutes().toString().padStart(2, "0");
+            const seconds = currentTime.getSeconds().toString().padStart(2, "0");
+  
+            const formattedTime = `${hours}:${minutes}:${seconds}`;
+  
+            const filename = `${currentDate}-${formattedTime}-${file.name}`;
+            const originalFilename = file.name;
+  
+            if (file.type.toLowerCase().startsWith("video/")) {
+              setUploading(true);
+              const storageRef = storage.ref(
+                `videos/${allChannelItem?.enc_channelID}`
+              );
+              const videoname = originalFilename.replace(/\.mov$/, ".mp4");
+              const videoFileName = `${currentDate}-${formattedTime}-${videoname}`;
+  
+              const updatedBlob = new Blob([file], { type: "video/mp4" });
+              const fileRef = storageRef.child(videoFileName);
+  
+              try {
+                await fileRef.put(updatedBlob);
+                const downloadURL = await fileRef.getDownloadURL();
+                UploadedFiles.push(downloadURL);
+              } catch (error) {
+                console.error("Error uploading file: ", error);
+              } finally {
+                setUploading(false);
+              }
+            } else if (file.type.toLowerCase().startsWith("image/")) {
+              setUploading(true);
+              const storageRef = storage.ref(
+                `images/${allChannelItem?.enc_channelID}`
+              );
+              const fileRef = storageRef.child(filename);
+  
+              try {
+                await fileRef.put(file);
+                const downloadURL = await fileRef.getDownloadURL();
+                UploadedFiles.push(downloadURL);
+              } catch (error) {
+                console.error("Error uploading file: ", error);
+              } finally {
+                setUploading(false);
+              }
+            } else {
+              setUploading(true);
+              const storageRef = storage.ref(
+                `document/${allChannelItem?.enc_channelID}`
+              );
+              const fileRef = storageRef.child(filename);
+  
+              try {
+                await fileRef.put(file);
+                const downloadURL = await fileRef.getDownloadURL();
+                UploadedFiles.push(downloadURL);
+              } catch (error) {
+                console.error("Error uploading file: ", error);
+              } finally {
+                setUploading(false);
+              }
+            }
+          }
+        }
+  
+        try {
+          let obj = {
+            date: new Date(),
+            documentUrl: "",
+            enc_chatID: "",
+            hrID: allChannelItem?.hrID,
+            isActivity: false,
+            senderEmpID: replyMessageSection === true ? loginUserId : "",
+            text: commentRef.current.innerText,
+            isNotes: true,
+            remark: "",
+            senderDesignation: loggeInUserDesignation,
+            senderName: username,
+            talentName: "",
+            Replied: replyMessageSection === true
+              ? replyMessage.text.trim()
+              : "",
+            files: UploadedFiles.length > 0 ? UploadedFiles : "",
+            isRepliedTo: replyMessageSection === true ? loginUserId : "",
+            msgRepliedId: "",
+            userInitial: initials1,
+            reply_enc_ID:
+              replyMessageSection === true ? replyMessage?.enc_chatID : "",
+          };
+          let apiObj = {
+            id: allChannelItem?.hrID,
+            note: messageHandler,
+          };
+          // const firestore = firebase.firestore();
+          commentRef.current.innerText = "";
+          setReplyMessageSection(false);
+          setReplyMessage({});
+  
+          const collectionRef = firestore.collection(
+            `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
+          );
+          const tempEnc_ID: any = await collectionRef.add(obj);
+          obj.enc_chatID = replyMessageSection === true ? tempEnc_ID.id : tempEnc_ID.id;
+          obj.msgRepliedId = replyMessageSection === true ? tempEnc_ID.id : "";
+          const snapshot = collectionRef.doc(tempEnc_ID.id);
+  
+          await snapshot.set(obj);
+          await collectionRef.get();
+  
+          scrollToBottom();
+          // updateChannel(new Date());
+          updateChannelDateTime(allChannelItem?.enc_channelID);
+          createCollection(tempEnc_ID.id);
+          setSelectedFile([]);
+          setSeeAttachment(false)
+          // dispatch(sendMessageHandler(apiObj));
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
   };
 
   const handleKeyDown = async (e: any) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (commentRef.current.innerText.trim().length > 0 ||
-        (selectedFile && selectedFile.length > 0)) {
+    if(editData){
+      if (e.key === "Enter" && (commentRef.current.innerText.trim().length > 0 ||
+      selectedFile && selectedFile.length > 0)) {
+        localStorage.setItem("msgSend", "true");
+          e.preventDefault();
+        setMessageHandler("");
+        sendMessageAPI();
+        setSenderClass(true);
+        setScrollDown(true);
+        let UploadedFiles = [];
+        if (selectedFile.length > 0) {
+          for (const file of selectedFile) {
+            const currentDate = new Date().toISOString().split("T")[0];
+            const currentTime = new Date();
+            const hours = currentTime.getHours().toString().padStart(2, "0");
+            const minutes = currentTime.getMinutes().toString().padStart(2, "0");
+            const seconds = currentTime.getSeconds().toString().padStart(2, "0");
+
+            const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+            const filename = `${currentDate}-${formattedTime}-${file.name}`;
+            const originalFilename = file.name;
+
+            if (file.type.toLowerCase().startsWith("video/")) {
+              setUploading(true);
+              const storageRef = storage.ref(
+                `videos/${allChannelItem?.enc_channelID}`
+              );
+              const videoname = originalFilename.replace(/\.mov$/, ".mp4");
+              const videoFileName = `${currentDate}-${formattedTime}-${videoname}`;
+
+              const updatedBlob = new Blob([file], { type: "video/mp4" });
+              const fileRef = storageRef.child(videoFileName);
+
+              try {
+                await fileRef.put(updatedBlob);
+                const downloadURL = await fileRef.getDownloadURL();
+                UploadedFiles.push(downloadURL);
+              } catch (error) {
+                console.error("Error uploading file: ", error);
+              } finally {
+                setUploading(false);
+              }
+            } else if (file.type.toLowerCase().startsWith("image/")) {
+              setUploading(true);
+              const storageRef = storage.ref(
+                `images/${allChannelItem?.enc_channelID}`
+              );
+              const fileRef = storageRef.child(filename);
+
+              try {
+                await fileRef.put(file);
+                const downloadURL = await fileRef.getDownloadURL();
+                UploadedFiles.push(downloadURL);
+              } catch (error) {
+                console.error("Error uploading file: ", error);
+              } finally {
+                setUploading(false);
+              }
+            } else {
+              setUploading(true);
+              const storageRef = storage.ref(
+                `document/${allChannelItem?.enc_channelID}`
+              );
+              const fileRef = storageRef.child(filename);
+
+              try {
+                await fileRef.put(file);
+                const downloadURL = await fileRef.getDownloadURL();
+                UploadedFiles.push(downloadURL);
+              } catch (error) {
+                console.error("Error uploading file: ", error);
+              } finally {
+                setUploading(false);
+              }
+            }
+          }
+        }
+        try {
+          let obj: any = {
+            enc_chatID: editData?.enc_chatID,
+            hrID: allChannelItem?.hrID,
+            text: commentRef.current.innerHTML.replace(/\s+/g, " "),
+            files:
+              UploadedFiles.length > 0 || editData.files
+                ? [...UploadedFiles, ...editData.files]
+                : "",
+          };
+
+          setReplyMessageSection(false);
+          setReplyMessage({});
+          const collectionRef = firestore.collection(
+            `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats`
+          );
+          const { enc_chatID, ...updatedData } = obj;
+          const docRef = collectionRef.doc(enc_chatID);
+          await docRef.update(updatedData);
+
+          setMessageHandler("");
+          // handleScrollTop();
+          setEditData("");
+          // updateChannelDateTime(channelData);
+          setSeeAttachment(false);
+          setSelectedFile([]);
+          sendMessageAPI();
+          let msgSend = localStorage.getItem("msgSend");
+          if (msgSend === "true") {
+            commentRef.current.innerText = "";
+            localStorage.removeItem("msgSend");
+          }
+        } catch (error) {
+          console.error(error);
+        }
+        setEditMessage(false);
+      }
+    }else{
+
+      if (e.key === "Enter" && (commentRef.current.innerText.trim().length > 0 ||
+      selectedFile && selectedFile.length > 0)) {
+          e.preventDefault();
         setMessageHandler("");
         sendMessageAPI();
         setSenderClass(true);
@@ -656,7 +895,7 @@ const ChatListing = ({
               ? replyMessage.text.trim()
               : "",
             files: UploadedFiles.length > 0 ? UploadedFiles : "",
-            isRepliedTo: replyMessageSection === true ? "Shreyash Zinzuvadia" : "",
+            isRepliedTo: replyMessageSection === true ? loginUserId : "",
             msgRepliedId: "",
             userInitial: initials1,
             reply_enc_ID:
@@ -1046,6 +1285,12 @@ const ChatListing = ({
         targetMessage.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
     }
+  };
+
+  const editMessageClick = (item: any) => {
+    setEditData(item);
+    setEditMessage(true);
+    commentRef.current.innerText = item.text;
   };
 
   return (
@@ -1462,6 +1707,32 @@ const ChatListing = ({
                                     ),
                                   }}
                                 ></span>
+                                  {item.senderName === username && (
+                                  <div
+                                    className={ChatListingStyles.chatReaction}
+                                    onClick={() => editMessageClick(item)}
+                                  >
+                                    <div
+                                      className={
+                                        ChatListingStyles.chatReactionInner
+                                      }
+                                    >
+                                      <div
+                                        className={
+                                          ChatListingStyles.chatReactionCircle
+                                        }
+                                      >
+                                        <span
+                                          className={
+                                            ChatListingStyles.chatReactionSmile
+                                          }
+                                        >
+                                          <MsgEditIcon />
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                                 <div className={ChatListingStyles.chatReaction}>
                                   <div
                                     className={ChatListingStyles.chatReactionInner}
@@ -1567,6 +1838,32 @@ const ChatListing = ({
                                   ),
                                 }}
                               ></p>
+                               {item.senderName === username && (
+                                  <div
+                                    className={ChatListingStyles.chatReaction}
+                                    onClick={() => editMessageClick(item)}
+                                  >
+                                    <div
+                                      className={
+                                        ChatListingStyles.chatReactionInner
+                                      }
+                                    >
+                                      <div
+                                        className={
+                                          ChatListingStyles.chatReactionCircle
+                                        }
+                                      >
+                                        <span
+                                          className={
+                                            ChatListingStyles.chatReactionSmile
+                                          }
+                                        >
+                                          <MsgEditIcon />
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                               <ul
                                 className={
                                   ChatListingStyles.imageItemInnerMsgBox
@@ -2041,6 +2338,18 @@ const ChatListing = ({
                       {replyMessage}
                     </p> */}
                       <p>{replyMessage?.text}</p>
+                    </div>
+                  </div>
+                )}
+                 {editMessage === true && (
+                  <div className={ChatListingStyles.replyToWrapper}>
+                    <div className={ChatListingStyles.replyToTop}>
+                      <span className={ChatListingStyles.editMeesageText}>
+                        Edit Message
+                      </span>
+                      <span className={ChatListingStyles.editMeesageIcon}>
+                        <MsgEditIcon />
+                      </span>
                     </div>
                   </div>
                 )}
