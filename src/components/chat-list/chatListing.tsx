@@ -94,7 +94,7 @@ const ChatListing = ({
   const [search, setSearch] = useState("");
   const [senderClass, setSenderClass] = useState(false);
   const [memberRead, setMemberRead] = useState([]);
-  const [userDataList, setUserDataList] = useState([]);
+  const [userDataList, setUserDataList] = useState<any>([]);
   const [scrollDown, setScrollDown] = useState(false);
   const [searchInChat, setSearchInChat] = useState(false);
   const [username, setUsername] = useState("");
@@ -122,6 +122,9 @@ const ChatListing = ({
   const [editData, setEditData] = useState<any>("");
   const [editMessage, setEditMessage] = useState(false);
   const [selectedDoc, setSelectDoc] = useState<any>(false);
+  const [taggedUser, setTaggedUser] = useState([]);
+  const [taggedUserActive, setTaggedUserActive] = useState(false);
+  const [getTaggedData, setTaggedData] = useState([]);
   const bottomToTopRef: any = useRef(null);
   const arrawScroll = useRef(null);
   const commentRef: any = useRef();
@@ -301,6 +304,23 @@ const ChatListing = ({
   const date = new Date();
   const formattedTime = date.toUTCString();
 
+  useEffect(() => {
+    if (taggedUserActive) {
+      const getMetionmememberlist = mentionMembers.filter((items: any) => {
+        const commentText = commentRef?.current?.innerText.trim();
+
+        return (
+          commentText && commentText.match(new RegExp(items.userName, "g"))
+        );
+      });
+      // console.log(
+      //   "getMetionmememberlistgetMetionmememberlist",
+      //   getMetionmememberlist
+      // );
+      setTaggedUser(getMetionmememberlist);
+      // console.log("checking", getMetionmememberlist);
+    }
+  }, [commentRef?.current?.innerText]);
   const createCollection = async (data: any) => {
     try {
       // const firestore = firebase.firestore();
@@ -309,7 +329,11 @@ const ChatListing = ({
       );
 
       for (let i = 0; i < userDataList.length; i++) {
-        await collectionRef.add(userDataList[i]);
+        let newuserList: any = {
+          ...userDataList[i],
+          chatId: data,
+        };
+        await collectionRef.add(newuserList);
       }
     } catch (error) {
       console.error("Error creating collection:", error);
@@ -943,12 +967,35 @@ const ChatListing = ({
       showPinnedChatsList === true ||
       showSnoozeChatsList === true
     ) {
-      scrollToBottom();
+      if (listingChats?.length) {
+     
+        const matchingItem = listingChats.find((item: any) =>
+          getTaggedData.some(
+            (taggedItem: any) => taggedItem.chatId === item.enc_chatID
+          )
+        );
+        console.log("matchingItemmatchingItem", matchingItem);
+        if (matchingItem) {
+          const targetMessage = document.getElementById(
+            matchingItem.enc_chatID
+          );
+          if (targetMessage) {
+            setTimeout(() => {
+              targetMessage.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }, 100);
+          }
+        } else {
+          scrollToBottom();
+        }
+      }
       setScrollDown(false);
       setIstagged(false)
       commentRef.current.innerText = "";
     }
-  }, [showChat, listingChats]);
+  }, [getTaggedData,showChat, listingChats]);
 
   const filterData = listingChats?.filter((item: any) => {
     return item?.text?.toLowerCase()?.includes(search?.toLowerCase());
@@ -1000,6 +1047,9 @@ const ChatListing = ({
                 enc_channelID: allChannelItem?.enc_channelID,
                 isRead: loginUserId === userEmpId ? true : false,
                 userEmpID: userEmpId,
+                isTaggedUser: taggedUser.some(
+                  (item: any) => item.userEmpId === userEmpId
+                ),
                 IsBookMark: false,
               };
             });
@@ -1013,7 +1063,7 @@ const ChatListing = ({
       }
     }
 
-  }, [allChannelItem]);
+  }, [allChannelItem,taggedUser]);
 
   const chatListDropdown = (value: any) => {
     if (value.key === ChannelMenu.VIEW_HR_DETAILS) {
@@ -1196,6 +1246,42 @@ const ChatListing = ({
   //   setMessageHandler("@" + value.userName);
   //   setIstagged(false);
   // };
+  const getUnReadtaggedData = async (
+    channelData: any,
+    loginUserId: any,
+    setTaggedData: any
+  ) => {
+    try {
+      console.log("channelData?.enc_channelID", allChannelItem?.enc_channelID);
+      const query = firestore
+        .collectionGroup("user_chats")
+        .where("enc_channelID", "==", allChannelItem?.enc_channelID)
+        .where("isRead", "==", false)
+        .where("isTaggedUser", "==", true)
+        .where("userEmpID", "==", loginUserId);
+
+      const querySnapshot = await query.get();
+      const taggedData: any = [];
+      querySnapshot.forEach((doc: any) => {
+        const data = doc.data();
+        taggedData.push(data);
+      });
+      console.log("taggedDatataggedDatataggedData", taggedData);
+
+      setTaggedData(taggedData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    if (allChannelItem) {
+      getUnReadtaggedData(
+        allChannelItem?.enc_channelID,
+        loginUserId,
+        setTaggedData
+      );
+    }
+  }, [allChannelItem]);
 
   const onKeyPressHandler = (e: any) => {
     let tempString = commentRef.current.innerText;
@@ -1205,6 +1291,8 @@ const ChatListing = ({
     if (tempString.length === 0) setIstagged(false);
     if (e.shiftKey && e.which === 50) {
       setIstagged(true);
+      setTaggedUserActive(true);
+
     } else if (e.which === 8) {
       if (
         tempString[tempString.length - 1] === "@" ||
@@ -1212,7 +1300,9 @@ const ChatListing = ({
       )
         setIstagged(false);
       else if (tempString.length > 0 && tempString.includes("@"))
-        setIstagged(true);
+       { setIstagged(true);
+        setTaggedUserActive(true);
+}
       else if (tempString.length > 0 && !tempString.includes("@"))
         setIstagged(false);
     }

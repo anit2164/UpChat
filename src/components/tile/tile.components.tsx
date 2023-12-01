@@ -46,6 +46,8 @@ const Tile = ({
   const [showScroll, setShowScroll] = useState(false);
   const [isTileChat, setIsTileChat] = useState(false);
   const [unPinData, setUnpinData] = useState([]);
+  const [tagReadCount, setTagReadCount] = useState<any>([]);
+
   const dataPerPage: any = 10
 
   const firestore = firebase.firestore();
@@ -76,6 +78,50 @@ const Tile = ({
   //       setReadCount(tempCount);
   //     });
   // };
+  const tempInfoTagg = async (data: any) => {
+    let countArr = {};
+    const readOrUnread = firestore.collectionGroup("user_chats");
+    readOrUnread
+      .where("isRead", "==", false)
+      .where("isTaggedUser", "==", true)
+      .where("enc_channelID", "==", data)
+      .where("userEmpID", "==", loginUserId)
+      // .limit(limit)
+      // .limit(limits.pageSize)
+      .onSnapshot((snapshot) => {
+        const newTempCount: any = [];
+        if (snapshot.docs.length > 0) {
+          snapshot.forEach((doc) => {
+            const user = doc.data();
+            const countArr = {
+              enc_ChannelIDCount: data,
+              readCount: snapshot.docs.length,
+            };
+            newTempCount.push(countArr);
+          });
+          setTagReadCount((prevState: any) => {
+            const updatedCounts = prevState.map((countItem: any) => {
+              if (countItem.enc_ChannelIDCount === data) {
+                countItem.readCount = 0; // Reset count to zero when chat is opened
+              }
+              return countItem;
+            });
+            const uniqueItemsMap = new Map();
+            for (const item of [...updatedCounts, ...newTempCount]) {
+              uniqueItemsMap.set(item.enc_ChannelIDCount, item);
+            }
+            const mergedState = Array.from(uniqueItemsMap.values());
+            return mergedState;
+          });
+        } else {
+          setTagReadCount((prevState: any) =>
+            prevState.filter(
+              (countItem: any) => countItem.enc_ChannelIDCount !== data
+            )
+          );
+        }
+      });
+  };
   const scrollDown = localStorage.getItem("scrollDown");
   const tempInfo = async (data: any) => {
     try {
@@ -303,6 +349,7 @@ const Tile = ({
               // } else {
               tempArrUnPin.push(user?.channelID.toString());
               tempInfo(user?.channelID.toString());
+              tempInfoTagg(user?.channelID.toString());
             }
           });
 
@@ -773,6 +820,25 @@ const Tile = ({
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
+                {tagReadCount.some(
+                      (countItem:any) =>
+                        countItem.enc_ChannelIDCount === item.enc_channelID
+                    ) ? (
+                      <>
+                        {
+                          <div className="unreadNum">
+                            @
+                            {
+                              tagReadCount.find(
+                                (countItem:any) =>
+                                  countItem.enc_ChannelIDCount ===
+                                  item.enc_channelID
+                              )?.readCount
+                            }
+                          </div>
+                        }
+                      </>
+                    ) : null}
                 {readCount.some(
                   (countItem: any) =>
                     countItem.enc_ChannelIDCount === item.enc_channelID

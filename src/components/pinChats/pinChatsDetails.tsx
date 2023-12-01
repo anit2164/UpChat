@@ -34,6 +34,8 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
   const loginUserId = localStorage.getItem("EmployeeID");
   const firestore = firebase.firestore();
   const scrollDown = localStorage.getItem("scrollDown");
+  const [tagReadCount, setTagReadCount] = useState<any>([]);
+
 
   const { setTotalCountPinned, pinChat, setPinChat, tileChat, setTileChat }: any = useContext(MyContext);
 
@@ -125,6 +127,49 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
     }
   };
 
+const tempInfoTagedData = async (data:any) => {
+    let countArr = {};
+    const readOrUnread = firestore.collectionGroup("user_chats");
+    readOrUnread
+        .where("isRead", "==", false)
+        .where("enc_channelID", "==", data)
+        .where("isTaggedUser", "==", true)
+        .where("userEmpID", "==", loginUserId)
+        .limit(limits.pageSize)
+        .onSnapshot((snapshot) => {
+            if (snapshot.docs.length > 0) {
+                const newTempCount:any = [];
+
+                snapshot.forEach((doc) => {
+                    const user = doc.data();
+                    const countArr = {
+                        enc_ChannelIDCount: data,
+                        readCount: snapshot.docs.length,
+                    };
+                    newTempCount.push(countArr);
+                });
+                setTagReadCount((prevState:any) => {
+                    const updatedCounts = prevState.map((countItem:any) => {
+                        if (countItem.enc_ChannelIDCount === data) {
+                            countItem.readCount = 0; // Reset count to zero when chat is opened
+                        }
+                        return countItem;
+                    });
+
+                    const uniqueItemsMap = new Map();
+                    for (const item of [...updatedCounts, ...newTempCount]) {
+                        uniqueItemsMap.set(item.enc_ChannelIDCount, item);
+                    }
+                    const mergedState = Array.from(uniqueItemsMap.values());
+                    return mergedState;
+                });
+            } else {
+                setTagReadCount((prevState:any) =>
+                    prevState.filter((countItem:any) => countItem.enc_ChannelIDCount !== data)
+                );
+            }
+        });
+};
   useEffect(() => {
     let tempArrPin: any = [];
     const unsubscribe = firestore
@@ -137,6 +182,8 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
           if (user.isPinned) {
             tempArrPin.push(user?.channelID.toString());
             tempInfoData(user?.channelID.toString());
+            tempInfoTagedData(user?.channelID.toString())
+
           }
         });
 
@@ -503,6 +550,24 @@ const PinChatDetails = ({ dataFalse, LastPinnedGroups, setDataFalse, setUpChat, 
                     .toLocaleTimeString()
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
+                {tagReadCount.some(
+                      (countItem:any) =>
+                        countItem.enc_ChannelIDCount === item.enc_channelID
+                    ) ? (
+                      <>
+                        {
+                          <div className="unreadNum">
+                           @{
+                              tagReadCount.find(
+                                (countItem:any) =>
+                                  countItem.enc_ChannelIDCount ===
+                                  item.enc_channelID
+                              )?.readCount
+                            }
+                          </div>
+                        }
+                      </>
+                    ) : null}
                 {readCount.some(
                   (countItem: any) =>
                     countItem.enc_ChannelIDCount === item.enc_channelID
