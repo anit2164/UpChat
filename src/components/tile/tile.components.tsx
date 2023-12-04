@@ -825,18 +825,18 @@ const Tile = ({
                         countItem.enc_ChannelIDCount === item.enc_channelID
                     ) ? (
                       <>
+                    {
+                      <span className={TileStyle.numSnooze}>
+                        @
                         {
-                          <div className="unreadNum">
-                            @
-                            {
-                              tagReadCount.find(
-                                (countItem:any) =>
-                                  countItem.enc_ChannelIDCount ===
-                                  item.enc_channelID
-                              )?.readCount
-                            }
-                          </div>
+                          tagReadCount.find(
+                            (countItem: any) =>
+                              countItem.enc_ChannelIDCount ===
+                              item.enc_channelID
+                          )?.readCount
                         }
+                      </span>
+                    }
                       </>
                     ) : null}
                 {readCount.some(

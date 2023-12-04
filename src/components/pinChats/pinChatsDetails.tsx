@@ -555,17 +555,18 @@ const tempInfoTagedData = async (data:any) => {
                         countItem.enc_ChannelIDCount === item.enc_channelID
                     ) ? (
                       <>
+                       {
+                      <span className={PinChatDetailsStyle.numSnooze}>
+                        @
                         {
-                          <div className="unreadNum">
-                           @{
-                              tagReadCount.find(
-                                (countItem:any) =>
-                                  countItem.enc_ChannelIDCount ===
-                                  item.enc_channelID
-                              )?.readCount
-                            }
-                          </div>
+                          tagReadCount.find(
+                            (countItem: any) =>
+                              countItem.enc_ChannelIDCount ===
+                              item.enc_channelID
+                          )?.readCount
                         }
+                      </span>
+                    }
                       </>
                     ) : null}
                 {readCount.some(

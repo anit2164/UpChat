@@ -1721,6 +1721,22 @@
 
 /*  Edit msg Css End */
 
+.timeStamp.editedDots {
+  position: relative;
+}
+
+.timeStamp.editedDots::after {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 6px;
+  background: #000000;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
 .bookmarkWindowWrap {
   height: 555px;
 }

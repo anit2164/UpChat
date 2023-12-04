@@ -103,7 +103,7 @@ const ChatListing = ({
   const [totalCountPinned, setTotalCountPinned] = useState(0);
   const [messageApi, contextHolder] = message.useMessage();
   const [showUpChat, setShowUpChat] = useState<any>(false);
-  const [mentionMembers, setMentionMembers] = useState([]);
+  const [mentionMembers, setMentionMembers] = useState<any>([]);
   const [memberFilter, setMemberFilter] = useState([]);
   const [isTagged, setIstagged] = useState(false);
   const [tileChat, setTileChat] = useState(false);
@@ -710,7 +710,17 @@ const ChatListing = ({
 
   const handleKeyDown = async (e: any) => {
     if(editData){
-      if (e.key === "Enter" && (commentRef.current.innerText.trim().length > 0 ||
+      if (e.key === "Enter" && taggedUserActive) {
+        e.preventDefault();
+        let tempInnerHTML = commentRef.current.innerHTML.split("@");
+        let spanTag = `&nbsp;<span id=${mentionMembers[0]?.userEmpId} contentEditable="false" class=${ChatListingStyles.personTaggedValue}>
+        ${mentionMembers[0]?.userName} </span>&nbsp;`;
+        tempInnerHTML[tempInnerHTML.length - 1] = spanTag;
+        commentRef.current.innerHTML = tempInnerHTML.join("");
+        setIstagged(false);
+        setTaggedUserActive(false);
+      }
+     else if (e.key === "Enter" && (commentRef.current.innerText.trim().length > 0 ||
       selectedFile && selectedFile.length > 0)) {
         localStorage.setItem("msgSend", "true");
           e.preventDefault();
@@ -826,8 +836,16 @@ const ChatListing = ({
         setEditMessage(false);
       }
     }else{
-
-      if (e.key === "Enter" && (commentRef.current.innerText.trim().length > 0 ||
+      if (e.key === "Enter" && taggedUserActive) {
+        e.preventDefault();
+        let tempInnerHTML = commentRef.current.innerHTML.split("@");
+        let spanTag = `&nbsp;<span id=${mentionMembers[0]?.userEmpId} contentEditable="false" class=${ChatListingStyles.personTaggedValue}>
+        ${mentionMembers[0]?.userName} </span>&nbsp;`;
+        tempInnerHTML[tempInnerHTML.length - 1] = spanTag;
+        commentRef.current.innerHTML = tempInnerHTML.join("");
+        setIstagged(false);
+        setTaggedUserActive(false);
+      }else if (e.key === "Enter" && (commentRef.current.innerText.trim().length > 0 ||
       selectedFile && selectedFile.length > 0)) {
           e.preventDefault();
         setMessageHandler("");
@@ -1744,9 +1762,13 @@ const ChatListing = ({
                                     )
                                   : item?.date}
                               </span>
-                              <span className="timeStamp">
-                                {item?.messageEdited ? "Edited": ""}
-                              </span>
+                              {item?.messageEdited && (
+                                <span
+                                  className={`${ChatListingStyles.timeStamp} ${ChatListingStyles.editedDots}`}
+                                >
+                                  Edited
+                                </span>
+                              )}
                               <Dropdown
                                 className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
                                 placement="bottomRight"
@@ -1887,9 +1909,13 @@ const ChatListing = ({
                                     )
                                   : item?.date}
                               </span>
-                              <span className="timeStamp">
-                                {item?.messageEdited ? "Edited": ""}
-                              </span>
+                              {item?.messageEdited && (
+                                <span
+                                  className={`${ChatListingStyles.timeStamp} ${ChatListingStyles.editedDots}`}
+                                >
+                                  Edited
+                                </span>
+                              )}
                               <Dropdown
                                 className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
                                 placement="bottomRight"
