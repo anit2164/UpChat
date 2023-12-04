@@ -1309,7 +1309,7 @@ const ChatListing = ({
       setIstagged(false);
     }
     if (tempString.length === 0) setIstagged(false);
-    if (e.shiftKey && e.which === 50) {
+    if (e.key === "@" || e.which === "@") {
       setIstagged(true);
       setTaggedUserActive(true);
 
