@@ -542,6 +542,7 @@ const ChatListing = ({
             UploadedFiles.length > 0 || editData.files
               ? [...UploadedFiles, ...editData.files]
               : "",
+          messageEdited: true,
         };
 
         setReplyMessageSection(false);
@@ -795,6 +796,7 @@ const ChatListing = ({
               UploadedFiles.length > 0 || editData.files
                 ? [...UploadedFiles, ...editData.files]
                 : "",
+            messageEdited: true,
           };
 
           setReplyMessageSection(false);
@@ -1742,6 +1744,9 @@ const ChatListing = ({
                                     )
                                   : item?.date}
                               </span>
+                              <span className="timeStamp">
+                                {item?.messageEdited ? "Edited": ""}
+                              </span>
                               <Dropdown
                                 className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
                                 placement="bottomRight"
@@ -1787,7 +1792,7 @@ const ChatListing = ({
                                   >
                                     <FiReplySVG width="10" height="16" />
                                     {ReplyMessage(item?.enc_chatID)?.[0]?.senderName}
-                                    <span>Today at 12:31PM</span>
+                                    {/* <span>Today at 12:31PM</span> */}
                                   </div>
                                 </div>
                                 <span
@@ -1881,6 +1886,9 @@ const ChatListing = ({
                                       "$1$3"
                                     )
                                   : item?.date}
+                              </span>
+                              <span className="timeStamp">
+                                {item?.messageEdited ? "Edited": ""}
                               </span>
                               <Dropdown
                                 className={` ${ChatListingStyles.dotMenuMain} ${ChatListingStyles.dotMenuhz} `}
