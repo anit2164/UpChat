@@ -1403,6 +1403,21 @@ const ChatListing = ({
     commentRef.current.innerHTML = displayNotes(item?.text).innerHTML;
   };
 
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      if (commentRef.current) {
+        const range: any = document.createRange();
+        const sel: any = window.getSelection();
+        range.selectNodeContents(commentRef.current);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        commentRef.current.focus();
+      }
+    }, 100);
+    return () => clearTimeout(timerId);
+  }, [isTagged]);
+
   return (
     <>
       {contextHolder}
@@ -2848,6 +2863,7 @@ const ChatListing = ({
                                 commentRef.current.innerHTML =
                                   tempInnerHTML.join("");
                                 setIstagged(false);
+                                setTaggedUserActive(false);
                               }}
                             >
                               {value?.userName}
