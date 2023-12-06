@@ -305,7 +305,7 @@ const ChatListing = ({
   const formattedTime = date.toUTCString();
 
   useEffect(() => {
-    if (taggedUserActive) {
+    // if (taggedUserActive) {
       const getMetionmememberlist = mentionMembers.filter((items: any) => {
         const commentText = commentRef?.current?.innerText.trim();
 
@@ -319,7 +319,7 @@ const ChatListing = ({
       // );
       setTaggedUser(getMetionmememberlist);
       // console.log("checking", getMetionmememberlist);
-    }
+    // }
   }, [commentRef?.current?.innerText]);
   const createCollection = async (data: any) => {
     try {
