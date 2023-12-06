@@ -1054,6 +1054,11 @@ const ChatListing = ({
     setReplyMessageSection(false);
   };
 
+  const closeEditMessage = () =>{
+    setEditMessage(false);
+    commentRef.current.innerText = "";
+  }
+
   useEffect(() => {
     if (initializeApp === "true" || allChannelItem) {
       try {
@@ -2486,9 +2491,13 @@ const ChatListing = ({
                       <span className={ChatListingStyles.editMeesageText}>
                         Edit Message
                       </span>
-                      <span className={ChatListingStyles.editMeesageIcon}>
+                      {/* <span className={ChatListingStyles.editMeesageIcon}>
                         <MsgEditIcon />
-                      </span>
+                      </span> */}
+                       <span
+                        className="chatWindowClose"
+                        onClick={closeEditMessage}
+                      ></span>
                     </div>
                   </div>
                 )}
