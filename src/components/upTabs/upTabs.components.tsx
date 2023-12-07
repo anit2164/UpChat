@@ -356,42 +356,32 @@ const UpTabs = () => {
 
   const getUnpinData = async (tempArr: any, pageNo: any) => {
     try {
-      if (tempArr?.length > 0) {
-        // Check if data is available locally
-        if (isDataAvailableLocally(pageNo)) {
-          // Use local data
-          const localData = getLocalData(pageNo);
-          setAllChannel(localData);
-          setTempArr(localData);
-          setPinnedChannel(false);
-          setSoonzeChannel(false);
-          return;
-        }
+      const collectionRef = firestore.collection("channels");
 
-        const collectionRef = firestore.collection("channels");
+      if (tempArr?.length > 0) {
         const startIndex = (pageNo - 1) * dataPerPage;
         const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
-        const querySnapshot = await collectionRef
+
+        // Create a reference to the listener
+        collectionRef
           .where("enc_channelID", "in", batch)
-          .where("isSnoozed","==",false)
+          .where("isSnoozed", "==", false)
           .limit(dataPerPage)
-          .get();
+          .onSnapshot((querySnapshot) => {
+            const mergedResults = querySnapshot.docs.map((doc) => doc.data());
 
-        const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
+            setAllChannel([...allChannel, ...mergedResults]);
+            // setUnReadCount(mergedResults);
+            setTempArr(mergedResults);
+            setPinnedChannel(false);
+            setSoonzeChannel(false);
+          });
 
-        // Store the fetched data locally
-        storeLocalData(pageNo, mergedResults);
-
-        // Update the state with the fetched data
-        // setAllChannel(mergedResults);
-        setAllChannel([...allChannel, ...mergedResults]);
-        setTempArr([...allChannel, ...mergedResults]);
-
-        // setTempArr(mergedResults);
-        setPinnedChannel(false);
-        setSoonzeChannel(false);
+        // Optionally, store the unsubscribe function to clean up the listener later
+        // (e.g., when the component unmounts)
+        // Remember to call unsubscribe() when the listener is no longer needed.
       } else {
-        // Handle the case when tempArr is empty
+        setUnReadCount([]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
