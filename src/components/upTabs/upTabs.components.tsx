@@ -257,6 +257,8 @@ const UpTabs = () => {
   // }, [updatePinnedChannel, updateSoonzeChannel]);
 
   useEffect(() => {
+    console.log("useEffect call");
+    
     let tempArrPin: any = [];
     let tempArrUnPin: any = [];
     const unsubscribe = firestore
@@ -357,11 +359,12 @@ const UpTabs = () => {
   const getUnpinData = async (tempArr: any, pageNo: any) => {
     try {
       const collectionRef = firestore.collection("channels");
+console.log("getUnpinData");
 
       if (tempArr?.length > 0) {
         const startIndex = (pageNo - 1) * dataPerPage;
         const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
-
+        console.log("batch",batch);
         // Create a reference to the listener
         collectionRef
           .where("enc_channelID", "in", batch)
@@ -387,10 +390,16 @@ const UpTabs = () => {
       console.error("Error fetching data:", error);
     }
   };
+  console.log(allChannel,"allChannel");
+  console.log(tempArr,"tempArr");
+  
+  
 
   const handleScroll = () => {
     const element: any = arrawScroll.current;
     if (element) {
+      console.log(Math.round(element.scrollTop + element.clientHeight),  element.scrollHeight);
+      
       let cul =
       Math.round(element.scrollTop + element.clientHeight) -
       element.scrollHeight;
@@ -398,6 +407,8 @@ const UpTabs = () => {
         Math.round(element.scrollTop + element.clientHeight) ===
         element.scrollHeight || Math.abs(cul) === 1
       ) {
+        console.log("add in if",currentPage,totalPages);
+        
         if (currentPage < totalPages) {
           setCurrentPage((prevPage) => prevPage + 1);
         }
