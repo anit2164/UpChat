@@ -204,12 +204,10 @@ const Tile = ({
   // };
   const getUnpinData = async (tempArr: any, pageNo: any) => {
     try {
-      console.log("pageNopageNopageNopageNo", pageNo);
       const collectionRef = firestore.collection("channels");
 
       const startIndex = (pageNo - 1) * dataPerPage;
       let mergedResults = new Set();
-      console.log("tempArrtempArrtempArr", tempArr);
 
       tempArr.forEach((item: any) => {
         const unsubscribe = collectionRef
@@ -242,7 +240,6 @@ const Tile = ({
               startIndex,
               startIndex + dataPerPage
             );
-            console.log("batchbatchbatch", updateData);
             // setBatchData([...updateData, ...batch]);
             setData([...updateData, ...batch]);
             setTempArr([...updateData, ...batch]);
@@ -250,7 +247,6 @@ const Tile = ({
           });
         return () => unsubscribe();
       });
-      console.log(mergedResults, "mergedResultsmergedResults");
     } catch (error) {
       console.error("Error fetching data:", error);
     }

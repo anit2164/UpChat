@@ -113,7 +113,6 @@ const BookMarkMessage = ({ setBookMarkMessage, enc_channelID }: any) => {
       bookdata[i][color] = getRandomColor();
     }
     setAllBookmarksData(bookdata);
-    console.log(bookdata, "bookdatabookdatabookdatabookdata");
   };
 
   useEffect(() => {
@@ -127,7 +126,6 @@ const BookMarkMessage = ({ setBookMarkMessage, enc_channelID }: any) => {
     }
   }, [showBookmarksData, loginUserId]);
 
-  console.log(allBookmarksData, "allBookmarksDataallBookmarksData");
 
   let initials;
   const userInitial = (item: any) => {

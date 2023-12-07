@@ -244,7 +244,6 @@ const ChatListing = ({
       if (!querySnapshot.empty) {
         const lastChatDoc = querySnapshot.docs[0];
         const lastChatID = lastChatDoc.id;
-        console.log("Last chat ID:", lastChatID);
         const subcollectionRef = firestore.collection(
           `ChannelChatsMapping/${allChannelItem?.enc_channelID}/chats/${lastChatID}/user_chats/`
         );
@@ -994,7 +993,6 @@ const ChatListing = ({
             (taggedItem: any) => taggedItem.chatId === item.enc_chatID
           )
         );
-        console.log("matchingItemmatchingItem", matchingItem);
         if (matchingItem) {
           const targetMessage = document.getElementById(
             matchingItem.enc_chatID
@@ -1161,7 +1159,6 @@ const ChatListing = ({
       setReplyMessage(item);
     }
     if (value.key === ChannelMenu.BOOKMARKS) {
-      console.log("itemitems", item);
       const userChatsQuery = firestore
         .collection("ChannelChatsMapping")
         .doc(allChannelItem?.enc_channelID)
@@ -1184,7 +1181,6 @@ const ChatListing = ({
               .update(updatedData)
               .then(() => {
                 setShowBookMark(updatedData);
-                console.log("User Chat Data updated:", updatedData);
               })
               .catch((error: any) => {
                 console.error("Error updating user chat data:", error);
@@ -1277,7 +1273,6 @@ const ChatListing = ({
     setTaggedData: any
   ) => {
     try {
-      console.log("channelData?.enc_channelID", allChannelItem?.enc_channelID);
       const query = firestore
         .collectionGroup("user_chats")
         .where("enc_channelID", "==", allChannelItem?.enc_channelID)
@@ -1291,7 +1286,6 @@ const ChatListing = ({
         const data = doc.data();
         taggedData.push(data);
       });
-      console.log("taggedDatataggedDatataggedData", taggedData);
 
       setTaggedData(taggedData);
     } catch (error) {
@@ -2671,7 +2665,6 @@ const ChatListing = ({
                                               ChatListingStyles.chatWindowClose
                                             }
                                             onClick={(e) => {
-                                              console.log("hello word;");
                                               e.stopPropagation();
                                               handleFileClose(file);
                                             }}
@@ -2751,7 +2744,6 @@ const ChatListing = ({
                                   {selectedFile.length > 0 &&
                                     selectedFile.map((file: any, index: any) => {
                                       const fileType = file.name.split(".")[1];
-                                      console.log("fileType", fileType);
                                       return (
                                         <span key={index}>
                                           <span
