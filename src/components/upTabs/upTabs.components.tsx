@@ -1,5 +1,5 @@
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Accordion from "../accordion/accordion.components";
 import BriefcaseSVG from "../../assets/svg/briefcase.svg";
 import SearchSVG from "../../assets/svg/search.svg";
@@ -12,19 +12,21 @@ import "firebase/compat/firestore";
 import SnoozeGroupDetails from "../snoozeList/snoozeGroups";
 import { limits } from "../../constants/constantLimit";
 import ChatSVG from "../../assets/svg/chat.svg";
+import { useContext } from "react";
 import { MyContext } from "../chat-list";
 import { AiOutlineLeft } from "react-icons/ai";
 import { AiOutlineRight } from "react-icons/ai";
-
-
 
 firebase.initializeApp(firebaseConfig);
 
 const UpTabs = () => {
   const [search, setSearch] = useState("");
   const [allChannel, setAllChannel] = useState<any>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [tempArr, setTempArr] = useState<any>([]);
   const [pinData, setpinData] = useState([]);
+  const [unpinData, setUnpinData] = useState([]);
   const [tempArrFalse, setTempArrFalse] = useState([]);
   const [updatePinnedChannel, setPinnedChannel] = useState(false);
   const [updateSoonzeChannel, setSoonzeChannel] = useState(false);
@@ -34,22 +36,14 @@ const UpTabs = () => {
   const [unReadCount, setUnReadCount] = useState([]);
   const [unReadCountPinned, setUnReadCountPinned] = useState([]);
   const [upChat, setUpChat] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [unpinData, setUnpinData] = useState([]);
   const [localData, setLocalData] = useState<any>({});
   const [scrolling, setScrolling] = useState(false);
 
-
   const dataPerPage = 10;
-
-
   const loginUserId = localStorage.getItem("EmployeeID");
+  const firestore = firebase.firestore();
   const { showUpChat }: any = useContext(MyContext);
   const arrawScroll = useRef(null);
-
-
-  const firestore = firebase.firestore();
 
   const LastPinnedGroups = () => {
     setPinnedChannel(true);
@@ -58,7 +52,6 @@ const UpTabs = () => {
   const LastSnoozeGroups = () => {
     setSoonzeChannel(true);
   };
-
 
   const isDataAvailableLocally = (pageNo: any) => {
     return localData.hasOwnProperty(pageNo);
@@ -72,7 +65,6 @@ const UpTabs = () => {
   const getLocalData = (pageNo: any) => {
     return localData[pageNo] || []; // Return an empty array if data doesn't exist
   };
-
 
   // useEffect(() => {
   //   // Retrive Data
@@ -98,21 +90,6 @@ const UpTabs = () => {
   //   fetchData();
   // }, [updatePinnedChannel, updateSoonzeChannel]);
 
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(prevPage => prevPage - 1);
-      // getUnpinData(tempArr, currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(prevPage => prevPage + 1);
-      // getUnpinData(tempArr, currentPage + 1);
-    }
-  };
-
-
   let tempCount: any = [];
   const tempInfo = async (data: any) => {
     let countArr: any = {};
@@ -122,7 +99,6 @@ const UpTabs = () => {
       .where("isRead", "==", false)
       .where("enc_channelID", "==", data)
       .where("userEmpID", "==", loginUserId)
-      .limit(limits.pageSize)
       .onSnapshot((snapshot) => {
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
@@ -256,9 +232,48 @@ const UpTabs = () => {
   //   return () => unsubscribe();
   // }, [updatePinnedChannel, updateSoonzeChannel]);
 
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+      // getUnpinData(tempArr, currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
+      // getUnpinData(tempArr, currentPage + 1);
+    }
+  };
+
+  // useEffect(() => {
+  //   let tempArrPin: any = [];
+  //   let tempArrUnPin: any = [];
+  //   const unsubscribe = firestore
+  //     .collectionGroup(`user`)
+  //     .where("userEmpId", "==", loginUserId)
+  //     .limit(limits.pageSize)
+  //     .onSnapshot((snapshot) => {
+  //       snapshot.forEach((doc) => {
+  //         const user = doc.data();
+  //         if (user.isPinned) {
+  //           tempArrPin.push(user?.channelID.toString());
+  //           tempInfoData(user?.channelID.toString());
+  //         } else {
+  //           tempArrUnPin.push(user?.channelID.toString());
+  //           tempInfo(user?.channelID.toString());
+  //         }
+  //       });
+  //       getPinData(tempArrPin);
+  //       setUnpinData(tempArrUnPin);
+  //       // getUnpinData(tempArrUnPin);
+  //       setTotalPages(Math.ceil(tempArrUnPin.length / dataPerPage));
+  //       getUnpinData(tempArrUnPin, currentPage);
+  //     });
+  //   return () => unsubscribe();
+  // }, [updatePinnedChannel, updateSoonzeChannel, currentPage]);
+
   useEffect(() => {
-    console.log("useEffect call");
-    
     let tempArrPin: any = [];
     let tempArrUnPin: any = [];
     const unsubscribe = firestore
@@ -278,9 +293,10 @@ const UpTabs = () => {
         });
         getPinData(tempArrPin);
         setUnpinData(tempArrUnPin);
-        setTotalPages(Math.ceil(tempArrUnPin.length / dataPerPage))
+        setTotalPages(Math.ceil(tempArrUnPin.length / dataPerPage));
         getUnpinData(tempArrUnPin, currentPage);
       });
+
     return () => unsubscribe();
   }, [updatePinnedChannel, updateSoonzeChannel, currentPage]);
 
@@ -290,7 +306,7 @@ const UpTabs = () => {
       const batch = tempArr.splice(0, 30);
       const query = collectionRef
         .where("enc_channelID", "in", batch)
-        .where("isSnoozed","==",false)
+        .where("isSnoozed", "==", false)
         .limit(limits.pageSize)
         .onSnapshot((querySnapshot) => {
           const mergedResults: any = [];
@@ -311,7 +327,9 @@ const UpTabs = () => {
   //   const collectionRef = firestore.collection("channels");
   //   if (tempArr?.length > 0) {
   //     const batch = tempArr?.splice(0, 30);
-  //     const query = collectionRef.where("enc_channelID", "in", batch).limit(limits.pageSize);
+  //     const query = collectionRef
+  //       .where("enc_channelID", "in", batch)
+  //       .limit(limits.pageSize);
   //     query.onSnapshot((querySnapshot) => {
   //       const mergedResults: any = [];
 
@@ -328,43 +346,15 @@ const UpTabs = () => {
   //     setUnReadCount([]);
   //   }
   // };
-  // const getUnpinData = async (tempArr: any, pageNo: any) => {
-  //   try {
-  //     const collectionRef = firestore.collection("channels");
-  //     if (tempArr?.length > 0) {
-  //       const startIndex = (pageNo - 1) * dataPerPage;
-  //       console.log('startIndex', startIndex, startIndex + dataPerPage);
-  //       const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
-
-  //       const querySnapshot = await collectionRef
-  //         .where("enc_channelID", "in", batch)
-  //         .limit(dataPerPage)
-  //         .get();
-
-  //       const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
-  //       setAllChannel(mergedResults);
-  //       // setUnReadCount(mergedResults);
-  //       setTempArr(mergedResults);
-  //       setPinnedChannel(false);
-  //       setSoonzeChannel(false);
-  //     } else {
-  //       setUnReadCount([]);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
 
   const getUnpinData = async (tempArr: any, pageNo: any) => {
     try {
       const collectionRef = firestore.collection("channels");
-console.log("getUnpinData");
 
       if (tempArr?.length > 0) {
         const startIndex = (pageNo - 1) * dataPerPage;
         const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
-        console.log("batch",batch);
+
         // Create a reference to the listener
         collectionRef
           .where("enc_channelID", "in", batch)
@@ -390,25 +380,59 @@ console.log("getUnpinData");
       console.error("Error fetching data:", error);
     }
   };
-  console.log(allChannel,"allChannel");
-  console.log(tempArr,"tempArr");
-  
-  
+  // const getUnpinData = async (tempArr: any, pageNo: any) => {
+  //   try {
+  //     if (tempArr?.length > 0) {
+  //       // Check if data is available locally
+  //       // if (isDataAvailableLocally(pageNo)) {
+  //       //   // Use local data
+  //       //   const localData = getLocalData(pageNo);
+  //       //   setAllChannel(localData);
+  //       //   setTempArr(localData);
+  //       //   setPinnedChannel(false);
+  //       //   setSoonzeChannel(false);
+  //       //   return;
+  //       // }
 
+  //       const collectionRef = firestore.collection("channels");
+  //       const startIndex = (pageNo - 1) * dataPerPage;
+  //       const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
+  //       const querySnapshot = await collectionRef
+  //         .where("enc_channelID", "in", batch)
+  //         .where("isSnoozed", "==", false)
+  //         .get();
+
+  //       const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
+
+  //       // Store the fetched data locally
+  //       storeLocalData(pageNo, mergedResults);
+
+  //       // Update the state with the fetched data
+  //       // setAllChannel(mergedResults);
+  //       setTempArr([...allChannel, ...mergedResults]);
+
+  //       setAllChannel([...allChannel, ...mergedResults]);
+  //       setPinnedChannel(false);
+  //       setSoonzeChannel(false);
+  //     } else {
+  //       // Handle the case when tempArr is empty
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
   const handleScroll = () => {
     const element: any = arrawScroll.current;
     if (element) {
-      console.log(Math.round(element.scrollTop + element.clientHeight),  element.scrollHeight);
-      
       let cul =
-      Math.round(element.scrollTop + element.clientHeight) -
-      element.scrollHeight;
+        Math.round(element.scrollTop + element.clientHeight) -
+        element.scrollHeight;
+
       if (
         Math.round(element.scrollTop + element.clientHeight) ===
-        element.scrollHeight || Math.abs(cul) === 1
+          element.scrollHeight ||
+        Math.abs(cul) === 1
       ) {
-        console.log("add in if",currentPage,totalPages);
-        
         if (currentPage < totalPages) {
           setCurrentPage((prevPage) => prevPage + 1);
         }
@@ -422,7 +446,7 @@ console.log("getUnpinData");
   const fetchdata = () => {
     if (search) {
       const collectionRef = firestore.collection("channels");
-      let filteredData: any = [];
+      let filteredData = [];
       const batchedQueries = [];
       const batchSize = 30; // Number of values per batch
 
@@ -456,6 +480,7 @@ console.log("getUnpinData");
           setAllChannel(mergedResults);
         })
         .catch((error) => {
+          // Handle errors here
           console.error("error", error);
         });
       // collectionRef
@@ -491,7 +516,7 @@ console.log("getUnpinData");
           tempArr.map(async (item: any) => {
             const querySnapshot = await collectionRef
               .where("enc_channelID", "==", item)
-              .where("isSnoozed","==",false)
+              // .where("isSnoozed", "==", false)
               .limit(dataPerPage)
               .get();
 
@@ -519,7 +544,7 @@ console.log("getUnpinData");
     const unsubscribe = firestore
       .collectionGroup(`user`)
       .where("userEmpId", "==", loginUserId)
-      .limit(limits.pageSize)
+      // .limit(limits.pageSize)
       .onSnapshot((snapshot) => {
         let tempArrUnPin: any = [];
         snapshot.forEach((doc) => {
@@ -549,12 +574,10 @@ console.log("getUnpinData");
 
         setAllChannel(filteredUnpinData);
       });
-      // setDataFalse(filteredData);
     } else {
       setAllChannel(tempArr);
     }
   }, [search]);
-
 
   useEffect(() => {
     if (search) {
@@ -562,8 +585,7 @@ console.log("getUnpinData");
         return (
           item?.role?.toLowerCase()?.includes(search?.toLowerCase()) ||
           item?.companyName.toLowerCase().includes(search?.toLowerCase()) ||
-          item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase()) ||
-          item?.hrStatus?.toLowerCase()?.includes(search?.toLowerCase())
+          item?.hrNumber?.toLowerCase()?.includes(search?.toLowerCase())
         );
       });
       // setData(filteredData);
@@ -661,8 +683,11 @@ console.log("getUnpinData");
               />
             </div>
 
-            <div ref={arrawScroll}
-              onScroll={handleScroll} className={UpTabsStyle.chatListWrapper}>
+            <div
+              ref={arrawScroll}
+              onScroll={handleScroll}
+              className={UpTabsStyle.chatListWrapper}
+            >
               <PinAccordian
                 icon={<PinnedGroupsSVG />}
                 label={"Pinned Groups"}
@@ -673,14 +698,16 @@ console.log("getUnpinData");
                 LastPinnedGroups={LastPinnedGroups}
                 setUpChat={setUpChat}
                 upChat={upChat}
+              
               />
 
               <div className={UpTabsStyle.dropPaginationArrow}>
                 {/* <div className={UpTabsStyle.dropPagArrow}>
                   <div className={UpTabsStyle.PginationArrowWrap}>
                     <span
-                      className={`${UpTabsStyle.Prev} ${currentPage === 1 && UpTabsStyle.iconDisabled
-                        }`}
+                      className={`${UpTabsStyle.Prev} ${
+                        currentPage === 1 && UpTabsStyle.iconDisabled
+                      }`}
                       onClick={handlePreviousPage}
                     >
                       <AiOutlineLeft />
@@ -689,15 +716,15 @@ console.log("getUnpinData");
                       {currentPage}
                     </span>
                     <span
-                      className={`${UpTabsStyle.Next} ${allChannel?.length < 10 && UpTabsStyle.iconDisabled
-                        }`}
+                      className={`${UpTabsStyle.Next} ${
+                        allChannel?.length < 10 && UpTabsStyle.iconDisabled
+                      }`}
                       onClick={handleNextPage}
                     >
                       <AiOutlineRight />
                     </span>
                   </div>
                 </div> */}
-
 
                 <Accordion
                   icon={<BriefcaseSVG />}
@@ -718,7 +745,6 @@ console.log("getUnpinData");
                   unpinData={unpinData}
                 />
               </div>
-
               {showUpChat === true && (
                 <div className={UpTabsStyle.upChatClose}>
                   <ChatSVG />

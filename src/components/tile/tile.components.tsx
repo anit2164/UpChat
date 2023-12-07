@@ -12,8 +12,7 @@ import { ChannelMenu } from "../../constants/application";
 import ViewHRDetailsSVG from "../../assets/svg/viewHrDetails.svg";
 import ChatListing from "../chat-list/chatListing";
 import MyContext from "../chat-list/myContext";
-import { limits } from "../../constants/constantLimit"
-import PaginationArrow from "../../assets/svg/paginationArrow.svg";
+import { limits } from "../../constants/constantLimit";
 import { debounce } from "lodash";
 
 firebase.initializeApp(firebaseConfig);
@@ -31,28 +30,33 @@ const Tile = ({
   handleNextPage,
   handlePreviousPage,
   totalPages,
-  // unpinData,
 }: any) => {
   const [dataNew, setDataNew] = useState([]);
   const [tempArr, setTempArr] = useState<any>([]);
-  const [activeUser, setActiveUser] = useState(false);
+  // const [activeUser, setActiveUser] = useState(false);
   const [updateData, setUpdateData] = useState<any>([]);
   const [showChat, setShowList] = useState(false);
   const [listingChats, setListingChats] = useState([]);
   const [allChannelItem, setAllChannelItem] = useState<any>();
   const [readCount, setReadCount] = useState<any>([]);
   const [isReadInfo, setIsReadInfo] = useState({});
-  const [loadedCount, setLoadedCount] = useState(0);
-  const [showScroll, setShowScroll] = useState(false);
   const [isTileChat, setIsTileChat] = useState(false);
-  const [unPinData, setUnpinData] = useState([]);
+
+  // const [loading, setLoading] = useState(false);
+  // const [page, setPage] = useState(1);
+  const [unPinData, setUnpinData] = useState<any>([]);
+  const [batchData, setBatchData] = useState<any>([]);
   const [tagReadCount, setTagReadCount] = useState<any>([]);
 
-  const dataPerPage: any = 10
+  const scrollDown = localStorage.getItem("scrollDown");
+
+  const itemsPerPage = 2;
+  const dataPerPage: any = 10;
 
   const firestore = firebase.firestore();
-
-  const { setTotalCount, setPinChat, tileChat, setTileChat }: any = useContext(MyContext);
+  // const { totalCount }: any = useContext(MyContext);
+  const { setTotalCount, setPinChat, tileChat, setTileChat }: any =
+    useContext(MyContext);
 
   updateData?.sort((a: any, b: any) => b?.lastMessageTime - a?.lastMessageTime);
 
@@ -63,21 +67,163 @@ const Tile = ({
   const loginUserId = localStorage.getItem("EmployeeID");
 
   let tempCount: any = [];
-  // const tempInfo = async (data: any) => {
-  //   let countArr: any = {};
-  //   // const firestore = firebase.firestore();
-  //   const readOrUnread = firestore.collectionGroup("user_chats");
-  //   const query = readOrUnread
-  //     .where("isRead", "==", false)
-  //     .where("enc_channelID", "==", data)
-  //     .where("userEmpID", "==", loginUserId)
-  //     .onSnapshot((snapshot) => {
-  //       countArr.enc_ChannelIDCount = data;
-  //       countArr.readCount = snapshot?.docs?.length;
-  //       tempCount.push(countArr);
-  //       setReadCount(tempCount);
-  //     });
+  const tempInfo = async (data: any) => {
+    try {
+      const readOrUnread = firestore.collectionGroup("user_chats");
+      readOrUnread
+        .where("isRead", "==", false)
+        .where("enc_channelID", "==", data)
+        .where("userEmpID", "==", loginUserId)
+        .onSnapshot((snapshot) => {
+          if (scrollDown == "false" || scrollDown == null) {
+            const newTempCount: any = [];
+
+            if (snapshot.docs.length > 0) {
+              snapshot.forEach((doc) => {
+                const user = doc.data();
+                const countArr = {
+                  enc_ChannelIDCount: data,
+                  readCount: snapshot.docs.length,
+                };
+
+                newTempCount.push(countArr);
+              });
+
+              setReadCount((prevState: any) => {
+                const updatedCounts = prevState.map((countItem: any) => {
+                  if (countItem.enc_ChannelIDCount === data) {
+                    countItem.readCount = 0;
+                  }
+                  return countItem;
+                });
+
+                const uniqueItemsMap = new Map();
+                for (const item of [...updatedCounts, ...newTempCount]) {
+                  uniqueItemsMap.set(item.enc_ChannelIDCount, item);
+                }
+                const mergedState = Array.from(uniqueItemsMap.values());
+                return mergedState;
+              });
+            } else {
+              setReadCount((prevState: any) =>
+                prevState.filter(
+                  (countItem: any) => countItem.enc_ChannelIDCount !== data
+                )
+              );
+            }
+          }
+        });
+    } catch (error) {
+      console.error("Error in tempInfo:", error);
+    }
+  };
+
+  // const getUnpinData = async (tempArr: any, pageNo: any) => {
+  //   try {
+  //     const collectionRef = firestore.collection("channels");
+  //     if (tempArr?.length > 0) {
+  //       const startIndex = (pageNo - 1) * dataPerPage;
+  //       const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
+
+  //       // Create a reference to the listener
+  //       collectionRef
+  //         .where("enc_channelID", "in", batch)
+  //         .limit(dataPerPage)
+  //         .onSnapshot((querySnapshot) => {
+  //           const mergedResults: any = querySnapshot.docs.map((doc) =>
+  //             doc.data()
+  //           );
+
+  //           setData([...data, ...mergedResults]);
+  //           setUpdateData(mergedResults);
+  //           // setUnReadCount(mergedResults);
+  //           setTempArr(mergedResults);
+  //           // setPinnedChannel(false);
+  //           // setSoonzeChannel(false);
+  //         });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
   // };
+
+  // const getUnpinData = async (tempArr: any, pageNo: any) => {
+  //   console.log(tempArr, "tempArr");
+  //   try {
+  //     const collectionRef = firestore.collection("channels");
+  //     if (tempArr?.length > 0) {
+  //       const startIndex = (pageNo - 1) * dataPerPage;
+  //       const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
+
+  //       // Create a reference to the listener
+  //       collectionRef
+  //         .where("enc_channelID", "in", batch)
+  //         .limit(dataPerPage)
+  //         .onSnapshot((querySnapshot) => {
+  //           const mergedResults: any = querySnapshot.docs.map((doc) =>
+  //             doc.data()
+  //           );
+  //           setData([...data, ...mergedResults]);
+  //           setUpdateData(mergedResults);
+  //           // setUnReadCount(mergedResults);
+  //           setTempArr(mergedResults);
+  //           // setPinnedChannel(false);
+  //           // setSoonzeChannel(false);
+  //         });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+  const getUnpinData = async (tempArr: any, pageNo: any) => {
+    try {
+      const collectionRef = firestore.collection("channels");
+
+      const startIndex = (pageNo - 1) * dataPerPage;
+      let mergedResults = new Set();
+
+      tempArr.forEach((item: any) => {
+        const unsubscribe = collectionRef
+          .where("enc_channelID", "==", item)
+          .onSnapshot((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              mergedResults.add(doc.data());
+            });
+            const uniqueDataMap = new Map();
+            mergedResults.forEach((item: any) => {
+              const channelId = item.enc_channelID;
+              if (
+                !uniqueDataMap.has(channelId) ||
+                uniqueDataMap.get(channelId).lastMessageTime.seconds <
+                  item.lastMessageTime.seconds
+              ) {
+                uniqueDataMap.set(channelId, item);
+              }
+            });
+            const uniqueData = Array.from(uniqueDataMap.values());
+            uniqueData.sort((a, b) => {
+              return (
+                b.lastMessageTime.seconds - a.lastMessageTime.seconds ||
+                b.lastMessageTime.nanoseconds - a.lastMessageTime.nanoseconds
+              );
+            });
+            // const sortedResults = Array.from(mergedResults).sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+            const batch = uniqueData.slice(
+              startIndex,
+              startIndex + dataPerPage
+            );
+            setBatchData([...updateData, ...batch]);
+            setData([...updateData, ...batch]);
+            setTempArr([...updateData, ...batch]);
+            setUpdateData([...updateData, ...batch]);
+          });
+        return () => unsubscribe();
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   const tempInfoTagg = async (data: any) => {
     let countArr = {};
     const readOrUnread = firestore.collectionGroup("user_chats");
@@ -122,136 +268,6 @@ const Tile = ({
         }
       });
   };
-  const scrollDown = localStorage.getItem("scrollDown");
-  const tempInfo = async (data: any) => {
-    try {
-      const readOrUnread = firestore.collectionGroup("user_chats");
-
-      readOrUnread
-        .where("isRead", "==", false)
-        .where("enc_channelID", "==", data)
-        .where("userEmpID", "==", loginUserId)
-        .onSnapshot((snapshot) => {
-          if (scrollDown == "false" || scrollDown == "null") {
-            const newTempCount: any = [];
-
-            if (snapshot.docs.length > 0) {
-              snapshot.forEach((doc) => {
-                const user = doc.data();
-                const countArr = {
-                  enc_ChannelIDCount: data,
-                  readCount: snapshot.docs.length,
-                };
-
-                newTempCount.push(countArr);
-              });
-
-
-              setReadCount((prevState: any) => {
-                const updatedCounts = prevState.map((countItem: any) => {
-                  if (countItem.enc_ChannelIDCount === data) {
-                    countItem.readCount = 0; // Reset count to zero when chat is opened
-                  }
-                  return countItem;
-                });
-
-                const uniqueItemsMap = new Map();
-                for (const item of [...updatedCounts, ...newTempCount]) {
-                  uniqueItemsMap.set(item.enc_ChannelIDCount, item);
-                }
-                const mergedState = Array.from(uniqueItemsMap.values());
-                return mergedState;
-              });
-            } else {
-              setReadCount((prevState: any) =>
-                prevState.filter(
-                  (countItem: any) => countItem.enc_ChannelIDCount !== data
-                )
-              );
-            }
-          }
-        });
-    } catch (error) {
-      console.error("Error in tempInfo:", error);
-    }
-  };
-
-  // const getUnpinData = async (tempArr: any, pageNo: any) => {
-  //   try {
-  //     const collectionRef = firestore.collection("channels");
-  //     if (tempArr?.length > 0) {
-  //       const startIndex: any = (pageNo - 1) * dataPerPage;
-  //       const batch = tempArr.slice(startIndex, startIndex + dataPerPage);
-
-  //       // Create a reference to the listener
-  //       collectionRef
-  //         .where("enc_channelID", "in", batch)
-  //         .where("isSnoozed","==",false)
-  //         .limit(dataPerPage)
-  //         .onSnapshot((querySnapshot) => {
-  //           const mergedResults: any = querySnapshot.docs.map((doc) => doc.data());
-
-  //           setData([...data, ...mergedResults]);
-  //           // setUnReadCount(mergedResults);
-  //           setTempArr(mergedResults);
-  //           // setPinnedChannel(false);
-  //           // setSoonzeChannel(false);
-  //         });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-  const getUnpinData = async (tempArr: any, pageNo: any) => {
-    try {
-      const collectionRef = firestore.collection("channels");
-
-      const startIndex = (pageNo - 1) * dataPerPage;
-      let mergedResults = new Set();
-
-      tempArr.forEach((item: any) => {
-        const unsubscribe = collectionRef
-          .where("enc_channelID", "==", item)
-          .where("isSnoozed", "==", false)
-          .onSnapshot((querySnapshot :any) => {
-            querySnapshot.forEach((doc:any) => {
-              mergedResults.add(doc.data());
-            });
-            const uniqueDataMap = new Map();
-            mergedResults.forEach((item: any) => {
-              const channelId = item.enc_channelID;
-              if (
-                !uniqueDataMap.has(channelId) ||
-                uniqueDataMap.get(channelId).lastMessageTime.seconds <
-                  item.lastMessageTime.seconds
-              ) {
-                uniqueDataMap.set(channelId, item);
-              }
-            });
-            const uniqueData = Array.from(uniqueDataMap.values());
-            uniqueData.sort((a, b) => {
-              return (
-                b.lastMessageTime.seconds - a.lastMessageTime.seconds ||
-                b.lastMessageTime.nanoseconds - a.lastMessageTime.nanoseconds
-              );
-            });
-            // const sortedResults = Array.from(mergedResults).sort((a, b) => b.lastMessageTime - a.lastMessageTime);
-            const batch = uniqueData.slice(
-              startIndex,
-              startIndex + dataPerPage
-            );
-            // setBatchData([...updateData, ...batch]);
-            setData([...updateData, ...batch]);
-            setTempArr([...updateData, ...batch]);
-            setUpdateData([...updateData, ...batch]);
-          });
-        return () => unsubscribe();
-      });
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
   let tempArrUnPin: any = [];
   useEffect(() => {
     // let tempArrPin = [];
@@ -336,8 +352,8 @@ const Tile = ({
         .where("userEmpId", "==", loginUserId)
         // .where("isPinned", "==", false)
         // .limit(limits.pageSize)
-        .onSnapshot((snapshot:any) => {
-          snapshot.forEach((doc:any) => {
+        .onSnapshot((snapshot) => {
+          snapshot.forEach((doc) => {
             const user = doc.data();
             if (!user.isPinned) {
               //   tempArrPin.push(user?.channelID.toString());
@@ -358,6 +374,7 @@ const Tile = ({
     debouncedFunction();
     return () => {};
   }, [currentPage]);
+
   var sum = 0;
 
   const channelDropdown = useCallback(async (value: any, item: any) => {
@@ -411,6 +428,7 @@ const Tile = ({
       snoozeObj = item;
       snoozeObj.isSnoozed = true;
       try {
+        // const firestore = firebase.firestore();
         const collectionRef = firestore.collection("channels");
         const snapshot: any = collectionRef.doc(snoozeObj.id);
 
@@ -575,6 +593,7 @@ const Tile = ({
     // for (let i = 0; i < data.length; i++) {
     //   data[i][color] = getRandomColor();
     // }
+
     const uniqueMessages: any = {};
     data.forEach((item: any) => {
       if (
@@ -585,15 +604,107 @@ const Tile = ({
         uniqueMessages[item.hrNumber] = item;
       }
     });
-    const uniqueArray:any = Object.values(uniqueMessages);
+    const uniqueArray = Object.values(uniqueMessages);
 
     setUpdateData(uniqueArray);
-    setTempArr(uniqueArray);
+    setTempArr(data);
   }, [data]);
 
   let resetCount;
 
-  const showChatList = async (item: any) => {
+  // const showChatList = async (item: any) => {
+  //
+  //   setUpChat("tilechat");
+  //   setIsTileChat(true);
+  //   setPinChat(false);
+  //   setTileChat(true);
+
+  //   if (item?.enc_channelID !== allChannelItem?.enc_channelID) {
+
+  //     resetCount = item;
+  //     resetCount.readCount = 0;
+  //     // const clickedChannel = updateData.find(
+  //     //   (ele: any) => ele.enc_channelID === item.enc_channelID
+  //     // );
+  //     for (var i = 0; i < updateData.length; i++) {
+  //       sum += updateData[i]?.readCount;
+  //     }
+  //     setTotalCount(sum);
+  //     // setActiveUser(true);
+  //     setAllChannelItem(item);
+  //     setShowList(true);
+  //     try {
+  //       // const firestore = firebase.firestore();
+  //       let reduceFirebaseCall: any = [];
+  //       const unsubscribe = firestore
+  //         .collection(`ChannelChatsMapping/${item?.enc_channelID}/chats`)
+  //         .orderBy("date", "asc")
+  //         .onSnapshot((snapshot) => {
+
+  //           const messagesData: any = snapshot.docs.map((doc) => doc.data());
+  //           setListingChats(messagesData);
+  //           reduceFirebaseCall = snapshot;
+  //         });
+
+  //       const isReadCount = firestore
+  //         .collectionGroup("user_chats")
+  //         .where("userEmpID", "==", loginUserId)
+  //         .where("enc_channelID", "==", item?.enc_channelID)
+  //         .get();
+
+  //       isReadCount.then((querySnapshot) => {
+  //         querySnapshot.forEach((doc) => {
+  //           const updatedIsReadInfo = { ...isReadInfo, isRead: true };
+  //           setIsReadInfo(updatedIsReadInfo);
+  //         });
+  //       });
+
+  //       // Reduce firebase call
+  //       if (reduceFirebaseCall.docs.length > 0) {
+  //         lastDocument =
+  //           reduceFirebaseCall.docs[reduceFirebaseCall.docs.length - 1];
+  //       }
+
+  //       const userChats = firestore
+  //         .collectionGroup("user_chats")
+  //         .where("userEmpID", "==", loginUserId)
+  //         .where("enc_channelID", "==", item?.enc_channelID);
+
+  //       const tempUserchats = await userChats.get();
+
+  //       const dataArray = tempUserchats?.docs?.map((doc) => ({
+  //         id: doc.id,
+  //         ...doc.data(),
+  //       }));
+
+  //       for (let i = 0; i < dataArray.length; i++) {
+  //         let tempObj: any = dataArray[i];
+  //         tempObj.isRead = true;
+
+  //         firestore
+  //           .collectionGroup("user_chats")
+  //           .where("userEmpID", "==", loginUserId)
+  //           .where("enc_channelID", "==", item?.enc_channelID)
+  //           .limit(limits.pageSize)
+  //           .get()
+  //           .then((querySnapshot) => {
+  //             querySnapshot.docs.forEach((snapshot) => {
+  //               snapshot.ref.update(tempObj);
+  //             });
+  //           });
+  //         // setUpdateData(resetCount);
+  //       }
+
+  //       return () => {
+  //         unsubscribe();
+  //       };
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // };
+
+  const showChatList: any = async (item: any) => {
     setUpChat("tilechat");
     setIsTileChat(true);
     setPinChat(false);
@@ -707,7 +818,7 @@ const Tile = ({
             data.set(allChannelItem);
             const query = collectionRef
               .where("enc_channelID", "in", batch)
-              .where("isSnoozed","==",false)
+              .where("isSnoozed", "==", false)
               .limit(limits.pageSize)
               .get();
             queryPromises.push(query);
@@ -739,42 +850,66 @@ const Tile = ({
     }
     setTotalCount(sum);
   }, [updateData]);
+console.log("updateDataupdateData",updateData)
+  // useEffect(() => {
+  //   const fetchMoreData = () => {
+  //     setLoading(true);
+  //     const startIndex = (page - 2) * itemsPerPage;
+  //     const endIndex = startIndex + itemsPerPage;
+  //     const newItems = updateData.slice(startIndex, endIndex);
+  //     setTimeout(() => {
+  //       setUpdateData((prevItems: any) => [...prevItems, ...newItems]);
+  //       setLoading(false);
+  //     }, 500);
+  //   };
 
+  //   fetchMoreData();
+  // }, [page]);
 
-  useEffect(() => {
-    for (var i = 0; i < updateData.length; i++) {
-      sum += updateData[i]?.readCount;
-    }
-    setTotalCount(sum);
-  }, [updateData]);
+  // const handleScroll = () => {
+  //   const scrollTop = document.documentElement.scrollTop;
+  //   const windowHeight = window.innerHeight;
+  //   const scrollHeight = document.documentElement.scrollHeight;
 
-  useEffect(() => {
-    if (showScroll) {
-      loadMoreData(data);
-    }
-  }, [data, showScroll]);
+  //   if (scrollTop + windowHeight >= scrollHeight - 100 && !loading) {
+  //     setPage((prevPage) => prevPage + 2);
+  //   }
+  // };
 
-  const loadMoreData = (dataup: any) => {
-    setShowScroll(false);
-    const newData = dataup.slice(0, loadedCount + 10);
+  // useEffect(() => {
+  //   window.addEventListener("scroll", handleScroll, true);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
 
-    setUpdateData(newData);
-    setLoadedCount(loadedCount + 10);
-  };
+  // useEffect(() => {
+  //   if (showScroll) {
+  //     loadMoreData(data);
+  //   }
+  // }, [data, showScroll]);
 
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 100
-    ) {
-      setShowScroll(true);
-    }
-  };
+  // const loadMoreData = (dataup: any) => {
+  //   setShowScroll(false);
+  //   const newData = dataup.slice(0, loadedCount + 10);
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll, true);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  //   setUpdateData(newData);
+  //   setLoadedCount(loadedCount + 10);
+  // };
+
+  // const handleScroll = () => {
+  //   if (
+  //     window.innerHeight + document.documentElement.scrollTop >=
+  //     document.documentElement.offsetHeight - 100
+  //   ) {
+  //     setShowScroll(true);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   window.addEventListener("scroll", handleScroll, true);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   return (
     <>
@@ -782,15 +917,16 @@ const Tile = ({
         {updateData?.map((item: any) => {
           return (
             <div
-              className={`${TileStyle.chatItem} ${item?.readCount !== 0 ? TileStyle.unread : ""
-                }`}
+              className={`${TileStyle.chatItem} ${
+                item?.readCount !== 0 ? TileStyle.unread : ""
+              }`}
             >
               <div
                 className={TileStyle.dFlex}
                 onClick={() => showChatList(item)}
               >
                 <div
-                  className={` ${TileStyle.chatInitialThumb} `}
+                  className={` ${TileStyle.chatInitialThumb}`}
                   style={{
                     background: item.backGroudColor,
                     color: item.fontColor,
@@ -817,10 +953,10 @@ const Tile = ({
                     .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3")}
                 </div>
                 {tagReadCount.some(
-                      (countItem:any) =>
-                        countItem.enc_ChannelIDCount === item.enc_channelID
-                    ) ? (
-                      <>
+                  (countItem: any) =>
+                    countItem.enc_ChannelIDCount === item.enc_channelID
+                ) ? (
+                  <>
                     {
                       <span className={TileStyle.numSnooze}>
                         @
@@ -833,8 +969,8 @@ const Tile = ({
                         }
                       </span>
                     }
-                      </>
-                    ) : null}
+                  </>
+                ) : null}
                 {readCount.some(
                   (countItem: any) =>
                     countItem.enc_ChannelIDCount === item.enc_channelID
@@ -880,12 +1016,26 @@ const Tile = ({
       {/* {updateData?.length > 0 && unpinData?.length > 10 && (
         <div className={TileStyle.dropPagArrow}>
           <div className={TileStyle.PginationArrowWrap}>
-            <span className={`${TileStyle.Prev} ${currentPage === 1 && TileStyle.iconDisabled}`} onClick={handlePreviousPage}><PaginationArrow /></span>
-
-            <span className={`${TileStyle.Next} ${currentPage == totalPages && TileStyle.iconDisabled}`} onClick={handleNextPage} ><PaginationArrow /></span>
+            <span
+              className={`${TileStyle.Prev} ${
+                currentPage === 1 && TileStyle.iconDisabled
+              }`}
+              onClick={handlePreviousPage}
+            >
+              <PaginationArrow />
+            </span>
+            <span
+              className={`${TileStyle.Next} ${
+                currentPage == totalPages && TileStyle.iconDisabled
+              }`}
+              onClick={handleNextPage}
+            >
+              <PaginationArrow />
+            </span>
           </div>
         </div>
       )} */}
+
       {tileChat === true && isTileChat === true && (
         <ChatListing
           showChatList={showChatList}
@@ -895,10 +1045,10 @@ const Tile = ({
           setAllChannelItem={setAllChannelItem}
           updateChannelDateTime={updateChannelDateTime}
           setShowList={setShowList}
-          activeUser={activeUser}
-          setActiveUser={setActiveUser}
-          setUpChat={setUpChat}
+          // activeUser={activeUser}
+          // setActiveUser={setActiveUser}
           upChat={upChat}
+          setUpChat={setUpChat}
           setIsTileChat={setIsTileChat}
         />
       )}
