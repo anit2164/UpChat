@@ -851,7 +851,6 @@ const Tile = ({
     }
     setTotalCount(sum);
   }, [updateData]);
-console.log("updateDataupdateData",updateData)
   // useEffect(() => {
   //   const fetchMoreData = () => {
   //     setLoading(true);

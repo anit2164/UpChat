@@ -123,7 +123,6 @@ const UpTabs = () => {
   };
   const createFavicon = () => {
     const faviconElement: any = document.getElementById("favicon");
-    console.log("faviconElementfaviconElement", faviconElement);
     if (faviconElement) {
       setFavicon(faviconElement.href);
 
