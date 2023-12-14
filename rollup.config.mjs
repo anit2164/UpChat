@@ -8,12 +8,15 @@ import terser from "@rollup/plugin-terser";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import svgr from "@svgr/rollup";
 import json from "@rollup/plugin-json";
+import url from "@rollup/plugin-url";
 
 export default [
   {
     input: "src/index.ts",
     output: [
-
+      // {
+      //   dir: "dist",
+      // },
       {
         file: packageJson.main,
         format: "cjs",
@@ -22,7 +25,11 @@ export default [
         file: packageJson.module,
         format: "esm",
       },
-
+      // {
+      //   manualChunks: {
+      //     myContext: ["myContext.tsx"],
+      //   },
+      // },
     ],
     plugins: [
       svgr(),
@@ -31,6 +38,12 @@ export default [
         browser: true,
         preferBuiltins: false,
       }),
+      url({
+        include: ["**/*.png", "**/*.jpg", "**/*.gif", "**/*.jpeg"],
+        limit: Infinity,
+        emitFiles: true,
+      }),
+
       commonjs(),
       typescript({ tsconfig: "./tsconfig.json" }),
       postcss({

@@ -16,6 +16,9 @@ import { useContext } from "react";
 import { MyContext } from "../chat-list";
 import { AiOutlineLeft } from "react-icons/ai";
 import { AiOutlineRight } from "react-icons/ai";
+import icon from "../../assets/images/logo.png";
+// import IconSVG from "../../assets/images/favicon.png";
+import faviIcon from "../../assets/images/favicon.png";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -38,6 +41,12 @@ const UpTabs = () => {
   const [upChat, setUpChat] = useState("");
   const [localData, setLocalData] = useState<any>({});
   const [scrolling, setScrolling] = useState(false);
+  const [resetCount, setResetCount] = useState(false);
+  const [unreadCounts, setUnreadCounts] = useState({});
+  const [notificationData, setNotificationData] = useState([]);
+  const [favicon, setFavicon] = useState(null);
+  const [notificationFavicon, setNotificationFavicon] = useState(null);
+  const [base64Image, setBase64Image] = useState(null);
 
   const dataPerPage = 10;
   const loginUserId = localStorage.getItem("EmployeeID");
@@ -100,12 +109,170 @@ const UpTabs = () => {
       .where("enc_channelID", "==", data)
       .where("userEmpID", "==", loginUserId)
       .onSnapshot((snapshot) => {
+        const unreadCount = snapshot.docs.length;
+
+        setUnreadCounts((prevCounts) => ({
+          ...prevCounts,
+          [data]: unreadCount,
+        }));
         countArr.enc_ChannelIDCount = data;
         countArr.readCount = snapshot?.docs?.length;
         tempCount.push(countArr);
         setReadCount(tempCount);
       });
   };
+  const createFavicon = () => {
+    const faviconElement: any = document.getElementById("favicon");
+    console.log("faviconElementfaviconElement", faviconElement);
+    if (faviconElement) {
+      setFavicon(faviconElement.href);
+
+      const img = new Image();
+      img.src = faviconElement.href;
+      img.onload = () => {
+        const canvas: any = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const context: any = canvas.getContext("2d");
+        context.drawImage(img, 0, 0, img.width, img.height);
+        context.beginPath();
+        context.arc(
+          img.width - img.width / 5,
+          img.height / 5,
+          img.width / 5,
+          0,
+          2 * Math.PI
+        );
+        context.fillStyle = "#f00000";
+        context.fill();
+        faviconElement.href = canvas.toDataURL("image/png");
+        setNotificationFavicon(canvas.toDataURL("image/png"));
+      };
+    } else {
+      console.error("Favicon element not found");
+    }
+  };
+  const convertImage = () => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = faviIcon;
+
+      img.onload = () => {
+        // Create a canvas element
+        const canvas = document.createElement("canvas");
+        const context: any = canvas.getContext("2d");
+
+        // Set canvas dimensions to the image dimensions
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Draw the image on the canvas
+        context.drawImage(img, 0, 0);
+
+        // Get the base64-encoded image data
+        const dataURL: any = canvas.toDataURL("image/png");
+        // Set the base64-encoded image data in state
+        setBase64Image(dataURL);
+
+        // Resolve the promise
+        resolve(dataURL);
+      };
+    });
+  };
+  useEffect(() => {
+    let getUnreadCount: any = localStorage.getItem("unreadCount");
+    const prevUnreadCounts = JSON.parse(getUnreadCount) || {};
+    let totalCount = 0;
+    const mergedResults: any = [];
+
+    // Merge the current unreadCounts with the previous counts from localStorage
+    const mergedUnreadCounts = { ...prevUnreadCounts, ...unreadCounts };
+
+    const promises = Object.entries(mergedUnreadCounts).map(([key, value]) => {
+      return new Promise((resolve: any, reject) => {
+        const hasDifference = value !== (prevUnreadCounts[key] || 0);
+
+        if (hasDifference && value !== 0) {
+          const collectionRef = firestore.collection("channels");
+          collectionRef
+            .where("enc_channelID", "==", key)
+            .onSnapshot((querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                const channelData = doc.data();
+                mergedResults.push(channelData);
+              });
+              resolve();
+            });
+        } else {
+          resolve();
+        }
+      });
+    });
+
+    Promise.all(promises).then(() => {
+      setNotificationData(mergedResults);
+      localStorage.setItem("unreadCount", JSON.stringify(mergedUnreadCounts));
+    });
+
+    // Calculate totalCount
+    Object.values(mergedUnreadCounts).forEach((value: any) => {
+      totalCount += value;
+    });
+    if (totalCount > 0) {
+      createFavicon();
+    } else {
+      let faviconData: any = document.getElementById("favicon");
+      const newFaviconPromise = convertImage();
+      newFaviconPromise.then((newFavicon) => {
+        faviconData.href = newFavicon;
+      });
+    }
+  }, [unreadCounts]);
+
+  useEffect(() => {
+    const sendNotificationsSequentially = (data: any, index: any) => {
+      if (index < data.length) {
+        setTimeout(() => {
+          if (Notification.permission === "granted") {
+            new Notification(data[index]?.companyName, {
+              body: "Notification Message",
+              icon: icon,
+            });
+          } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then((permission) => {
+              if (permission === "granted") {
+                new Notification(data[index]?.companyName, {
+                  body: "Notification Message",
+                  icon: icon,
+                });
+              }
+            });
+          }
+          // addNotification({
+          //   title: data[index]?.companyName,
+          //   message: "New Notification",
+          //   theme: "darkblue",
+          //   native: true,
+          //   icon: data[index]?.companyInitial,
+          // });
+          sendNotificationsSequentially(data, index + 1);
+        }, 1000);
+      }
+    };
+    const uniqueHrNumbers = new Set();
+
+    if (notificationData.length > 0) {
+      const uniqueData = notificationData.filter((item: any) => {
+        if (!uniqueHrNumbers.has(item.hrNumber)) {
+          uniqueHrNumbers.add(item.hrNumber);
+          return true;
+        }
+        return false;
+      });
+
+      sendNotificationsSequentially(uniqueData, 0);
+    }
+  }, [notificationData]);
   // useEffect(() => {
   //   try {
   //     // UP0131
@@ -427,7 +594,6 @@ const UpTabs = () => {
       let cul =
         Math.round(element.scrollTop + element.clientHeight) -
         element.scrollHeight;
-
       if (
         Math.round(element.scrollTop + element.clientHeight) ===
           element.scrollHeight ||
@@ -698,7 +864,8 @@ const UpTabs = () => {
                 LastPinnedGroups={LastPinnedGroups}
                 setUpChat={setUpChat}
                 upChat={upChat}
-              
+                setResetCount={setResetCount}
+                resetCount={resetCount}
               />
 
               <div className={UpTabsStyle.dropPaginationArrow}>

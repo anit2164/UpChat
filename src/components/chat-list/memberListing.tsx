@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import AddMembers from "./addMembers";
 import ShareInvite from "./shareInvite";
 import axios from "axios";
+import { addMemberListing } from "../../services/api";
 // import ShareInvite from "./shareInvite";
 
 firebase.initializeApp(firebaseConfig);
@@ -89,17 +90,7 @@ const MemberListing = (allChannelItem: any) => {
         createdByID: 0,
         userDetails: tempObj,
       };
-      const response = await axios.post(
-        "http://3.218.6.134:9096/User/UpdateUserHistory",
-        data,
-        {
-          headers: {
-            Authorization: storageToken,
-            "X-API-KEY": "QXBpS2V5TWlkZGxld2FyZQ==",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await addMemberListing(data);
     } catch (error) {
       console.error(error);
     }

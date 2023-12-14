@@ -14,6 +14,7 @@ import firebaseConfig from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import ChatListing from "../chat-list/chatListing";
+import { NetworkInfo } from "../../constants/network";
 // import moment from "moment";
 
 firebase.initializeApp(firebaseConfig);
@@ -89,7 +90,7 @@ const SnoozeGroupDetails = ({ data, LastSnoozeGroups, setData }: any) => {
         }
       } else if (value?.key === "View HR Detail Page") {
         window.open(
-          `http://3.218.6.134:9093/allhiringrequest/${item?.hrID}`,
+          `http://${NetworkInfo.VIEWHRDOMIN}/allhiringrequest/${item?.hrID}`,
           "_blank"
         );
       }

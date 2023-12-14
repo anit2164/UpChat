@@ -14,6 +14,7 @@ import ChatListing from "../chat-list/chatListing";
 import MyContext from "../chat-list/myContext";
 import { limits } from "../../constants/constantLimit";
 import { debounce } from "lodash";
+import { NetworkInfo } from "../../constants/network";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -447,7 +448,7 @@ const Tile = ({
       }
     } else if (value?.key === "View HR Detail Page") {
       window.open(
-        `http://3.218.6.134:9093/allhiringrequest/${item?.hrID}`,
+        `http://${NetworkInfo.VIEWHRDOMIN}/allhiringrequest/${item?.hrID}`,
         "_blank"
       );
     }

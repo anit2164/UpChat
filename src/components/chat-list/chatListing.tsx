@@ -59,6 +59,8 @@ import { limits } from "../../constants/constantLimit";
 import ReactPlayer from 'react-player';
 import BookmarkIconSVG from "../../assets/svg/bookmarkIcon.svg";
 import BookMarkMessage from "../BookMarkMessage/BookMarkMessage";
+import { sendMessageRequest } from "../../services/api";
+import { NetworkInfo } from "../../constants/network";
 
 // firebase.initializeApp(firebaseConfig);
 
@@ -346,19 +348,7 @@ const ChatListing = ({
         note: commentRef.current.innerHTML.replace(/\s+/g, " "),
       };
 
-      const response = await axios.post(
-        "http://3.218.6.134:9082/ViewAllHR/UpChatSaveHRNotes",
-        data,
-        {
-          headers: {
-            Authorization: storageToken,
-            // Authorization:
-            //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkNoYXRVc2VyX0FuaXQiLCJMb2dpblVzZXJJZCI6IjEwNDYyIiwiTG9naW5Vc2VyVHlwZUlkIjoiNCIsIm5iZiI6MTY5MTQ3Mzg5MCwiZXhwIjoxNjkxNTA5ODkwLCJpYXQiOjE2OTE0NzM4OTB9.MEbqmQcu4h2Kgmbpd0Jmxr_c1F_eP3Lq5WYtRIl7Hbk",
-            "X-API-KEY": "QXBpS2V5TWlkZGxld2FyZQ==",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      sendMessageRequest(data);
     } catch (error) {
       console.error(error);
     }
@@ -1091,7 +1081,7 @@ const ChatListing = ({
   const chatListDropdown = (value: any) => {
     if (value.key === ChannelMenu.VIEW_HR_DETAILS) {
       window.open(
-        `http://3.218.6.134:9093/allhiringrequest/${allChannelItem?.hrID}`,
+        `http://${NetworkInfo.VIEWHRDOMIN}/allhiringrequest/${allChannelItem?.hrID}`,
         "_blank"
       );
     }
