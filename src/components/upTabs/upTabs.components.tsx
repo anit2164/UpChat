@@ -16,7 +16,7 @@ import { useContext } from "react";
 import { MyContext } from "../chat-list";
 import { AiOutlineLeft } from "react-icons/ai";
 import { AiOutlineRight } from "react-icons/ai";
-import icon from "../../assets/images/logo.png";
+import Icon from "../../assets/images/logo.png";
 // import IconSVG from "../../assets/images/favicon.png";
 import faviIcon from "../../assets/images/favicon.png";
 
@@ -235,14 +235,14 @@ const UpTabs = () => {
           if (Notification.permission === "granted") {
             new Notification(data[index]?.companyName, {
               body: "Notification Message",
-              icon: icon,
+              icon: Icon,
             });
           } else if (Notification.permission !== "denied") {
             Notification.requestPermission().then((permission) => {
               if (permission === "granted") {
                 new Notification(data[index]?.companyName, {
                   body: "Notification Message",
-                  icon: icon,
+                  icon: Icon,
                 });
               }
             });
